@@ -1,9 +1,8 @@
 # 1. Pubs routes: Map deep links to the app
 /pubs/* /app/index.html 200
 
-# 2. App routes: Map the app container itself
+# 2. App routes: Map the app container
 /app/* /app/index.html 200
 
-# 3. Everything else: Route to the root landing page
-# We use /index.html explicitly to avoid the ambiguity of just /
+# 3. Fallback: Serve the root index
 /* /index.html 200
