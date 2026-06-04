@@ -21,7 +21,7 @@ exports.handler = async (event) => {
       }],
 
       subscription_data: {
-        trial_period_days: 14,
+        trial_period_days: 30,
       },
 
       // Collect pub name + passkey during Stripe checkout (max 3 custom fields)
@@ -33,7 +33,7 @@ exports.handler = async (event) => {
         },
         {
           key:   'passkey',
-          label: { type: 'custom', custom: 'Admin passkey (staff use this to manage the app)' },
+          label: { type: 'custom', custom: 'Create admin passkey (staff use this to manage the app)' },
           type:  'text',
         },
       ],
