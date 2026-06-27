@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/Fluorescent0/Weaver-Pool-App-assets/refs/heads/main/WON_favicon.ico">
 <style>
-/* ─── RESET & ROOT ─────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --bg:          #09090C;
@@ -46,7 +45,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ─── NOISE TEXTURE OVERLAY ────────────────────────────────── */
 body::before {
   content: '';
   position: fixed; inset: 0; z-index: 0;
@@ -55,7 +53,6 @@ body::before {
   opacity: 0.4;
 }
 
-/* ─── NAV ──────────────────────────────────────────────────── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   height: 56px;
@@ -91,7 +88,6 @@ nav {
 .nav-cta:hover { filter: brightness(1.1); }
 .nav-cta:active { transform: scale(0.95); }
 
-/* ─── NAV BURGER ───────────────────────────────────────────── */
 .nav-links { display: flex; gap: 10px; align-items: center; }
 
 .nav-burger {
@@ -155,7 +151,6 @@ nav {
   .nav-burger { display: flex; }
 }
 
-/* ─── HERO ─────────────────────────────────────────────────── */
 .hero {
   position: relative; z-index: 1;
   min-height: 100svh;
@@ -166,7 +161,6 @@ nav {
   overflow: hidden;
 }
 
-/* Felt table glow */
 .hero::before {
   content: '';
   position: absolute;
@@ -177,7 +171,6 @@ nav {
   transform: translate(-50%, -55%);
   pointer-events: none;
 }
-/* Gold accent glow */
 .hero::after {
   content: '';
   position: absolute;
@@ -270,7 +263,6 @@ nav {
 }
 .btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
 
-/* ─── MOCK APP PREVIEW ─────────────────────────────────────── */
 .hero-preview {
   position: relative; z-index: 1;
   margin-top: 64px;
@@ -398,7 +390,6 @@ nav {
 }
 .mock-q-num.next { color: var(--gold); }
 
-/* ─── SECTION BASE ─────────────────────────────────────────── */
 section {
   position: relative; z-index: 1;
   padding: 80px 24px;
@@ -422,7 +413,6 @@ section {
   line-height: 1.65; max-width: 520px;
 }
 
-/* ─── FEATURES ─────────────────────────────────────────────── */
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -464,7 +454,6 @@ section {
   line-height: 1.6;
 }
 
-/* ─── HOW IT WORKS ─────────────────────────────────────────── */
 .how-section {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -518,7 +507,6 @@ section {
   line-height: 1.6;
 }
 
-/* ─── PRICING ──────────────────────────────────────────────── */
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -607,14 +595,12 @@ section {
 .price-btn:hover { filter: brightness(1.1); }
 .price-btn:active { transform: scale(0.97); }
 
-/* ─── SIGN UP SECTION ──────────────────────────────────────── */
 .signup-section {
   background: var(--surface);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   position: relative; overflow: hidden;
 }
-/* Warm gold glow — makes the section feel like a destination */
 .signup-section::before {
   content: '';
   position: absolute;
@@ -625,6 +611,21 @@ section {
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+.heading-glow-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.heading-glow-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(212,164,65,0.15) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
 .signup-inner {
   position: relative; z-index: 1;
   max-width: 560px;
@@ -632,9 +633,8 @@ section {
   padding: 80px 24px;
   text-align: center;
 }
-.signup-inner .section-heading { text-align: center; }
+.signup-inner .section-heading { text-align: center; position: relative; z-index: 1; }
 
-/* ─── SIGNUP CARD ──────────────────────────────────────────── */
 .signup-card {
   max-width: 420px;
   margin: 44px auto 0;
@@ -644,7 +644,6 @@ section {
   padding: 32px 28px;
   position: relative; overflow: hidden;
 }
-/* Gold top line — matches .price-card.featured treatment */
 .signup-card::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -732,7 +731,6 @@ section {
 }
 .form-success p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
-/* ─── FOOTER ───────────────────────────────────────────────── */
 footer {
   position: relative; z-index: 1;
   padding: 32px 24px;
@@ -751,7 +749,6 @@ footer {
   font-size: 12px; color: var(--text-dim);
 }
 
-/* ─── ANIMATIONS ───────────────────────────────────────────── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -765,7 +762,6 @@ footer {
   opacity: 1; transform: translateY(0);
 }
 
-/* ─── DIVIDER LINE ─────────────────────────────────────────── */
 .gold-divider {
   position: relative; z-index: 1;
   height: 1px;
@@ -777,34 +773,29 @@ footer {
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a class="nav-brand" href="#">
     <span class="nav-icon">🎱</span>
     <span class="nav-name">Whosonnext&nbsp;</span>
   </a>
 
-  <!-- Desktop links -->
   <div class="nav-links">
     <a class="btn-secondary" style="padding:8px 16px; font-size:13px;" href="contact.html">Contact</a>
     <a class="btn-secondary" style="padding:8px 16px; font-size:13px;" href="/leaderboards">🏆 Leaderboard</a>
     <a class="nav-cta" href="#signup">Get Started</a>
   </div>
 
-  <!-- Mobile burger -->
   <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<!-- Mobile dropdown -->
 <div class="nav-mobile-menu" id="nav-mobile-menu">
   <a href="contact.html">Contact</a>
   <a href="/leaderboards">🏆 Leaderboard</a>
   <a class="mob-cta" href="#signup">Get Started</a>
 </div>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-eyebrow">
     <span class="eyebrow-dot"></span>
@@ -831,7 +822,6 @@ footer {
     </a>
   </div>
 
-  <!-- Mock phone preview -->
   <div class="hero-preview">
     <div class="phone-frame">
       <div class="phone-bar">
@@ -876,7 +866,6 @@ footer {
 
 <div class="gold-divider"></div>
 
-<!-- FEATURES -->
 <section>
   <div class="section-eyebrow">What you get</div>
   <h2 class="section-heading reveal">Everything pool night needs</h2>
@@ -921,7 +910,6 @@ footer {
 
 <div class="gold-divider"></div>
 
-<!-- HOW IT WORKS -->
 <div class="how-section" id="how">
   <div class="how-section-inner">
     <div class="section-eyebrow">How it works</div>
@@ -950,7 +938,6 @@ footer {
 
 <div class="gold-divider"></div>
 
-<!-- PRICING -->
 <section>
   <div class="section-eyebrow">Pricing</div>
   <h2 class="section-heading reveal">Simple and fair</h2>
@@ -993,11 +980,12 @@ footer {
 
 <div class="gold-divider"></div>
 
-<!-- SIGN UP -->
 <div class="signup-section" id="signup">
   <div class="signup-inner">
     <div class="section-eyebrow">Get set up</div>
-    <h2 class="section-heading reveal">Get your pub<br>on the board</h2>
+    <div class="heading-glow-wrapper">
+      <h2 class="section-heading reveal">Get your pub<br>on the board</h2>
+    </div>
 
     <div class="signup-card reveal">
       <div class="signup-offer">✦ First month free</div>
@@ -1027,14 +1015,12 @@ footer {
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-brand">🎱 whosonnext</div>
   <div class="footer-copy">Built for pubs. Made in England.</div>
 </footer>
 
 <script>
-/* ─── SCROLL REVEAL ─────────────────────────────────────────── */
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((e, i) => {
     if (e.isIntersecting) {
@@ -1046,7 +1032,6 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-/* ─── NAV BURGER ────────────────────────────────────────────── */
 const burger = document.getElementById('nav-burger');
 const mobileMenu = document.getElementById('nav-mobile-menu');
 
@@ -1056,7 +1041,6 @@ burger.addEventListener('click', () => {
   burger.setAttribute('aria-expanded', isOpen);
 });
 
-// Close on link click or outside tap
 mobileMenu.querySelectorAll('a').forEach(a => {
   a.addEventListener('click', closeMenu);
 });
@@ -1069,7 +1053,6 @@ function closeMenu() {
   burger.setAttribute('aria-expanded', false);
 }
 
-/* ─── STRIPE CHECKOUT ───────────────────────────────────────── */
 const signupBtn = document.getElementById('signup-btn');
 if (signupBtn) {
   signupBtn.addEventListener('click', async (e) => {
