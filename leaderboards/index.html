@@ -7,40 +7,328 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --bg: #09090C; --surface: #111318; --border: rgba(255,255,255,0.06); --gold: #D4A441; --gold-lt: #EEC060; --text: #EDE9E0; --text-muted: #6B7280; --r: 14px; }
-    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; }
-    .app { max-width: 480px; margin: 0 auto; padding: 20px; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; }
-    h1 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1.8px; margin-bottom: 24px; }
+    :root {
+      --bg:          #09090C;
+      --surface:     #111318;
+      --surface-2:   #181C26;
+      --surface-3:   #1E2330;
+      --border:      rgba(255,255,255,0.06);
+      --border-hi:   rgba(255,255,255,0.11);
+      --gold:        #D4A441;
+      --gold-lt:     #EEC060;
+      --gold-dim:    rgba(212,164,65,0.10);
+      --green:       #27B86A;
+      --green-felt:  #1A4731;
+      --text:        #EDE9E0;
+      --text-muted:  #6B7280;
+      --text-dim:    #353A48;
+      --r:    14px;
+      --r-sm: 9px;
+      font-family: 'Outfit', system-ui, sans-serif;
+      color-scheme: dark;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100svh;
+    }
+
+    /* ─── NOISE OVERLAY ────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    /* ─── NAV ──────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 56px;
+      background: rgba(9,9,12,0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 9px;
+      text-decoration: none;
+    }
+    .nav-icon { font-size: 20px; }
+    .nav-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px; letter-spacing: 2px;
+      color: var(--text);
+    }
+    .nav-back {
+      color: var(--text-muted);
+      font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      transition: color .15s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    /* ─── PAGE LAYOUT ──────────────────────────── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 56px 20px 60px;
+    }
+
+    /* ─── HEADER ───────────────────────────────── */
+    .page-header {
+      text-align: center;
+      padding: 52px 0 40px;
+      position: relative;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute;
+      width: 540px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,71,49,0.32) 0%, transparent 70%);
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute;
+      width: 360px; height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(212,164,65,0.07) 0%, transparent 70%);
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--gold-dim);
+      border: 1px solid rgba(212,164,65,0.2);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 22px;
+      animation: fadeUp .5s ease-out both;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(58px, 15vw, 88px);
+      letter-spacing: 2px;
+      line-height: 0.93;
+      color: var(--text);
+      margin-bottom: 12px;
+      animation: fadeUp .5s .08s ease-out both;
+    }
+    .page-title em {
+      font-style: normal;
+      color: var(--gold-lt);
+    }
+    .page-sub {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      animation: fadeUp .5s .16s ease-out both;
+    }
+
+    /* ─── FILTER ───────────────────────────────── */
+    .filter-wrap {
+      margin-bottom: 12px;
+      animation: fadeUp .5s .22s ease-out both;
+    }
+    .pub-select {
+      width: 100%;
+      padding: 11px 36px 11px 14px;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border-hi);
+      border-radius: var(--r-sm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px; font-weight: 500;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%236B7280' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+    .pub-select:focus {
+      outline: none;
+      border-color: rgba(212,164,65,0.35);
+    }
+
+    /* ─── CARD ─────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      animation: fadeUp .5s .28s ease-out both;
+    }
+
+    /* ─── TABLE ────────────────────────────────── */
     table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; padding: 12px 8px; border-bottom: 1px solid var(--border); }
-    td { padding: 16px 8px; border-bottom: 1px solid var(--border); font-weight: 500; }
-    .rank { font-family: 'Bebas Neue'; color: var(--gold); font-size: 18px; width: 40px; }
-    .wins { color: var(--gold-lt); font-weight: 700; }
-    .pub-select { width: 100%; padding: 10px; margin-bottom: 15px; background: #181C26; color: white; border: 1px solid var(--border); border-radius: 8px; }
+
+    thead tr { background: var(--surface-2); }
+    th {
+      text-align: left;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+    td {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px; font-weight: 500;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background .12s; }
+    tbody tr:hover { background: rgba(255,255,255,0.025); }
+
+    /* Top 3 tinted rows */
+    tbody tr.row-gold   { background: rgba(212,164,65,0.05); }
+    tbody tr.row-gold:hover { background: rgba(212,164,65,0.09); }
+    tbody tr.row-silver { background: rgba(192,192,192,0.03); }
+    tbody tr.row-bronze { background: rgba(176,141,87,0.03); }
+
+    .col-rank {
+      width: 44px; padding-right: 4px;
+      font-family: 'Bebas Neue';
+      font-size: 20px;
+    }
+    .col-rank.r1 { color: var(--gold-lt); }
+    .col-rank.r2 { color: #B8B8B8; }
+    .col-rank.r3 { color: #A07850; }
+    .col-rank.rn { color: var(--text-dim); }
+
+    .player-cell { display: flex; align-items: center; gap: 8px; }
+    .player-name { font-weight: 600; font-size: 14px; }
+    .medal { font-size: 15px; line-height: 1; }
+
+    .col-wins { font-weight: 700; font-size: 15px; }
+    .col-wins.w1 { color: var(--gold-lt); }
+    .col-wins.wn { color: var(--text-muted); }
+
+    .col-played { color: var(--text-muted); font-size: 13px; }
+
+    /* ─── STATES ───────────────────────────────── */
+    .state-cell { text-align: center; padding: 52px 24px; color: var(--text-muted); }
+    .state-icon { font-size: 28px; margin-bottom: 10px; }
+    .state-label { font-size: 14px; }
+
+    /* ─── FOOTER LINK ──────────────────────────── */
+    .footer-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 20px;
+      color: var(--text-muted);
+      font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      transition: color .15s;
+      animation: fadeUp .5s .34s ease-out both;
+    }
+    .footer-link:hover { color: var(--text); }
+
+    /* ─── ANIMATIONS ───────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; }
+    }
   </style>
 </head>
 <body>
 
-<div class="app">
-  <div class="card">
-    <h1>DAILY STATS</h1>
+<nav>
+  <a href="/" class="nav-brand">
+    <span class="nav-icon">🎰</span>
+    <span class="nav-name">WHOSONNEXT</span>
+  </a>
+  <a href="/" class="nav-back">← Back to game</a>
+</nav>
+
+<div class="page">
+  <header class="page-header">
+    <div class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      Live today
+    </div>
+    <h1 class="page-title">LEADER<em>BOARD</em></h1>
+    <p class="page-sub">Today's scores · updates in real time</p>
+  </header>
+
+  <div class="filter-wrap">
     <select id="pub-filter" class="pub-select">
-      <option value="all">Global (All Pubs)</option>
+      <option value="all">🌍 Global — all pubs</option>
     </select>
-    <table id="leaderboard">
-      <thead><tr><th></th><th>PLAYER</th><th>PUB</th><th>WINS</th><th>PLAYED</th></tr></thead>
-      <tbody id="lb-body"></tbody>
-    </table>
-    <a href="/" style="display:block; margin-top:20px; color:var(--text-muted); font-size:14px; text-decoration:none;">← Back to Game</a>
   </div>
+
+  <div class="card">
+    <table id="leaderboard">
+      <thead>
+        <tr>
+          <th style="width:44px"></th>
+          <th>Player</th>
+          <th>Wins</th>
+          <th>Played</th>
+        </tr>
+      </thead>
+      <tbody id="lb-body">
+        <tr>
+          <td colspan="4">
+            <div class="state-cell">
+              <div class="state-icon">⏳</div>
+              <div class="state-label">Loading scores…</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <a href="/" class="footer-link">← Back to game</a>
 </div>
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-  const supabase = createClient('https://faxosthjdprblsicpqye.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8')
+  const supabase = createClient(
+    'https://faxosthjdprblsicpqye.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8'
+  );
 
-  let stats = { all: {} };
+  const MEDALS = ['🥇', '🥈', '🥉'];
+  const ROW_CLASS = ['row-gold', 'row-silver', 'row-bronze'];
+  const RANK_CLASS = ['r1', 'r2', 'r3'];
+  const WINS_CLASS = ['w1', 'wn', 'wn'];
 
   async function loadLeaderboard() {
     const today = new Date().toISOString().split('T')[0];
@@ -49,52 +337,72 @@
       supabase.from('pubs').select('name, slug')
     ]);
 
-    if (sRes.error) return console.error(sRes.error);
+    if (sRes.error) {
+      setBody(`<tr><td colspan="4"><div class="state-cell">
+        <div class="state-icon">⚠️</div>
+        <div class="state-label">Couldn't load scores.</div>
+      </div></td></tr>`);
+      return console.error(sRes.error);
+    }
 
     const pubMap = new Map(pRes.data?.map(p => [p.slug, p.name]) || []);
+    const stats = { all: {} };
 
     sRes.data.forEach(row => {
       const parts = row.id.split('-');
       const slug = parts.slice(1, -3).join('-');
-      const pubName = pubMap.get(slug) || "Unknown Pub";
-      
+      const pubName = pubMap.get(slug) || 'Unknown Pub';
       if (!stats[pubName]) stats[pubName] = {};
 
-      Object.entries(row.state?.scores || {}).forEach(([p, d]) => {
-        [p, 'all'].forEach(key => {
+      Object.entries(row.state?.scores || {}).forEach(([player, d]) => {
+        [player, 'all'].forEach(key => {
           const target = key === 'all' ? stats.all : stats[pubName];
-          if (!target[p]) target[p] = { wins: 0, played: 0, pub: pubName };
-          target[p].wins += d.wins || 0;
-          target[p].played += d.played || 0;
+          if (!target[player]) target[player] = { wins: 0, played: 0 };
+          target[player].wins   += d.wins   || 0;
+          target[player].played += d.played || 0;
         });
       });
     });
 
+    // Populate filter
     const filter = document.getElementById('pub-filter');
-    Object.keys(stats).filter(k => k !== 'all').forEach(p => {
-      filter.innerHTML += `<option value="${p}">${p}</option>`;
+    Object.keys(stats).filter(k => k !== 'all').sort().forEach(pub => {
+      filter.innerHTML += `<option value="${pub}">📍 ${pub}</option>`;
     });
+    filter.addEventListener('change', () => renderTable(filter.value));
 
-    window.renderTable = (pub) => {
-      const body = document.getElementById('lb-body');
-      if (!body) return;
-      const sorted = Object.entries(stats[pub] || {}).sort((a,b) => b[1].wins - a[1].wins);
-      body.innerHTML = sorted.map(([n, s], i) => `
-        <tr>
-          <td class="rank">${i+1}</td>
-          <td>${n}</td>
-          <td style="font-size: 11px; color: var(--text-muted);">${pub === 'all' ? s.pub : pub}</td>
-          <td class="wins">${s.wins}</td>
-          <td>${s.played}</td>
-        </tr>
-      `).join('');
-    };
     renderTable('all');
+
+    function renderTable(pub) {
+      const sorted = Object.entries(stats[pub] || {})
+        .sort((a, b) => b[1].wins - a[1].wins);
+
+      if (sorted.length === 0) {
+        setBody(`<tr><td colspan="4"><div class="state-cell">
+          <div class="state-icon">🎯</div>
+          <div class="state-label">No games played here yet today.</div>
+        </div></td></tr>`);
+        return;
+      }
+
+      setBody(sorted.map(([name, s], i) => {
+        const rankCls  = RANK_CLASS[i]  ?? 'rn';
+        const winsCls  = WINS_CLASS[i]  ?? 'wn';
+        const rowCls   = ROW_CLASS[i]   ?? '';
+        const medal    = i < 3 ? `<span class="medal">${MEDALS[i]}</span>` : '';
+        return `<tr class="${rowCls}">
+          <td class="col-rank ${rankCls}">${i + 1}</td>
+          <td><div class="player-cell"><span class="player-name">${name}</span>${medal}</div></td>
+          <td class="col-wins ${winsCls}">${s.wins}</td>
+          <td class="col-played">${s.played}</td>
+        </tr>`;
+      }).join(''));
+    }
   }
 
-  document.getElementById('pub-filter').addEventListener('change', (e) => {
-    window.renderTable(e.target.value);
-  });
+  function setBody(html) {
+    document.getElementById('lb-body').innerHTML = html;
+  }
 
   loadLeaderboard();
 </script>
