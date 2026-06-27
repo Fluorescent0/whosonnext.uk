@@ -52,7 +52,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         from: "WhosOnNext <noreply@whosonnext.uk>",
-        to: ["YOUR_EMAIL_HERE@example.com"],
+        to: ["ruairi@whosonnext.uk"],
         subject: `New contact form: ${subject}`,
         html: `
           <h2>New Submission</h2>
