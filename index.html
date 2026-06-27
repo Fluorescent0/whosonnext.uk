@@ -91,6 +91,70 @@ nav {
 .nav-cta:hover { filter: brightness(1.1); }
 .nav-cta:active { transform: scale(0.95); }
 
+/* ─── NAV BURGER ───────────────────────────────────────────── */
+.nav-links { display: flex; gap: 10px; align-items: center; }
+
+.nav-burger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px;
+  width: 36px; height: 36px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+  border-radius: var(--r-sm);
+  transition: background .15s;
+}
+.nav-burger:hover { background: rgba(255,255,255,0.05); }
+.nav-burger span {
+  display: block;
+  width: 20px; height: 1.5px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform .22s ease, opacity .18s ease, width .18s ease;
+  transform-origin: center;
+}
+.nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; width: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.nav-mobile-menu {
+  display: none;
+  position: fixed; top: 56px; left: 0; right: 0; z-index: 99;
+  background: rgba(9,9,12,0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px 20px;
+  flex-direction: column; gap: 8px;
+  animation: menuDrop .2s ease-out both;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-menu a {
+  display: block;
+  padding: 13px 16px;
+  border-radius: var(--r-sm);
+  font-size: 15px; font-weight: 600;
+  text-decoration: none; color: var(--text-muted);
+  transition: background .12s, color .12s;
+}
+.nav-mobile-menu a:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.nav-mobile-menu .mob-cta {
+  background: linear-gradient(135deg, #B8892B, #D4A441, #EEC060);
+  color: #0D0800;
+  text-align: center; margin-top: 4px;
+  font-weight: 700;
+}
+.nav-mobile-menu .mob-cta:hover { filter: brightness(1.08); color: #0D0800; }
+
+@keyframes menuDrop {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .nav-links  { display: none; }
+  .nav-burger { display: flex; }
+}
+
 /* ─── HERO ─────────────────────────────────────────────────── */
 .hero {
   position: relative; z-index: 1;
@@ -630,22 +694,26 @@ footer {
     <span class="nav-icon">🎱</span>
     <span class="nav-name">Whosonnext&nbsp;</span>
   </a>
-  <div style="display:flex; gap:10px; align-items:center;">
-  <a class="btn-secondary"
-     style="padding:8px 16px; font-size:13px;"
-     href="contact.html">
-     Contact
-  </a>
-  <a class="btn-secondary"
-     style="padding:8px 16px; font-size:13px;"
-     href="/leaderboards">
-     🏆 Leaderboard
-  </a>
-  <a class="nav-cta" href="#signup">
-    Get Started
-  </a>
-</div>
+
+  <!-- Desktop links -->
+  <div class="nav-links">
+    <a class="btn-secondary" style="padding:8px 16px; font-size:13px;" href="contact.html">Contact</a>
+    <a class="btn-secondary" style="padding:8px 16px; font-size:13px;" href="/leaderboards">🏆 Leaderboard</a>
+    <a class="nav-cta" href="#signup">Get Started</a>
+  </div>
+
+  <!-- Mobile burger -->
+  <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile dropdown -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="contact.html">Contact</a>
+  <a href="/leaderboards">🏆 Leaderboard</a>
+  <a class="mob-cta" href="#signup">Get Started</a>
+</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -742,7 +810,7 @@ footer {
       <span class="feat-icon">📊</span>
       <div class="feat-title">Live Leaderboard</div>
       <p class="feat-desc">Wins, games played, and win ratios tracked across the whole night. Regulars love watching their rank climb.</p>
-      <div style="margin-top:14px; font-size:12px; font-weight:600; color:var(--gold); letter-spacing:0.3px;">View today's global board →</div>
+      <div style="margin-top:14px; font-size:12px; font-weight:600; color:var(--gold); letter-spacing:0.3px;">View today's board →</div>
     </a>
     <div class="feat-card reveal">
       <span class="feat-icon">📱</span>
@@ -882,6 +950,29 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─── NAV BURGER ────────────────────────────────────────────── */
+const burger = document.getElementById('nav-burger');
+const mobileMenu = document.getElementById('nav-mobile-menu');
+
+burger.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  burger.classList.toggle('open', isOpen);
+  burger.setAttribute('aria-expanded', isOpen);
+});
+
+// Close on link click or outside tap
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', closeMenu);
+});
+document.addEventListener('click', e => {
+  if (!burger.contains(e.target) && !mobileMenu.contains(e.target)) closeMenu();
+});
+function closeMenu() {
+  mobileMenu.classList.remove('open');
+  burger.classList.remove('open');
+  burger.setAttribute('aria-expanded', false);
+}
 
 /* ─── STRIPE CHECKOUT ───────────────────────────────────────── */
 const signupBtn = document.getElementById('signup-btn');
