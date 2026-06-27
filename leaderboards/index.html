@@ -29,7 +29,7 @@
       <option value="all">Global (All Pubs)</option>
     </select>
     <table id="leaderboard">
-      <thead><tr><th></th><th>PLAYER</th><th>WINS</th><th>PLAYED</th></tr></thead>
+      <thead><tr><th></th><th>PLAYER</th><th>PUB</th><th>WINS</th><th>PLAYED</th></tr></thead>
       <tbody id="lb-body"></tbody>
     </table>
     <a href="/" style="display:block; margin-top:20px; color:var(--text-muted); font-size:14px; text-decoration:none;">← Back to Game</a>
@@ -39,6 +39,8 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
   const supabase = createClient('https://faxosthjdprblsicpqye.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8')
+
+  let stats = { all: {} };
 
   async function loadLeaderboard() {
     const today = new Date().toISOString().split('T')[0];
@@ -50,7 +52,6 @@
     if (sRes.error) return console.error(sRes.error);
 
     const pubMap = new Map(pRes.data?.map(p => [p.slug, p.name]) || []);
-    const stats = { all: {} };
 
     sRes.data.forEach(row => {
       const parts = row.id.split('-');
@@ -62,7 +63,7 @@
       Object.entries(row.state?.scores || {}).forEach(([p, d]) => {
         [p, 'all'].forEach(key => {
           const target = key === 'all' ? stats.all : stats[pubName];
-          if (!target[p]) target[p] = { wins: 0, played: 0 };
+          if (!target[p]) target[p] = { wins: 0, played: 0, pub: pubName };
           target[p].wins += d.wins || 0;
           target[p].played += d.played || 0;
         });
@@ -79,11 +80,22 @@
       if (!body) return;
       const sorted = Object.entries(stats[pub] || {}).sort((a,b) => b[1].wins - a[1].wins);
       body.innerHTML = sorted.map(([n, s], i) => `
-        <tr><td class="rank">${i+1}</td><td>${n}</td><td class="wins">${s.wins}</td><td>${s.played}</td></tr>
+        <tr>
+          <td class="rank">${i+1}</td>
+          <td>${n}</td>
+          <td style="font-size: 11px; color: var(--text-muted);">${pub === 'all' ? s.pub : pub}</td>
+          <td class="wins">${s.wins}</td>
+          <td>${s.played}</td>
+        </tr>
       `).join('');
     };
     renderTable('all');
   }
+
+  document.getElementById('pub-filter').addEventListener('change', (e) => {
+    window.renderTable(e.target.value);
+  });
+
   loadLeaderboard();
 </script>
 </body>
