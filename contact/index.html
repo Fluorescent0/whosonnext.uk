@@ -144,7 +144,8 @@ button:hover{
   </div>
 
   <div class="card">
-    <form action="https://formspree.io/f/mykqwqak" method="POST">
+    <form name="contact" method="POST" data-netlify="true" action="/.netlify/functions/contact">
+    <input type="hidden" name="form-name" value="contact" />
 
       <label for="name">Name</label>
       <input id="name" name="name" type="text" required>
