@@ -10,14 +10,11 @@ exports.handler = async (event) => {
     if (!email) {
       return {
         statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "Missing email"
-        })
+        body: JSON.stringify({ success: false, error: "Missing email" })
       };
     }
 
-    // 1. Send confirmation email to user
+    // Send confirmation email to user
     await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -30,13 +27,10 @@ exports.handler = async (event) => {
         subject: "We've received your enquiry",
         html: `
           <h2>🎱 Thanks for contacting WhosOnNext</h2>
-
           <p>Hi ${name},</p>
-
-          <p>We've received your enquiry and will get back to you as soon as possible.</p>
+          <p>We've received your enquiry and will get back to you soon.</p>
 
           <h3>Your submission</h3>
-
           <ul>
             <li><strong>Name:</strong> ${name}</li>
             <li><strong>Email:</strong> ${email}</li>
@@ -44,17 +38,12 @@ exports.handler = async (event) => {
           </ul>
 
           <p><strong>Message:</strong></p>
-
-          <blockquote style="border-left:3px solid #D4A441;padding-left:12px;">
-            ${message}
-          </blockquote>
-
-          <p>Thanks,<br>WhosOnNext</p>
+          <blockquote>${message}</blockquote>
         `
       })
     });
 
-    // 2. Send copy to me (admin notification)
+    // Send copy to you
     await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -63,10 +52,10 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         from: "WhosOnNext <noreply@whosonnext.uk>",
-        to: ["ruairi@whosonnext.uk"],
+        to: ["YOUR_EMAIL_HERE@example.com"],
         subject: `New contact form: ${subject}`,
         html: `
-          <h2>New Contact Form Submission</h2>
+          <h2>New Submission</h2>
 
           <ul>
             <li><strong>Name:</strong> ${name}</li>
@@ -75,19 +64,14 @@ exports.handler = async (event) => {
           </ul>
 
           <p><strong>Message:</strong></p>
-
-          <blockquote style="border-left:3px solid #333;padding-left:12px;">
-            ${message}
-          </blockquote>
+          <blockquote>${message}</blockquote>
         `
       })
     });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        success: true
-      })
+      body: JSON.stringify({ success: true })
     };
 
   } catch (err) {
@@ -95,10 +79,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: err.message
-      })
+      body: JSON.stringify({ success: false, error: err.message })
     };
   }
 };
