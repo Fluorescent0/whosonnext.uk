@@ -60,7 +60,16 @@
   const supabase = createClient('https://faxosthjdprblsicpqye.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8')
 
   async function loadLeaderboard() {
-    const today = new Date().toISOString().split('T')[0];
+    // This creates a standard ISO string like "2026-06-27T00:00:00.000Z"
+const today = new Date();
+today.setUTCHours(0, 0, 0, 0);
+const isoDate = today.toISOString(); 
+
+// Now pass isoDate instead of the split string
+const { data, error } = await supabase
+  .from('sessions')
+  .select('state')
+  .gte('created_at', isoDate);
     
     // Target the 'sessions' table, fetching 'state'
     const { data, error } = await supabase
