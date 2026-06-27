@@ -22,6 +22,10 @@
       border-radius: var(--r);
       padding: 24px;
     }
+
+    <select id="pub-filter" onchange="renderTable(this.value)" class="card" style="width: 100%; margin-bottom: 10px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border);">
+    <option value="all">Global (All Pubs)</option>
+    </select>
     
     h1 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1.8px; margin-bottom: 24px; color: var(--text); }
     
@@ -60,39 +64,56 @@
   const supabase = createClient('https://faxosthjdprblsicpqye.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8')
 
 async function loadLeaderboard() {
-    // Get today's date in YYYY-MM-DD format to match a 'date' column
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Updated to use the correct table name 'sessions' 
-    // and correct column name 'date'
-    const { data: matches, error } = await supabase
-      .from('sessions')
-      .select('state')
-      .eq('date', today); // Using .eq because 'date' is usually a date type
-    
-    if (error) {
-      console.error("Supabase Error:", error);
-      return;
-    }
-    
-    if (!matches) return;
+  const today = new Date().toISOString().split('T')[0];
 
-    const stats = {};
-    matches.forEach(row => {
-      const scores = row.state?.scores;
-      if (!scores) return;
+  // 1. Fetch both Sessions and Pubs in parallel
+  const [sessionRes, pubRes] = await Promise.all([
+    supabase.from('sessions').select('id, state').gte('date', today),
+    supabase.from('pubs').select('id, name, slug')
+  ]);
 
-      Object.entries(scores).forEach(([player, pData]) => {
-        if (!stats[player]) stats[player] = { wins: 0, played: 0 };
-        stats[player].wins += pData.wins || 0;
-        stats[player].played += pData.played || 0;
-      });
+  if (sessionRes.error || pubRes.error) return;
+
+  // 2. Create a Map of Slug -> Pub Name for fast lookup
+  const pubMap = new Map(pubRes.data.map(p => [p.slug, p.name]));
+  const stats = { all: {} };
+
+  // 3. Process sessions
+  sessionRes.data.forEach(row => {
+    // Extract slug from "pool-slug-date"
+    // Splitting by "-" and taking the middle part: e.g., "the-weaver-0001"
+    const parts = row.id.split('-');
+    const slug = parts.slice(1, -3).join('-'); 
+    const pubName = pubMap.get(slug) || "Unknown Pub";
+
+    if (!stats[pubName]) stats[pubName] = {};
+
+    Object.entries(row.state?.scores || {}).forEach(([player, pData]) => {
+      // Update Global
+      if (!stats.all[player]) stats.all[player] = { wins: 0, played: 0 };
+      stats.all[player].wins += pData.wins || 0;
+      stats.all[player].played += pData.played || 0;
+
+      // Update Pub Specific
+      if (!stats[pubName][player]) stats[pubName][player] = { wins: 0, played: 0 };
+      stats[pubName][player].wins += pData.wins || 0;
+      stats[pubName][player].played += pData.played || 0;
     });
+  });
 
+  // 4. Populate Dropdown
+  const filter = document.getElementById('pub-filter');
+  Object.keys(stats).forEach(name => {
+    if (name !== 'all') {
+      filter.innerHTML += `<option value="${name}">${name}</option>`;
+    }
+  });
+
+  // 5. Render logic
+  window.renderTable = (pub) => {
+    const dataToRender = Object.entries(stats[pub] || {}).sort((a,b) => b[1].wins - a[1].wins);
     const tbody = document.querySelector('#leaderboard tbody');
-    const sortedStats = Object.entries(stats).sort((a, b) => b[1].wins - a[1].wins);
-    
-    tbody.innerHTML = sortedStats.map(([name, s], i) => `
+    tbody.innerHTML = dataToRender.map(([name, s], i) => `
       <tr>
         <td class="rank">${i + 1}</td>
         <td>${name}</td>
@@ -100,7 +121,10 @@ async function loadLeaderboard() {
         <td>${s.played}</td>
       </tr>
     `).join('');
-  }
+  };
+  
+  renderTable('all'); // Initial Load
+}
   
   loadLeaderboard();
 </script>
