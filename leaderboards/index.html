@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Leaderboard — WhosOnNext</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* style */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090C; --surface: #111318; --border: rgba(255,255,255,0.06);
+      --gold: #D4A441; --gold-lt: #EEC060; --text: #EDE9E0; --text-muted: #6B7280;
+      --r: 14px;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', system-ui, sans-serif; }
+    .app { max-width: 480px; margin: 0 auto; padding: 20px; }
+    
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 24px;
+    }
+    
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1.8px; margin-bottom: 24px; color: var(--text); }
+    
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; padding: 12px 8px; border-bottom: 1px solid var(--border); }
+    td { padding: 16px 8px; border-bottom: 1px solid var(--border); font-weight: 500; }
+    
+    .rank { font-family: 'Bebas Neue'; color: var(--gold); font-size: 18px; width: 40px; }
+    .wins { color: var(--gold-lt); font-weight: 700; }
+    
+    .back-btn { display: inline-block; margin-top: 24px; color: var(--text-muted); text-decoration: none; font-size: 14px; }
+    .back-btn:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <div class="card">
+    <h1>DAILY STATS</h1>
+    <table id="leaderboard">
+      <thead>
+        <tr><th></th><th>PLAYER</th><th>WINS</th><th>PLAYED</th></tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4" style="text-align:center; padding: 20px;">Loading...</td></tr>
+      </tbody>
+    </table>
+    <a href="/" class="back-btn">← Back to Game</a>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  
+  // Supabase credentials
+  const supabase = createClient('https://faxosthjdprblsicpqye.supabase.co', 'sb_publishable_F4f9x8y3qxMU9E1ZEMDWCA_cafwB3V7')
+
+  async function loadLeaderboard() {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Target the 'sessions' table, fetching 'state'
+    const { data, error } = await supabase
+      .from('sessions')
+      .select('state')
+      .gte('created_at', today);
+    
+    if (error || !data) return;
+
+    const stats = {};
+    data.forEach(row => {
+      // Accessing the 'scores' object inside the 'state' column
+      const scores = row.state?.scores;
+      if (!scores) return;
+
+      Object.entries(scores).forEach(([player, data]) => {
+        if (!stats[player]) stats[player] = { wins: 0, played: 0 };
+        stats[player].wins += data.wins || 0;
+        stats[player].played += data.played || 0;
+      });
+    });
+
+    const tbody = document.querySelector('#leaderboard tbody');
+    const sortedStats = Object.entries(stats).sort((a, b) => b[1].wins - a[1].wins);
+    
+    tbody.innerHTML = sortedStats.map(([name, s], i) => `
+      <tr>
+        <td class="rank">${i + 1}</td>
+        <td>${name}</td>
+        <td class="wins">${s.wins}</td>
+        <td>${s.played}</td>
+      </tr>
+    `).join('');
+  }
+
+  loadLeaderboard();
+</script>
+
+</body>
+</html>
