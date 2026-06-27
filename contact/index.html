@@ -3,79 +3,315 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact Us - WhosOnNext</title>
+<title>Contact — WhosOnNext</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/Fluorescent0/Weaver-Pool-App-assets/refs/heads/main/WON_favicon.ico">
 <style>
-:root{--bg:#09090C;--surface:#111318;--surface-2:#181C26;--gold:#D4A441;--text:#EDE9E0;--text-muted:#9CA3AF;--border:rgba(255,255,255,.08);}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;}
-nav{padding:18px 24px;border-bottom:1px solid var(--border);}
-nav a{color:var(--gold);text-decoration:none;font-weight:600;}
-.container{max-width:720px;margin:0 auto;padding:80px 24px;}
-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,10vw,90px);line-height:0.95;margin-bottom:16px;}
-.lead{color:var(--text-muted);line-height:1.7;margin-bottom:32px;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;}
-.email-box{background:var(--surface-2);border-radius:10px;padding:16px;margin-bottom:24px;}
-.email-box a{color:var(--gold);}
-label{display:block;margin:16px 0 6px;font-weight:500;}
-input, textarea{width:100%;padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:inherit;}
-textarea{min-height:160px;resize:vertical;}
-button{margin-top:20px;background:linear-gradient(135deg,#B8892B,#D4A441,#EEC060);color:#0D0800;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer;}
-button:hover{filter:brightness(1.05);}
+/* ─── RESET & ROOT ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:          #09090C;
+  --surface:     #111318;
+  --surface-2:   #181C26;
+  --border:      rgba(255,255,255,0.06);
+  --border-hi:   rgba(255,255,255,0.11);
+  --gold:        #D4A441;
+  --gold-lt:     #EEC060;
+  --gold-dim:    rgba(212,164,65,0.10);
+  --green:       #27B86A;
+  --green-dim:   rgba(39,184,106,0.08);
+  --text:        #EDE9E0;
+  --text-muted:  #6B7280;
+  --r:    14px;
+  --r-sm: 9px;
+  font-family: 'Outfit', system-ui, sans-serif;
+  color-scheme: dark;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100svh;
+}
+
+/* ─── NOISE OVERLAY ────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ─── NAV ──────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px;
+  background: rgba(9,9,12,0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 9px;
+  text-decoration: none;
+}
+.nav-icon { font-size: 20px; }
+.nav-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px;
+  color: var(--text);
+}
+.nav-back {
+  color: var(--text-muted);
+  font-size: 13px; font-weight: 500;
+  text-decoration: none;
+  transition: color .15s;
+}
+.nav-back:hover { color: var(--text); }
+
+/* ─── PAGE ─────────────────────────────────────────────────── */
+.page {
+  position: relative; z-index: 1;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 56px 20px 80px;
+}
+
+/* ─── HEADER ───────────────────────────────────────────────── */
+.page-header {
+  text-align: center;
+  padding: 52px 0 44px;
+  position: relative;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  width: 520px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,71,49,0.28) 0%, transparent 70%);
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.2);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+  animation: fadeUp .5s ease-out both;
+}
+
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(56px, 14vw, 82px);
+  letter-spacing: 2px;
+  line-height: 0.93;
+  color: var(--text);
+  margin-bottom: 14px;
+  animation: fadeUp .5s .08s ease-out both;
+}
+.page-title em {
+  font-style: normal;
+  color: var(--gold-lt);
+}
+.page-sub {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.65;
+  font-weight: 400;
+  animation: fadeUp .5s .16s ease-out both;
+}
+
+/* ─── CARD ─────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px;
+  animation: fadeUp .5s .24s ease-out both;
+}
+
+/* ─── FORM ─────────────────────────────────────────────────── */
+.form-group { margin-bottom: 20px; }
+.form-group:last-of-type { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-hi);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 500;
+  transition: border-color .15s, box-shadow .15s;
+  outline: none;
+}
+input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; }
+input:focus, textarea:focus {
+  border-color: rgba(212,164,65,0.45);
+  box-shadow: 0 0 0 3px rgba(212,164,65,0.08);
+}
+textarea { min-height: 140px; resize: vertical; line-height: 1.6; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+
+.submit-btn {
+  margin-top: 24px;
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: linear-gradient(135deg, #B8892B, #D4A441, #EEC060);
+  color: #0D0800;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700; font-size: 15px;
+  cursor: pointer;
+  transition: filter .15s, transform .12s;
+  letter-spacing: 0.1px;
+}
+.submit-btn:hover { filter: brightness(1.08); }
+.submit-btn:active { transform: scale(0.98); }
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ─── SUCCESS STATE ─────────────────────────────────────────── */
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 40px 24px;
+  background: var(--green-dim);
+  border: 1px solid rgba(39,184,106,0.15);
+  border-radius: var(--r);
+  margin-top: 16px;
+  animation: fadeUp .4s ease-out both;
+}
+.success-icon { font-size: 36px; margin-bottom: 14px; }
+.form-success h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; letter-spacing: 1px;
+  color: var(--text); margin-bottom: 8px;
+}
+.form-success p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+/* ─── ANIMATIONS ───────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; }
+}
 </style>
 </head>
 <body>
-<nav><a href="../index.html">← Back to WhosOnNext</a></nav>
-<div class="container">
-  <h1>Get In Touch</h1>
-  <p class="lead">Questions, support requests, feature ideas, partnership enquiries, or anything else—drop us a message and we'll get back to you.</p>
+
+<nav>
+  <a class="nav-brand" href="/">
+    <span class="nav-icon">🎱</span>
+    <span class="nav-name">Whosonnext</span>
+  </a>
+  <a class="nav-back" href="/">← Back</a>
+</nav>
+
+<div class="page">
+  <header class="page-header">
+    <div class="eyebrow">Get in touch</div>
+    <h1 class="page-title">DROP US<br>A <em>LINE</em></h1>
+    <p class="page-sub">Questions, support, feature ideas, or anything else — we'll get back to you.</p>
+  </header>
+
   <div class="card">
     <form id="contact-form" name="contact" method="POST" data-netlify="true">
-      <input type="hidden" name="form-name" value="contact" />
-      <label for="name">Name</label>
-      <input id="name" name="name" type="text" required>
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" required>
-      <label for="subject">Subject</label>
-      <input id="subject" name="subject" type="text">
-      <label for="message">Message</label>
-      <textarea id="message" name="message" required></textarea>
-      <button type="submit">Send Message</button>
+      <input type="hidden" name="form-name" value="contact">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <input id="subject" name="subject" type="text" placeholder="What's it about?">
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Your message…" required></textarea>
+      </div>
+
+      <button class="submit-btn" type="submit">Send Message</button>
     </form>
   </div>
+
+  <div class="form-success" id="form-success">
+    <div class="success-icon">🎱</div>
+    <h3>Message sent</h3>
+    <p>We'll get back to you soon.</p>
+  </div>
 </div>
+
 <script>
-const form = document.getElementById("contact-form");
-form.addEventListener("submit", async (e) => {
+const form = document.getElementById('contact-form');
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const button = form.querySelector("button");
-  button.disabled = true;
-  button.textContent = "Sending...";
+  const btn = form.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
   const formData = new FormData(form);
   try {
-    // 1. Send to Netlify (to capture in dashboard)
-    await fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(formData).toString()
     });
-    // 2. Send to your custom Resend function
-    const res = await fetch("/.netlify/functions/contact", {
-      method: "POST",
+    const res = await fetch('/.netlify/functions/contact', {
+      method: 'POST',
       body: new URLSearchParams(formData)
     });
     const data = await res.json();
     if (data.success) {
-      form.innerHTML = `<div style="text-align:center;padding:30px;"><h2>Message sent</h2><p>We’ll get back to you soon.</p></div>`;
-    } else { throw new Error(data.error || "Failed"); }
+      form.closest('.card').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    } else {
+      throw new Error(data.error || 'Failed');
+    }
   } catch (err) {
-    alert("Something went wrong. Please try again.");
-    button.disabled = false;
-    button.textContent = "Send Message";
+    alert('Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Send Message';
   }
 });
 </script>
+
 </body>
 </html>
