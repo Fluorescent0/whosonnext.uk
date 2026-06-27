@@ -1,7 +1,6 @@
 exports.handler = async (event) => {
   try {
     const params = new URLSearchParams(event.body);
-
     const name = params.get("name") || "there";
     const email = params.get("email");
     const subject = params.get("subject") || "General Enquiry";
@@ -25,25 +24,11 @@ exports.handler = async (event) => {
         from: "WhosOnNext <noreply@whosonnext.uk>",
         to: [email],
         subject: "We've received your enquiry",
-        html: `
-          <h2>🎱 Thanks for contacting WhosOnNext</h2>
-          <p>Hi ${name},</p>
-          <p>We've received your enquiry and will get back to you soon.</p>
-
-          <h3>Your submission</h3>
-          <ul>
-            <li><strong>Name:</strong> ${name}</li>
-            <li><strong>Email:</strong> ${email}</li>
-            <li><strong>Subject:</strong> ${subject}</li>
-          </ul>
-
-          <p><strong>Message:</strong></p>
-          <blockquote>${message}</blockquote>
-        `
+        html: `<h2>🎱 Thanks for contacting WhosOnNext</h2><p>Hi ${name},</p><p>We've received your enquiry and will get back to you soon.</p><h3>Your submission</h3><ul><li><strong>Name:</strong> ${name}</li><li><strong>Email:</strong> ${email}</li><li><strong>Subject:</strong> ${subject}</li></ul><p><strong>Message:</strong></p><blockquote>${message}</blockquote>`
       })
     });
 
-    // Send copy to you
+    // Send copy to me
     await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -54,32 +39,13 @@ exports.handler = async (event) => {
         from: "WhosOnNext <noreply@whosonnext.uk>",
         to: ["ruairi@whosonnext.uk"],
         subject: `New contact form: ${subject}`,
-        html: `
-          <h2>New Submission</h2>
-
-          <ul>
-            <li><strong>Name:</strong> ${name}</li>
-            <li><strong>Email:</strong> ${email}</li>
-            <li><strong>Subject:</strong> ${subject}</li>
-          </ul>
-
-          <p><strong>Message:</strong></p>
-          <blockquote>${message}</blockquote>
-        `
+        html: `<h2>New Submission</h2><ul><li><strong>Name:</strong> ${name}</li><li><strong>Email:</strong> ${email}</li><li><strong>Subject:</strong> ${subject}</li></ul><p><strong>Message:</strong></p><blockquote>${message}</blockquote>`
       })
     });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true })
-    };
-
+    return { statusCode: 200, body: JSON.stringify({ success: true }) };
   } catch (err) {
     console.error(err);
-
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ success: false, error: err.message })
-    };
+    return { statusCode: 500, body: JSON.stringify({ success: false, error: err.message }) };
   }
 };
