@@ -695,7 +695,10 @@ section {
 .signup-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
 .trust-chips {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  gap: 8px 28px;
   margin-top: 20px;
 }
 .trust-chip {
@@ -1000,6 +1003,7 @@ footer {
       <div class="signup-offer">✦ First month free</div>
 
       <div class="signup-price">
+        <span class="signup-price-period" aria-hidden="true" style="visibility:hidden">/ month</span>
         <span class="signup-price-num">£25</span>
         <span class="signup-price-period">/ month</span>
       </div>
