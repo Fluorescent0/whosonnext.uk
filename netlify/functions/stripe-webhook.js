@@ -51,7 +51,7 @@ exports.handler = async (event) => {
       {
         method: 'POST',
         headers: {
-          'apikey':        process.env.SUPABASE_SERVICE_ROLE_KEY,
+          'apikey':         process.env.SUPABASE_SERVICE_ROLE_KEY,
           'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
           'Content-Type':  'application/json',
           'Prefer':        'return=minimal',
@@ -112,6 +112,21 @@ exports.handler = async (event) => {
     if (!emailRes.ok) {
       console.warn('Welcome email failed:', await emailRes.text());
     }
+
+    // Send notification email to admin
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'WhosOnNext <noreply@whosonnext.uk>',
+        to: ['ruairi@whosonnext.uk'],
+        subject: `New Signup: ${pubName}`,
+        html: `<h1>New Signup!</h1><p><strong>Pub Name:</strong> ${pubName}</p><p><strong>Customer Email:</strong> ${email}</p><p><strong>Passkey:</strong> ${passkey}</p><p><strong>Slug:</strong> ${slug}</p>`
+      }),
+    });
   }
 
   // ── 2. TRIAL → PAID ───────────────────────────────────────────────────────
