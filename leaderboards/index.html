@@ -59,36 +59,35 @@
   // Supabase credentials
   const supabase = createClient('https://faxosthjdprblsicpqye.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8')
 
-  async function loadLeaderboard() {
-    // This creates a standard ISO string like "2026-06-27T00:00:00.000Z"
-const today = new Date();
-today.setUTCHours(0, 0, 0, 0);
-const isoDate = today.toISOString(); 
-
-// Now pass isoDate instead of the split string
-const { data, error } = await supabase
-  .from('sessions')
-  .select('state')
-  .gte('created_at', isoDate);
+async function loadLeaderboard() {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    const isoDate = today.toISOString(); 
     
-    // Target the 'sessions' table, fetching 'state'
-    const { data, error } = await supabase
+    // Changed 'data' to 'matches' to avoid variable collision
+    const { data: matches, error } = await supabase
       .from('sessions')
       .select('state')
-      .gte('created_at', today);
+      .gte('created_at', isoDate);
     
-    if (error || !data) return;
+    if (error) {
+      console.error("Supabase Error:", error);
+      return;
+    }
+    
+    if (!matches) return;
 
     const stats = {};
-    data.forEach(row => {
-      // Accessing the 'scores' object inside the 'state' column
+    
+    // Now we iterate through the 'matches' variable
+    matches.forEach(row => {
       const scores = row.state?.scores;
       if (!scores) return;
 
-      Object.entries(scores).forEach(([player, data]) => {
+      Object.entries(scores).forEach(([player, pData]) => {
         if (!stats[player]) stats[player] = { wins: 0, played: 0 };
-        stats[player].wins += data.wins || 0;
-        stats[player].played += data.played || 0;
+        stats[player].wins += pData.wins || 0;
+        stats[player].played += pData.played || 0;
       });
     });
 
