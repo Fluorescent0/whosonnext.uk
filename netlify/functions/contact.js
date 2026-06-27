@@ -10,11 +10,15 @@ exports.handler = async (event) => {
     if (!email) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ success: false, error: "Missing email" })
+        body: JSON.stringify({
+          success: false,
+          error: "Missing email"
+        })
       };
     }
 
-    const resendResponse = await fetch("https://api.resend.com/emails", {
+    // 1. Send confirmation email to user
+    await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
@@ -50,11 +54,40 @@ exports.handler = async (event) => {
       })
     });
 
-    await resendResponse.json();
+    // 2. Send copy to me (admin notification)
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from: "WhosOnNext <noreply@whosonnext.uk>",
+        to: ["ruairi@whosonnext.uk"],
+        subject: `New contact form: ${subject}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+
+          <ul>
+            <li><strong>Name:</strong> ${name}</li>
+            <li><strong>Email:</strong> ${email}</li>
+            <li><strong>Subject:</strong> ${subject}</li>
+          </ul>
+
+          <p><strong>Message:</strong></p>
+
+          <blockquote style="border-left:3px solid #333;padding-left:12px;">
+            ${message}
+          </blockquote>
+        `
+      })
+    });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true })
+      body: JSON.stringify({
+        success: true
+      })
     };
 
   } catch (err) {
@@ -62,7 +95,10 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({ success: false, error: err.message })
+      body: JSON.stringify({
+        success: false,
+        error: err.message
+      })
     };
   }
 };
