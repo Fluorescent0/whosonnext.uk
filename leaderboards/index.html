@@ -6,38 +6,18 @@
   <title>Leaderboard — WhosOnNext</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* style */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #09090C; --surface: #111318; --border: rgba(255,255,255,0.06);
-      --gold: #D4A441; --gold-lt: #EEC060; --text: #EDE9E0; --text-muted: #6B7280;
-      --r: 14px;
-    }
-    body { background: var(--bg); color: var(--text); font-family: 'Outfit', system-ui, sans-serif; }
+    :root { --bg: #09090C; --surface: #111318; --border: rgba(255,255,255,0.06); --gold: #D4A441; --gold-lt: #EEC060; --text: #EDE9E0; --text-muted: #6B7280; --r: 14px; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; }
     .app { max-width: 480px; margin: 0 auto; padding: 20px; }
-    
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 24px;
-    }
-
-    <select id="pub-filter" onchange="renderTable(this.value)" class="card" style="width: 100%; margin-bottom: 10px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border);">
-    <option value="all">Global (All Pubs)</option>
-    </select>
-    
-    h1 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1.8px; margin-bottom: 24px; color: var(--text); }
-    
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; }
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1.8px; margin-bottom: 24px; }
     table { width: 100%; border-collapse: collapse; }
     th { text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; padding: 12px 8px; border-bottom: 1px solid var(--border); }
     td { padding: 16px 8px; border-bottom: 1px solid var(--border); font-weight: 500; }
-    
     .rank { font-family: 'Bebas Neue'; color: var(--gold); font-size: 18px; width: 40px; }
     .wins { color: var(--gold-lt); font-weight: 700; }
-    
-    .back-btn { display: inline-block; margin-top: 24px; color: var(--text-muted); text-decoration: none; font-size: 14px; }
-    .back-btn:hover { color: var(--text); }
+    .pub-select { width: 100%; padding: 10px; margin-bottom: 15px; background: #181C26; color: white; border: 1px solid var(--border); border-radius: 8px; }
   </style>
 </head>
 <body>
@@ -45,89 +25,66 @@
 <div class="app">
   <div class="card">
     <h1>DAILY STATS</h1>
+    <select id="pub-filter" class="pub-select">
+      <option value="all">Global (All Pubs)</option>
+    </select>
     <table id="leaderboard">
-      <thead>
-        <tr><th></th><th>PLAYER</th><th>WINS</th><th>PLAYED</th></tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="4" style="text-align:center; padding: 20px;">Loading...</td></tr>
-      </tbody>
+      <thead><tr><th></th><th>PLAYER</th><th>WINS</th><th>PLAYED</th></tr></thead>
+      <tbody id="lb-body"></tbody>
     </table>
-    <a href="/" class="back-btn">← Back to Game</a>
+    <a href="/" style="display:block; margin-top:20px; color:var(--text-muted); font-size:14px; text-decoration:none;">← Back to Game</a>
   </div>
 </div>
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-  
-  // Supabase credentials
   const supabase = createClient('https://faxosthjdprblsicpqye.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8')
 
-async function loadLeaderboard() {
-  const today = new Date().toISOString().split('T')[0];
+  async function loadLeaderboard() {
+    const today = new Date().toISOString().split('T')[0];
+    const [sRes, pRes] = await Promise.all([
+      supabase.from('sessions').select('id, state').eq('date', today),
+      supabase.from('pubs').select('name, slug')
+    ]);
 
-  // 1. Fetch both Sessions and Pubs in parallel
-  const [sessionRes, pubRes] = await Promise.all([
-    supabase.from('sessions').select('id, state').gte('date', today),
-    supabase.from('pubs').select('id, name, slug')
-  ]);
+    if (sRes.error) return console.error(sRes.error);
 
-  if (sessionRes.error || pubRes.error) return;
+    const pubMap = new Map(pRes.data?.map(p => [p.slug, p.name]) || []);
+    const stats = { all: {} };
 
-  // 2. Create a Map of Slug -> Pub Name for fast lookup
-  const pubMap = new Map(pubRes.data.map(p => [p.slug, p.name]));
-  const stats = { all: {} };
+    sRes.data.forEach(row => {
+      const parts = row.id.split('-');
+      const slug = parts.slice(1, -3).join('-');
+      const pubName = pubMap.get(slug) || "Unknown Pub";
+      
+      if (!stats[pubName]) stats[pubName] = {};
 
-  // 3. Process sessions
-  sessionRes.data.forEach(row => {
-    // Extract slug from "pool-slug-date"
-    // Splitting by "-" and taking the middle part: e.g., "the-weaver-0001"
-    const parts = row.id.split('-');
-    const slug = parts.slice(1, -3).join('-'); 
-    const pubName = pubMap.get(slug) || "Unknown Pub";
-
-    if (!stats[pubName]) stats[pubName] = {};
-
-    Object.entries(row.state?.scores || {}).forEach(([player, pData]) => {
-      // Update Global
-      if (!stats.all[player]) stats.all[player] = { wins: 0, played: 0 };
-      stats.all[player].wins += pData.wins || 0;
-      stats.all[player].played += pData.played || 0;
-
-      // Update Pub Specific
-      if (!stats[pubName][player]) stats[pubName][player] = { wins: 0, played: 0 };
-      stats[pubName][player].wins += pData.wins || 0;
-      stats[pubName][player].played += pData.played || 0;
+      Object.entries(row.state?.scores || {}).forEach(([p, d]) => {
+        [p, 'all'].forEach(key => {
+          const target = key === 'all' ? stats.all : stats[pubName];
+          if (!target[p]) target[p] = { wins: 0, played: 0 };
+          target[p].wins += d.wins || 0;
+          target[p].played += d.played || 0;
+        });
+      });
     });
-  });
 
-  // 4. Populate Dropdown
-  const filter = document.getElementById('pub-filter');
-  Object.keys(stats).forEach(name => {
-    if (name !== 'all') {
-      filter.innerHTML += `<option value="${name}">${name}</option>`;
-    }
-  });
+    const filter = document.getElementById('pub-filter');
+    Object.keys(stats).filter(k => k !== 'all').forEach(p => {
+      filter.innerHTML += `<option value="${p}">${p}</option>`;
+    });
 
-  // 5. Render logic
-  window.renderTable = (pub) => {
-    const dataToRender = Object.entries(stats[pub] || {}).sort((a,b) => b[1].wins - a[1].wins);
-    const tbody = document.querySelector('#leaderboard tbody');
-    tbody.innerHTML = dataToRender.map(([name, s], i) => `
-      <tr>
-        <td class="rank">${i + 1}</td>
-        <td>${name}</td>
-        <td class="wins">${s.wins}</td>
-        <td>${s.played}</td>
-      </tr>
-    `).join('');
-  };
-  
-  renderTable('all'); // Initial Load
-}
-  
+    window.renderTable = (pub) => {
+      const body = document.getElementById('lb-body');
+      if (!body) return;
+      const sorted = Object.entries(stats[pub] || {}).sort((a,b) => b[1].wins - a[1].wins);
+      body.innerHTML = sorted.map(([n, s], i) => `
+        <tr><td class="rank">${i+1}</td><td>${n}</td><td class="wins">${s.wins}</td><td>${s.played}</td></tr>
+      `).join('');
+    };
+    renderTable('all');
+  }
   loadLeaderboard();
 </script>
-
 </body>
 </html>
