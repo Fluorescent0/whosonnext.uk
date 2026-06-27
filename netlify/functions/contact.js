@@ -1,10 +1,5 @@
-// Fetch polyfill for Netlify runtime compatibility
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
-
 exports.handler = async (event) => {
   try {
-    // Netlify form
     const params = new URLSearchParams(event.body);
 
     const name = params.get("name") || "there";
@@ -34,9 +29,7 @@ exports.handler = async (event) => {
 
           <p>Hi ${name},</p>
 
-          <p>
-            We've received your enquiry and will get back to you as soon as possible.
-          </p>
+          <p>We've received your enquiry and will get back to you as soon as possible.</p>
 
           <h3>Your submission</h3>
 
@@ -52,10 +45,7 @@ exports.handler = async (event) => {
             ${message}
           </blockquote>
 
-          <p>
-            Thanks,<br>
-            WhosOnNext
-          </p>
+          <p>Thanks,<br>WhosOnNext</p>
         `
       })
     });
