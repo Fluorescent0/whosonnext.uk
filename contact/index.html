@@ -21,11 +21,7 @@
   --border:rgba(255,255,255,.08);
 }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0;}
 
 body{
   background:var(--bg);
@@ -88,8 +84,7 @@ label{
   font-weight:500;
 }
 
-input,
-textarea{
+input, textarea{
   width:100%;
   padding:14px;
   border-radius:10px;
@@ -138,14 +133,13 @@ button:hover{
 
   <div class="email-box">
     <strong>Email:</strong>
-    <a href="mailto:ruairi@whosonnext.uk">
-      ruairi@whosonnext.uk
-    </a>
+    <a href="mailto:ruairi@whosonnext.uk">ruairi@whosonnext.uk</a>
   </div>
 
   <div class="card">
-    <form name="contact" method="POST" data-netlify="true" action="/.netlify/functions/contact">
-    <input type="hidden" name="form-name" value="contact" />
+
+    <!-- FIXED: single form only -->
+    <form id="contact-form">
 
       <label for="name">Name</label>
       <input id="name" name="name" type="text" required>
@@ -159,63 +153,51 @@ button:hover{
       <label for="message">Message</label>
       <textarea id="message" name="message" required></textarea>
 
-      <button type="submit">
-        Send Message
-      </button>
+      <button type="submit">Send Message</button>
 
     </form>
+
   </div>
 
 </div>
 
+<script>
+const form = document.getElementById("contact-form");
 
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector("form[name='contact']");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  const button = form.querySelector("button");
+  button.disabled = true;
+  button.textContent = "Sending...";
 
-    const submitButton = form.querySelector("button[type='submit']");
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.innerText = "Sending...";
+  try {
+    const res = await fetch("/.netlify/functions/contact", {
+      method: "POST",
+      body: new URLSearchParams(new FormData(form))
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      form.innerHTML = `
+        <div style="text-align:center;padding:30px;">
+          <h2>Message sent</h2>
+          <p>We’ll get back to you soon.</p>
+        </div>
+      `;
+    } else {
+      throw new Error(data.error || "Failed");
     }
 
-    try {
-      const formData = new FormData(form);
-
-      const res = await fetch("/.netlify/functions/contact", {
-        method: "POST",
-        body: new URLSearchParams(formData)
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        form.innerHTML = `
-          <div style="text-align:center;padding:30px;">
-            <h2>Thanks — message received</h2>
-            <p>We’ll get back to you shortly.</p>
-          </div>
-        `;
-      } else {
-        throw new Error(data.error || "Submission failed");
-      }
-
-    } catch (err) {
-      alert("Something went wrong. Please try again.");
-      console.error(err);
-
-      if (submitButton) {
-        submitButton.disabled = false;
-        submitButton.innerText = "Send";
-      }
-    }
-  });
+  } catch (err) {
+    alert("Something went wrong. Please try again.");
+    console.error(err);
+    button.disabled = false;
+    button.textContent = "Send Message";
+  }
 });
 </script>
 
-  
 </body>
 </html>
