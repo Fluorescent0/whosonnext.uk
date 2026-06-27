@@ -3,202 +3,79 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Contact Us - WhosOnNext</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --bg:#09090C;
-  --surface:#111318;
-  --surface-2:#181C26;
-  --gold:#D4A441;
-  --text:#EDE9E0;
-  --text-muted:#9CA3AF;
-  --border:rgba(255,255,255,.08);
-}
-
+:root{--bg:#09090C;--surface:#111318;--surface-2:#181C26;--gold:#D4A441;--text:#EDE9E0;--text-muted:#9CA3AF;--border:rgba(255,255,255,.08);}
 *{box-sizing:border-box;margin:0;padding:0;}
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Outfit',sans-serif;
-  min-height:100vh;
-}
-
-nav{
-  padding:18px 24px;
-  border-bottom:1px solid var(--border);
-}
-
-nav a{
-  color:var(--gold);
-  text-decoration:none;
-  font-weight:600;
-}
-
-.container{
-  max-width:720px;
-  margin:0 auto;
-  padding:80px 24px;
-}
-
-h1{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(56px,10vw,90px);
-  line-height:0.95;
-  margin-bottom:16px;
-}
-
-.lead{
-  color:var(--text-muted);
-  line-height:1.7;
-  margin-bottom:32px;
-}
-
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:28px;
-}
-
-.email-box{
-  background:var(--surface-2);
-  border-radius:10px;
-  padding:16px;
-  margin-bottom:24px;
-}
-
-.email-box a{
-  color:var(--gold);
-}
-
-label{
-  display:block;
-  margin:16px 0 6px;
-  font-weight:500;
-}
-
-input, textarea{
-  width:100%;
-  padding:14px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:var(--surface-2);
-  color:var(--text);
-  font-family:inherit;
-}
-
-textarea{
-  min-height:160px;
-  resize:vertical;
-}
-
-button{
-  margin-top:20px;
-  background:linear-gradient(135deg,#B8892B,#D4A441,#EEC060);
-  color:#0D0800;
-  border:none;
-  padding:14px 24px;
-  border-radius:10px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-button:hover{
-  filter:brightness(1.05);
-}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;}
+nav{padding:18px 24px;border-bottom:1px solid var(--border);}
+nav a{color:var(--gold);text-decoration:none;font-weight:600;}
+.container{max-width:720px;margin:0 auto;padding:80px 24px;}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,10vw,90px);line-height:0.95;margin-bottom:16px;}
+.lead{color:var(--text-muted);line-height:1.7;margin-bottom:32px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;}
+.email-box{background:var(--surface-2);border-radius:10px;padding:16px;margin-bottom:24px;}
+.email-box a{color:var(--gold);}
+label{display:block;margin:16px 0 6px;font-weight:500;}
+input, textarea{width:100%;padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:inherit;}
+textarea{min-height:160px;resize:vertical;}
+button{margin-top:20px;background:linear-gradient(135deg,#B8892B,#D4A441,#EEC060);color:#0D0800;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer;}
+button:hover{filter:brightness(1.05);}
 </style>
 </head>
-
 <body>
-
-<nav>
-  <a href="../index.html">← Back to WhosOnNext</a>
-</nav>
-
+<nav><a href="../index.html">← Back to WhosOnNext</a></nav>
 <div class="container">
-
   <h1>Get In Touch</h1>
-
-  <p class="lead">
-    Questions, support requests, feature ideas, partnership enquiries,
-    or anything else—drop us a message and we'll get back to you.
-  </p>
-
-  <div class="email-box">
-    <strong>Email:</strong>
-    <a href="mailto:ruairi@whosonnext.uk">ruairi@whosonnext.uk</a>
-  </div>
-
+  <p class="lead">Questions, support requests, feature ideas, partnership enquiries, or anything else—drop us a message and we'll get back to you.</p>
   <div class="card">
-
-    <!-- Form -->
     <form id="contact-form" name="contact" method="POST" data-netlify="true">
       <input type="hidden" name="form-name" value="contact" />
-
       <label for="name">Name</label>
       <input id="name" name="name" type="text" required>
-
       <label for="email">Email</label>
       <input id="email" name="email" type="email" required>
-
       <label for="subject">Subject</label>
       <input id="subject" name="subject" type="text">
-
       <label for="message">Message</label>
       <textarea id="message" name="message" required></textarea>
-
       <button type="submit">Send Message</button>
-
     </form>
-
   </div>
-
 </div>
-
 <script>
 const form = document.getElementById("contact-form");
-
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const button = form.querySelector("button");
   button.disabled = true;
   button.textContent = "Sending...";
-
+  const formData = new FormData(form);
   try {
+    // 1. Send to Netlify (to capture in dashboard)
+    await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(formData).toString()
+    });
+    // 2. Send to your custom Resend function
     const res = await fetch("/.netlify/functions/contact", {
       method: "POST",
-      body: new URLSearchParams(new FormData(form))
+      body: new URLSearchParams(formData)
     });
-
     const data = await res.json();
-
     if (data.success) {
-      form.innerHTML = `
-        <div style="text-align:center;padding:30px;">
-          <h2>Message sent</h2>
-          <p>We’ll get back to you soon.</p>
-        </div>
-      `;
-    } else {
-      throw new Error(data.error || "Failed");
-    }
-
+      form.innerHTML = `<div style="text-align:center;padding:30px;"><h2>Message sent</h2><p>We’ll get back to you soon.</p></div>`;
+    } else { throw new Error(data.error || "Failed"); }
   } catch (err) {
     alert("Something went wrong. Please try again.");
-    console.error(err);
     button.disabled = false;
     button.textContent = "Send Message";
   }
 });
 </script>
-
 </body>
 </html>
