@@ -60,15 +60,15 @@
   const supabase = createClient('https://faxosthjdprblsicpqye.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8')
 
 async function loadLeaderboard() {
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-    const isoDate = today.toISOString(); 
+    // Get today's date in YYYY-MM-DD format to match a 'date' column
+    const today = new Date().toISOString().split('T')[0];
     
-    // Changed 'data' to 'matches' to avoid variable collision
+    // Updated to use the correct table name 'sessions' 
+    // and correct column name 'date'
     const { data: matches, error } = await supabase
       .from('sessions')
       .select('state')
-      .gte('created_at', isoDate);
+      .eq('date', today); // Using .eq because 'date' is usually a date type
     
     if (error) {
       console.error("Supabase Error:", error);
@@ -78,8 +78,6 @@ async function loadLeaderboard() {
     if (!matches) return;
 
     const stats = {};
-    
-    // Now we iterate through the 'matches' variable
     matches.forEach(row => {
       const scores = row.state?.scores;
       if (!scores) return;
@@ -103,7 +101,7 @@ async function loadLeaderboard() {
       </tr>
     `).join('');
   }
-
+  
   loadLeaderboard();
 </script>
 
