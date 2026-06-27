@@ -138,8 +138,9 @@ button:hover{
 
   <div class="card">
 
-    <!-- FIXED: single form only -->
-    <form id="contact-form">
+    <!-- Form -->
+    <form id="contact-form" name="contact" method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value="contact" />
 
       <label for="name">Name</label>
       <input id="name" name="name" type="text" required>
