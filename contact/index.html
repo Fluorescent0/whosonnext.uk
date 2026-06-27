@@ -168,5 +168,54 @@ button:hover{
 
 </div>
 
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("form[name='contact']");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const submitButton = form.querySelector("button[type='submit']");
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.innerText = "Sending...";
+    }
+
+    try {
+      const formData = new FormData(form);
+
+      const res = await fetch("/.netlify/functions/contact", {
+        method: "POST",
+        body: new URLSearchParams(formData)
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        form.innerHTML = `
+          <div style="text-align:center;padding:30px;">
+            <h2>Thanks — message received</h2>
+            <p>We’ll get back to you shortly.</p>
+          </div>
+        `;
+      } else {
+        throw new Error(data.error || "Submission failed");
+      }
+
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+      console.error(err);
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerText = "Send";
+      }
+    }
+  });
+});
+</script>
+
+  
 </body>
 </html>
