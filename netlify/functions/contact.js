@@ -10,7 +10,7 @@ exports.handler = async (event) => {
     if (!email) {
       return {
         statusCode: 400,
-        body: "Missing email"
+        body: JSON.stringify({ success: false, error: "Missing email" })
       };
     }
 
@@ -50,14 +50,11 @@ exports.handler = async (event) => {
       })
     });
 
-    const data = await resendResponse.json();
+    await resendResponse.json();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        resend: data
-      })
+      body: JSON.stringify({ success: true })
     };
 
   } catch (err) {
@@ -65,10 +62,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: err.message
-      })
+      body: JSON.stringify({ success: false, error: err.message })
     };
   }
 };
