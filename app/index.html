@@ -271,6 +271,10 @@ main {
 }
 .skip-link:hover, .skip-link:active { color: var(--text); }
 
+.skip-pair { display: flex; margin-top: 2px; }
+.skip-pair .skip-link { flex: 1; border-radius: 0; }
+.skip-pair .skip-link + .skip-link { border-left: 1px solid var(--border-soft); }
+
 .btn-add {
   padding: 0 22px; height: 52px; font-size: 15px; flex-shrink: 0;
   background: linear-gradient(135deg, #1A7A48, #27B86A);
@@ -421,6 +425,20 @@ input[type="text"]:focus { border-color: var(--green); }
 .q-btn:hover { background: var(--surface-3); color: var(--text); }
 .q-btn.rm:hover { color: var(--red); }
 .q-btn.up:hover { color: var(--gold); }
+
+.q-drag-handle {
+  width: 18px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); cursor: grab;
+  font-size: 11px; flex-shrink: 0;
+  touch-action: none; user-select: none;
+}
+.q-drag-handle:active { cursor: grabbing; color: var(--text-muted); }
+.q-item.dragging-src  { opacity: 0.3; }
+.q-item.drag-over {
+  border-color: rgba(212,164,65,0.35);
+  background: var(--surface-3);
+}
 
 .q-empty {
   text-align: center; color: var(--text-dim);
@@ -749,7 +767,10 @@ footer {
               <button class="btn btn-champ" id="champWinsBtn">Champion Wins</button>
               <button class="btn btn-chal"  id="chalWinsBtn">Challenger Wins</button>
             </div>
-            <button class="skip-link" id="skipBtn">Skip challenger</button>
+            <div class="skip-pair">
+              <button class="skip-link" id="skipChampBtn">Skip champion</button>
+              <button class="skip-link" id="skipBtn">Skip challenger</button>
+            </div>
           </div>
 
           <div class="idle-msg" id="idleMsg" style="display:none">
@@ -837,6 +858,17 @@ footer {
   </div>
 </div>
 
+<div class="overlay" id="removeConfirmOverlay" hidden>
+  <div class="modal-card">
+    <div class="modal-title" id="removeConfirmTitle">Remove player?</div>
+    <div class="modal-body" id="removeConfirmBody">They will be removed and their queue position lost.</div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="cancelRemoveBtn">Cancel</button>
+      <button class="btn btn-danger" id="confirmRemoveBtn">Remove</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 	
 <div class="overlay" id="errorOverlay" hidden>
@@ -880,6 +912,7 @@ let heartbeatInterval = null;
 let maxClients     = DEFAULT_MAX_CLIENTS;
 let adminUnlocked  = false;
 let lastState      = null; // for undo
+let pendingRemoveName = null;
 
 /* ═══════════════════════════════════════════════════════════
    HELPERS
@@ -1139,6 +1172,7 @@ function wireUI() {
   /* Main actions */
   $('champWinsBtn').addEventListener('click', e => { addRipple(e.currentTarget, e); haptic(); champWins(); });
   $('chalWinsBtn').addEventListener('click',  e => { addRipple(e.currentTarget, e); haptic(); chalWins();  });
+  $('skipChampBtn').addEventListener('click', () => { haptic(); skipChamp(); });
   $('skipBtn').addEventListener('click',      () => { haptic(); skipChal(); });
 
   /* Add player */
@@ -1196,6 +1230,18 @@ function wireUI() {
   window.removePlayer = removePlayer;
   window.bumpToTop    = bumpToTop;
   window.editScore    = editScoreInline;
+
+  /* Remove confirm modal */
+  $('confirmRemoveBtn').addEventListener('click', () => {
+    if (pendingRemoveName) { doRemovePlayer(pendingRemoveName); pendingRemoveName = null; }
+    $('removeConfirmOverlay').hidden = true;
+  });
+  $('cancelRemoveBtn').addEventListener('click', () => {
+    $('removeConfirmOverlay').hidden = true; pendingRemoveName = null;
+  });
+  $('removeConfirmOverlay').addEventListener('click', e => {
+    if (e.target === $('removeConfirmOverlay')) { $('removeConfirmOverlay').hidden = true; pendingRemoveName = null; }
+  });
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1254,6 +1300,25 @@ function skipChal() {
   toast('Skipped', `${skipped} moved to the back of the queue`, 'skip', true);
 }
 
+function skipChamp() {
+  if (!state.winner) return;
+  snapshot();
+  const skipped = state.winner;
+  state.queue.push(skipped);
+  if (state.challenger) {
+    // Challenger steps up, next in queue becomes new challenger
+    state.winner     = state.challenger;
+    state.challenger = state.queue.shift() || null;
+  } else {
+    // No challenger — pull from queue if anyone's waiting
+    state.winner     = state.queue.shift() || null;
+    state.challenger = state.queue.shift() || null;
+  }
+  state.streak = 0;
+  writeState(); renderAll();
+  toast('Skipped', `${skipped} stepped aside — back of the queue`, 'skip', true);
+}
+
 function addPlayer() {
   const name = $('nameInput').value.trim();
   if (!name) { $('nameInput').focus(); return; }
@@ -1273,6 +1338,13 @@ function addPlayer() {
 }
 
 function removePlayer(name) {
+  pendingRemoveName = name;
+  $('removeConfirmTitle').textContent = 'Remove ' + name + '?';
+  $('removeConfirmBody').textContent  = name + ' will be removed and their queue position lost.';
+  $('removeConfirmOverlay').hidden    = false;
+}
+
+function doRemovePlayer(name) {
   snapshot();
   state.queue = state.queue.filter(n => n !== name);
 
@@ -1286,12 +1358,119 @@ function removePlayer(name) {
   }
 
   writeState(); renderAll();
-  toast('Removed', `${name} removed`, 'info');
+  toast('Removed', name + ' removed from queue', 'info', true);
 }
 
 function bumpToTop(name) {
   state.queue = state.queue.filter(n => n !== name);
   state.queue.unshift(name);
+  writeState(); renderAll();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DRAG & DROP QUEUE REORDER
+═══════════════════════════════════════════════════════════ */
+let dragSrcName = null;
+
+function enableDragReorder(el, name) {
+  /* ── HTML5 drag (desktop) ─────────────────────────────── */
+  el.draggable = true;
+
+  el.addEventListener('dragstart', e => {
+    dragSrcName = name;
+    setTimeout(() => el.classList.add('dragging-src'), 0);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', name);
+  });
+  el.addEventListener('dragend', () => {
+    el.classList.remove('dragging-src');
+    dragSrcName = null;
+    document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
+  });
+  el.addEventListener('dragover', e => {
+    if (!dragSrcName || dragSrcName === name) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
+    el.classList.add('drag-over');
+  });
+  el.addEventListener('dragleave', e => {
+    if (!el.contains(e.relatedTarget)) el.classList.remove('drag-over');
+  });
+  el.addEventListener('drop', e => {
+    e.preventDefault();
+    el.classList.remove('drag-over');
+    doQueueReorder(dragSrcName, name);
+  });
+
+  /* ── Touch drag (mobile) ──────────────────────────────── */
+  const handle = el.querySelector('.q-drag-handle');
+  if (!handle) return;
+
+  let touchOffsetY = 0;
+  let touchClone   = null;
+  let lastTarget   = null;
+
+  handle.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect  = el.getBoundingClientRect();
+    touchOffsetY = touch.clientY - rect.top;
+    dragSrcName  = name;
+    el.classList.add('dragging-src');
+
+    touchClone = el.cloneNode(true);
+    Object.assign(touchClone.style, {
+      position: 'fixed', zIndex: '999',
+      left: rect.left + 'px', top: rect.top + 'px',
+      width: rect.width + 'px', opacity: '0.88',
+      pointerEvents: 'none',
+      boxShadow: '0 8px 28px rgba(0,0,0,0.55)',
+      borderRadius: '9px', transition: 'none',
+    });
+    document.body.appendChild(touchClone);
+  }, { passive: false });
+
+  handle.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!touchClone) return;
+    const touch = e.touches[0];
+    touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+
+    // Temporarily hide clone to hit-test what's underneath
+    touchClone.style.visibility = 'hidden';
+    const hovered = document.elementFromPoint(touch.clientX, touch.clientY);
+    touchClone.style.visibility = '';
+    const target = hovered?.closest?.('.q-item[data-name]');
+
+    document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
+    if (target && target.dataset.name !== name) {
+      target.classList.add('drag-over');
+      lastTarget = target.dataset.name;
+    } else {
+      lastTarget = null;
+    }
+  }, { passive: false });
+
+  handle.addEventListener('touchend', () => {
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+    el.classList.remove('dragging-src');
+    document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
+    const target = lastTarget;
+    dragSrcName  = null;
+    lastTarget   = null;
+    if (target) doQueueReorder(name, target);
+  });
+}
+
+function doQueueReorder(fromName, toName) {
+  if (!fromName || !toName || fromName === toName) return;
+  const fromIdx = state.queue.indexOf(fromName);
+  const toIdx   = state.queue.indexOf(toName);
+  if (fromIdx < 0 || toIdx < 0) return;
+  snapshot();
+  state.queue.splice(fromIdx, 1);
+  state.queue.splice(toIdx, 0, fromName);
   writeState(); renderAll();
 }
 
@@ -1421,13 +1600,15 @@ function renderQueue() {
 
     // Always refresh inner content (position number, wait time, admin buttons)
     el.innerHTML = `
+      ${adminUnlocked ? `<div class="q-drag-handle" title="Drag to reorder">⠿</div>` : ''}
       <div class="q-pos ${posClass}">${i + 1}</div>
       <div class="q-name">${safe}</div>
       <div class="q-wait">${waitNote}</div>
       <div class="q-btns">
-        ${adminUnlocked ? `<button class="q-btn up" onclick="bumpToTop('${jsN}')" title="Move to top">▲</button>` : ''}
         <button class="q-btn rm" onclick="removePlayer('${jsN}')" title="Remove">✕</button>
       </div>`;
+
+    if (adminUnlocked) enableDragReorder(el, name);
 
     // Insert at the correct position without removing it first
     const sibling = list.children[i];
