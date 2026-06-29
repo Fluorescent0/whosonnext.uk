@@ -91,6 +91,16 @@ html, body {
   font-size: 21px; letter-spacing: 1.8px;
   color: var(--text);
 }
+.table-chip {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  padding: 2px 7px; line-height: 1;
+  flex-shrink: 0;
+}
 .header-right {
   display: flex; align-items: center; gap: 8px;
 }
@@ -717,6 +727,7 @@ footer {
     <div class="brand">
       <span class="brand-icon">🎱</span>
       <span class="brand-name" id="brandName">Loading…</span>
+      <span class="table-chip" id="tableChip" hidden></span>
     </div>
     <div class="header-right">
       <div class="status-dot" id="statusDot"></div>
@@ -877,7 +888,8 @@ footer {
     <div class="modal-body">
       The link provided is incorrect or the pub is not registered. 
       <br><br>
-      Correct format: <strong>whosonnext.uk/pubs/example-pub-1234</strong>
+      Pub format: <strong>whosonnext.uk/pubs/example-pub-1234</strong><br>
+      Table format: <strong>whosonnext.uk/pubs/example-pub-1234/table-2</strong>
       <br><br>
       Need help? Contact us <a href="https://whosonnext.uk/contact/" style="color:var(--gold)">here.</a>
     </div>
@@ -905,6 +917,8 @@ let state = { winner: null, challenger: null, queue: [], scores: {}, streak: 0 }
 let clients        = [];
 let clientId       = null;
 let sessionId      = null;
+let tableSlug      = 'table-1';  // overwritten at boot from URL
+let tableName      = 'Table 1'; // human-readable, e.g. "Table 2"
 let supa           = null;
 let isRemote       = false;
 let pollingInterval   = null;
@@ -1057,8 +1071,13 @@ function addRipple(btn, e) {
    LIFECYCLE
 ═══════════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', async () => {
-  // ── 1. Read pub slug from URL (/pubs/<slug>) ──────────────
-  const slug = window.location.pathname.split('/pubs/')[1]?.replace(/\/$/, '') || null;
+  // ── 1. Read pub slug and optional table slug from URL ────────
+  //       /pubs/<pub-slug>            → table-1 (default)
+  //       /pubs/<pub-slug>/table-2   → table-2
+  const pathMatch = window.location.pathname.match(/\/pubs\/([^/]+)(?:\/([^/]+))?/);
+  const slug      = pathMatch?.[1] || null;
+  tableSlug       = pathMatch?.[2]?.replace(/\/$/, '') || 'table-1';
+  tableName       = tableSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
   clientId   = localStorage.getItem('pub_pool_clientId') || cryptoId();
   localStorage.setItem('pub_pool_clientId', clientId);
@@ -1128,16 +1147,21 @@ if (data.plan === 'inactive') {
   // but this covers direct access to /app/)
   PUB_NAME = 'WhosOnNext'; 
 }
-  // ── 4. Apply pub name to page ─────────────────────────────
-  document.title = PUB_NAME + ' — Pool';
+  // ── 4. Apply pub name + table to page ────────────────────────
+  document.title = PUB_NAME + ' — ' + tableName;
   const brandEl = document.getElementById('brandName');
   if (brandEl) brandEl.textContent = PUB_NAME;
+  const chipEl = document.getElementById('tableChip');
+  if (chipEl && slug) {
+    chipEl.textContent = tableName;
+    chipEl.hidden = false;
+  }
   const tvBrandEl = document.getElementById('tvBrand');
-  if (tvBrandEl) tvBrandEl.textContent = PUB_NAME.toUpperCase();
+  if (tvBrandEl) tvBrandEl.textContent = PUB_NAME.toUpperCase() + ' · ' + tableName.toUpperCase();
 
-  // ── 5. Session ID is now pub-scoped ───────────────────────
+  // ── 5. Session ID is scoped to pub + table ───────────────────
   const today = new Date().toISOString().slice(0, 10);
-  sessionId = slug ? `pool-${slug}-${today}` : `pool-dev-${today}`;
+  sessionId = slug ? `pool-${slug}-${tableSlug}-${today}` : `pool-dev-${today}`;
 
   wireUI();
 
@@ -1799,14 +1823,17 @@ function renderAdminContent() {
     });
     setTimeout(() => content.querySelector('#passkeyInput')?.focus(), 50);
   } else {
-    sub.textContent = 'Admin unlocked for this session.';
+    sub.textContent = `Admin unlocked · ${tableName}`;
     content.innerHTML = `
       <div class="sheet-grid">
         <button class="btn btn-gold"   style="padding:13px;font-size:13px" onclick="exportTXT(); hideAdmin()">📤 Export</button>
         <button class="btn btn-danger" style="padding:13px;font-size:13px" onclick="hideAdmin(); $('confirmOverlay').hidden=false">🗑 Clear All</button>
       </div>
       <div class="sep" style="margin:14px 0"></div>
-      <div style="font-size:12px;color:var(--text-muted)">Session: ${sessionId}</div>
+      <div style="font-size:12px;color:var(--text-muted);line-height:1.8">
+        Table: ${tableName}<br>
+        Session: ${sessionId}
+      </div>
     `;
   }
 }
@@ -1875,7 +1902,13 @@ function loadLocal() {
 async function ensureSessionOnServer() {
   const res = await supa.from('sessions').select('*').eq('id', sessionId).single();
   if (res.error || !res.data) {
-    await supa.from('sessions').upsert({ id: sessionId, date: new Date().toISOString().slice(0, 10), state, clients: [] });
+    await supa.from('sessions').upsert({
+      id: sessionId,
+      date: new Date().toISOString().slice(0, 10),
+      state,
+      clients: [],
+      table_slug: tableSlug
+    });
     clients = []; isRemote = true; return;
   }
   state   = res.data.state   || state;
@@ -2004,7 +2037,7 @@ function exportTXT() {
     .map(n => ({ name: n, wins: state.scores[n].wins || 0, played: state.scores[n].played || 0 }))
     .sort((a, b) => b.wins - a.wins);
   const lines = [
-    `Pub: ${PUB_NAME}`, `Date: ${date}`, '',
+    `Pub: ${PUB_NAME}`, `Table: ${tableName}`, `Date: ${date}`, '',
     '=== LEADERBOARD ===',
     ...items.map((it, i) => `${i + 1}. ${it.name} — ${it.wins} wins / ${it.played} games`),
     '', '=== CURRENT MATCH ===',
@@ -2018,10 +2051,10 @@ function exportTXT() {
   const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
   const a = document.createElement('a');
   a.href     = URL.createObjectURL(blob);
-  a.download = `${safeName}-pool-${date}.txt`;
+  a.download = `${safeName}-${tableSlug}-${date}.txt`;
   a.click();
   URL.revokeObjectURL(a.href);
-  toast('Exported', `${safeName}-pool-${date}.txt`, 'info');
+  toast('Exported', `${safeName}-${tableSlug}-${date}.txt`, 'info');
 }
 
 /* ═══════════════════════════════════════════════════════════
