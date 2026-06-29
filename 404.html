@@ -6,13 +6,13 @@
 <title>404 - Page Not Found | WhosOnNext</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Inherited styles from source */
   :root {
     --bg: #09090C;
     --gold: #D4A441;
     --text: #EDE9E0;
     --text-muted: #6B7280;
   }
+
   body { 
     background: var(--bg); 
     color: var(--text); 
@@ -20,7 +20,9 @@
     margin: 0; display: flex; align-items: center; justify-content: center;
     min-height: 100vh; text-align: center;
   }
+
   .container { padding: 24px; }
+
   .code {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 120px;
@@ -28,8 +30,11 @@
     color: var(--gold);
     margin-bottom: 16px;
   }
+
   h1 { font-family: 'Bebas Neue', sans-serif; font-size: 40px; margin-bottom: 16px; }
   p { color: var(--text-muted); margin-bottom: 32px; max-width: 400px; }
+
+  /* Buttons */
   .btn {
     background: var(--gold);
     color: #0D0800;
@@ -37,28 +42,13 @@
     border-radius: 9px;
     text-decoration: none;
     font-weight: 700;
-    
-a:link {
-  color: #D4A441;
-  background-color: transparent;
-  text-decoration: none;
-}
-a:visited {
-  color: #D4A441;
-  background-color: transparent;
-  text-decoration: none;
-}
-a:hover {
-  color: #EEC060;
-  background-color: transparent;
-  text-decoration: underline;
-}
-a:active {
-  color: rgba(212,164,65,0.18);
-  background-color: transparent;
-  text-decoration: underline;
-}
   }
+
+  /* Links formatting */
+  a:link { color: var(--gold); text-decoration: none; }
+  a:visited { color: var(--gold); text-decoration: none; }
+  a:hover { color: #EEC060; text-decoration: underline; }
+  a:active { color: #D4A441; text-decoration: underline; }
 </style>
 </head>
 <body>
