@@ -4,28 +4,31 @@
   to = "/"
   status = 301
 
-# Match actual slugs for the game
+# Match pub + table (e.g. /pubs/the-weaver-0001/table-2)
+[[redirects]]
+  from = "/pubs/:slug/:table"
+  to = "/app/index.html"
+  status = 200
+
+# Match pub only — app defaults to table-1
 [[redirects]]
   from = "/pubs/:slug"
   to = "/app/index.html"
   status = 200
 
 # Redirects to success page for successful payments
-  [[redirects]]
+[[redirects]]
   from = "/success"
   to = "/success/success.html"
   status = 200
 
-#Redirects to cancelled page for cancelled payments.
+# Redirects to cancelled page for cancelled payments
 [[redirects]]
   from = "/cancelled"
   to = "/cancelled/cancelled.html"
   status = 200
 
-
-
-#-----------------------------------------------------------------------
-# Catch-all 404 rule - MUST GO LAST!!! - only for unhandled redirects
+# Catch-all 404 rule - MUST GO LAST!!!
 [[redirects]]
   from = "/*"
   to = "/404.html"
