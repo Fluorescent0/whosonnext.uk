@@ -596,109 +596,118 @@ section {
 .price-btn:active { transform: scale(0.97); }
 
 .signup-section {
-  background: var(--surface);
+  position: relative; z-index: 1;
+  overflow: hidden;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  position: relative; overflow: hidden;
 }
+
+/* Green atmospheric bloom — the "felt" lives in the light, not the fill */
 .signup-section::before {
   content: '';
   position: absolute;
-  width: 700px; height: 500px;
+  width: 900px; height: 700px;
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(212,164,65,0.07) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(211, 175, 55, 0.28) 0%, transparent 68%);
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
-.heading-glow-wrapper {
-  position: relative;
-  display: inline-block;
-}
-.heading-glow-wrapper::before {
+
+/* Subtle gold warmth underneath so it doesn't read as cold */
+.signup-section::after {
   content: '';
   position: absolute;
-  top: 50%; left: 50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle, rgba(212,164,65,0.15) 0%, transparent 70%);
-  transform: translate(-50%, -50%);
-  z-index: 0;
+  width: 500px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(212,164,65,0.05) 0%, transparent 70%);
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
   pointer-events: none;
 }
 
 .signup-inner {
   position: relative; z-index: 1;
-  max-width: 560px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 80px 24px;
+  padding: 100px 24px;
   text-align: center;
-}
-.signup-inner .section-heading { text-align: center; position: relative; z-index: 1; }
-
-.signup-card {
-  max-width: 420px;
-  margin: 44px auto 0;
-  background: linear-gradient(145deg, var(--surface-2), var(--surface));
-  border: 1px solid rgba(212,164,65,0.22);
-  border-radius: var(--r);
-  padding: 32px 28px;
-  position: relative; overflow: hidden;
-}
-.signup-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-lt), transparent);
 }
 
 .signup-offer {
   display: inline-flex; align-items: center; gap: 6px;
   background: rgba(39,184,106,0.1);
-  border: 1px solid rgba(39,184,106,0.22);
+  border: 1px solid rgba(39,184,106,0.25);
   border-radius: 999px;
   padding: 4px 13px;
   font-size: 11px; font-weight: 700;
   letter-spacing: 1.5px; text-transform: uppercase;
   color: var(--green);
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
-.signup-price {
-  display: flex; align-items: flex-end; justify-content: center; gap: 5px;
-  margin-bottom: 4px;
-}
-.signup-price-num {
+
+.signup-hook {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 80px; line-height: 1;
-  color: var(--gold-lt);
+  font-size: clamp(52px, 10vw, 90px);
+  line-height: 0.95;
+  color: var(--text);
+  margin-bottom: 16px;
 }
-.signup-price-period {
-  font-size: 15px; color: var(--text-muted); font-weight: 500;
-  padding-bottom: 12px;
+
+.signup-hook-sub {
+  font-size: 17px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto 40px;
 }
-.signup-price-sub {
-  font-size: 13px; color: var(--text-muted);
-  margin-bottom: 28px; line-height: 1.6;
+
+/* Card: same surface as pricing but green-bordered instead of gold */
+.signup-card {
+  max-width: 420px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, var(--surface-2), var(--surface));
+  border: 1px solid rgba(39,184,106,0.2);
+  border-radius: var(--r);
+  padding: 28px 24px;
+  position: relative; overflow: hidden;
+}
+
+/* Green top stripe instead of gold — the one clear visual diff from pricing */
+.signup-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green), #6ee7a8, transparent);
 }
 
 .signup-btn {
-  width: 100%; padding: 15px;
+  width: 100%;
+  padding: 16px;
   border-radius: var(--r-sm); border: none;
   background: linear-gradient(135deg, #B8892B, #D4A441, #EEC060);
   color: #0D0800;
   font-family: 'Outfit', sans-serif;
-  font-weight: 700; font-size: 15px;
+  font-weight: 700; font-size: 16px;
   cursor: pointer;
   transition: filter .15s, transform .12s;
 }
-.signup-btn:hover { filter: brightness(1.08); }
+.signup-btn:hover { filter: brightness(1.1); }
 .signup-btn:active { transform: scale(0.97); }
 .signup-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
+.signup-price-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 14px;
+  margin-bottom: 20px;
+  opacity: 0.6;
+}
+
 .trust-chips {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 8px 28px;
-  margin-top: 20px;
+  gap: 8px 24px;
 }
 .trust-chip {
   display: flex; align-items: center; gap: 5px;
@@ -709,27 +718,21 @@ section {
   color: var(--green); font-weight: 700; font-size: 11px;
 }
 
-.form-note {
-  font-size: 12px; color: var(--text-muted);
-  text-align: center; line-height: 1.5;
-}
-.form-note a { color: var(--gold); text-decoration: none; }
-
 .form-success {
   display: none;
-  text-align: center; padding: 32px 24px;
+  text-align: center; padding: 60px 24px;
   background: var(--green-dim);
-  border: 1px solid rgba(39,184,106,0.15);
-  border-radius: var(--r);
-  margin-top: 24px;
+  border-top: 1px solid rgba(39,184,106,0.15);
 }
-.form-success .success-icon { font-size: 36px; margin-bottom: 12px; }
+.form-success .success-icon { font-size: 40px; margin-bottom: 14px; }
 .form-success h3 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px; letter-spacing: 1px;
+  font-size: 32px; letter-spacing: 1px;
   color: var(--text); margin-bottom: 8px;
 }
 .form-success p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+/* Also remove the old heading-glow-wrapper — no longer needed */
 
 footer {
   position: relative; z-index: 1;
@@ -767,6 +770,47 @@ footer {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(212,164,65,0.2), transparent);
   margin: 0 24px;
+}
+	
+	.video-showcase {
+  margin-top: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.video-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold); /* or your gold token */
+  margin: 0;
+  opacity: 0.85;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 8px 40px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(6px);
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 </style>
@@ -909,13 +953,12 @@ footer {
 </section>
 
 <div class="gold-divider"></div>
-
+	
 <div class="how-section" id="how">
   <div class="how-section-inner">
     <div class="section-eyebrow">How it works</div>
     <h2 class="section-heading reveal">Up and running in minutes</h2>
     <p class="section-sub reveal">No technical setup. No IT. Just a link your punters can open on their phone.</p>
-
     <div class="steps">
       <div class="step reveal">
         <div class="step-num">1</div>
@@ -933,6 +976,20 @@ footer {
         <p class="step-desc">The app handles everything - queue rotation, scores, streaks. You just pour the pints.</p>
       </div>
     </div>
+
+    <!-- Video showcase — outside the steps grid -->
+    <div class="video-showcase reveal">
+      <p class="video-label">See it in action</p>
+      <div class="video-wrapper">
+        <iframe
+          loading="lazy"
+          src="https://www.canva.com/design/DAHNzNsPtZc/fvXBqZBYgouFn-Y2NWGlMQ/watch?embed"
+          allowfullscreen
+          allow="fullscreen"
+        ></iframe>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -982,23 +1039,12 @@ footer {
 
 <div class="signup-section" id="signup">
   <div class="signup-inner">
-    <div class="section-eyebrow">Get set up</div>
-    <div class="heading-glow-wrapper">
-      <h2 class="section-heading reveal">Get your pub<br>on the board</h2>
-    </div>
-
+    <div class="signup-offer reveal">✦ First month free</div>
+    <h2 class="signup-hook reveal">Your regulars<br>are waiting.</h2>
+    <p class="signup-hook-sub reveal">One link. One QR code. Pool night sorted - same day you sign up.</p>
     <div class="signup-card reveal">
-      <div class="signup-offer">✦ First month free</div>
-
-      <div class="signup-price">
-        <span class="signup-price-period" aria-hidden="true" style="visibility:hidden">/ month</span>
-        <span class="signup-price-num">£25</span>
-        <span class="signup-price-period">/ month</span>
-      </div>
-      <p class="signup-price-sub">After your free month. No contracts, cancel any time.</p>
-
-      <button id="signup-btn" class="signup-btn">Get started — first month free</button>
-
+      <button id="signup-btn" class="signup-btn">Subscribe - first month free</button>
+      <p class="signup-price-note">Then £25/month. No contracts, cancel any time.</p>
       <div class="trust-chips">
         <span class="trust-chip">Ready same day</span>
         <span class="trust-chip">2-minute setup</span>
@@ -1006,12 +1052,12 @@ footer {
         <span class="trust-chip">Cancel any time</span>
       </div>
     </div>
+  </div>
 
-    <div class="form-success" id="formSuccess">
-      <div class="success-icon">🎱</div>
-      <h3>You're on the list</h3>
-      <p>We'll be in touch with your pub's link and QR code within 24 hours. Get the pool table warmed up.</p>
-    </div>
+  <div class="form-success" id="formSuccess">
+    <div class="success-icon">🎱</div>
+    <h3>You're on the list</h3>
+    <p>We'll be in touch with your pub's link and QR code within 24 hours. Get the pool table warmed up.</p>
   </div>
 </div>
 
