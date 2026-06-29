@@ -21,3 +21,12 @@
   from = "/cancelled"
   to = "/cancelled/cancelled.html"
   status = 200
+
+
+
+#-----------------------------------------------------------------------
+# Catch-all 404 rule - MUST GO LAST!!! - only for unhandled redirects
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
