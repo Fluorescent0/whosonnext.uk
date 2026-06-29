@@ -4,6 +4,12 @@
   to = "/"
   status = 301
 
+# Table Manager for pub owners
+[[redirects]]
+  from = "/pubs/:slug/tables"
+  to = "/tables/index.html"
+  status = 200
+
 # Match pub + table (e.g. /pubs/the-weaver-0001/table-2)
 [[redirects]]
   from = "/pubs/:slug/:table"
