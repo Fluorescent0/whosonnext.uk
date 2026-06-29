@@ -1370,10 +1370,16 @@ function bumpToTop(name) {
 /* ═══════════════════════════════════════════════════════════
    DRAG & DROP QUEUE REORDER
 ═══════════════════════════════════════════════════════════ */
-let dragSrcName = null;
+let dragSrcName    = null;
+let currentDragOver = null; // tracks the highlighted element to avoid redundant class churn
 
-function enableDragReorder(el, name) {
-  /* ── HTML5 drag (desktop) ─────────────────────────────── */
+/* HTML5 drag listeners — attached ONCE per element lifetime via _dragWired guard.
+   Must not accumulate: renderQueue reuses existing <div>s and calls into this
+   section every render, so without the guard each pass stacks another set of
+   dragover handlers on the same element, causing the flickering. */
+function enableDragHtml5(el, name) {
+  if (el._dragWired) return;
+  el._dragWired = true;
   el.draggable = true;
 
   el.addEventListener('dragstart', e => {
@@ -1382,28 +1388,43 @@ function enableDragReorder(el, name) {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', name);
   });
+
   el.addEventListener('dragend', () => {
     el.classList.remove('dragging-src');
     dragSrcName = null;
-    document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
+    if (currentDragOver) { currentDragOver.classList.remove('drag-over'); currentDragOver = null; }
   });
+
   el.addEventListener('dragover', e => {
     if (!dragSrcName || dragSrcName === name) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
-    el.classList.add('drag-over');
-  });
-  el.addEventListener('dragleave', e => {
-    if (!el.contains(e.relatedTarget)) el.classList.remove('drag-over');
-  });
-  el.addEventListener('drop', e => {
-    e.preventDefault();
-    el.classList.remove('drag-over');
-    doQueueReorder(dragSrcName, name);
+    // Only update DOM if the highlighted target actually changed
+    if (currentDragOver !== el) {
+      if (currentDragOver) currentDragOver.classList.remove('drag-over');
+      el.classList.add('drag-over');
+      currentDragOver = el;
+    }
   });
 
-  /* ── Touch drag (mobile) ──────────────────────────────── */
+  el.addEventListener('dragleave', e => {
+    if (!el.contains(e.relatedTarget) && currentDragOver === el) {
+      el.classList.remove('drag-over');
+      currentDragOver = null;
+    }
+  });
+
+  el.addEventListener('drop', e => {
+    e.preventDefault();
+    if (currentDragOver) { currentDragOver.classList.remove('drag-over'); currentDragOver = null; }
+    doQueueReorder(dragSrcName, name);
+  });
+}
+
+/* Touch listeners — re-wired every render because el.innerHTML recreates the
+   .q-drag-handle child, making old handle references stale. These are on the
+   child node so they don't accumulate on el itself. */
+function enableDragTouch(el, name) {
   const handle = el.querySelector('.q-drag-handle');
   if (!handle) return;
 
@@ -1442,13 +1463,13 @@ function enableDragReorder(el, name) {
     const hovered = document.elementFromPoint(touch.clientX, touch.clientY);
     touchClone.style.visibility = '';
     const target = hovered?.closest?.('.q-item[data-name]');
+    const targetName = (target && target.dataset.name !== name) ? target.dataset.name : null;
 
-    document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
-    if (target && target.dataset.name !== name) {
-      target.classList.add('drag-over');
-      lastTarget = target.dataset.name;
-    } else {
-      lastTarget = null;
+    // Only update classes when the target actually changes — prevents flicker at boundaries
+    if (targetName !== lastTarget) {
+      document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
+      if (target && targetName) target.classList.add('drag-over');
+      lastTarget = targetName;
     }
   }, { passive: false });
 
@@ -1461,6 +1482,11 @@ function enableDragReorder(el, name) {
     lastTarget   = null;
     if (target) doQueueReorder(name, target);
   });
+}
+
+function enableDragReorder(el, name) {
+  enableDragHtml5(el, name);  // once per element
+  enableDragTouch(el, name);  // every render (handle child is recreated)
 }
 
 function doQueueReorder(fromName, toName) {
