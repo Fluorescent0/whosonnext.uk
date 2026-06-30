@@ -919,6 +919,7 @@ let clientId       = null;
 let sessionId      = null;
 let tableSlug      = 'table-1';  // overwritten at boot from URL
 let tableName      = 'Table 1'; // human-readable, e.g. "Table 2"
+let pubSlug        = null;      // overwritten at boot from URL
 let supa           = null;
 let isRemote       = false;
 let pollingInterval   = null;
@@ -1076,6 +1077,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   //       /pubs/<pub-slug>/table-2   → table-2
   const pathMatch = window.location.pathname.match(/\/pubs\/([^/]+)(?:\/([^/]+))?/);
   const slug      = pathMatch?.[1] || null;
+  pubSlug         = slug;
   const rawTable  = pathMatch?.[2]?.replace(/\/$/, '') || 'table-1';
 
   // Only allow table-1 through table-20 — anything else is invalid
@@ -1833,7 +1835,11 @@ function renderAdminContent() {
     setTimeout(() => content.querySelector('#passkeyInput')?.focus(), 50);
   } else {
     sub.textContent = `Admin unlocked · ${tableName}`;
+    const manageTablesBtn = pubSlug
+      ? `<a class="btn" href="/pubs/${pubSlug}/tables" style="display:block;text-align:center;padding:13px;font-size:13px;text-decoration:none;margin-bottom:8px;background:var(--surface-2);border:1px solid var(--border-hi);color:var(--text)">🗳 Manage Tables &amp; QR Codes</a>`
+      : '';
     content.innerHTML = `
+      ${manageTablesBtn}
       <div class="sheet-grid">
         <button class="btn btn-gold"   style="padding:13px;font-size:13px" onclick="exportTXT(); hideAdmin()">📤 Export</button>
         <button class="btn btn-danger" style="padding:13px;font-size:13px" onclick="hideAdmin(); $('confirmOverlay').hidden=false">🗑 Clear All</button>
