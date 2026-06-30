@@ -904,7 +904,6 @@ footer {
 ═══════════════════════════════════════════════════════════ */
 const SUPABASE_URL      = "https://faxosthjdprblsicpqye.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8";
-let SETTINGS_PASSKEY  = "pool";   // overwritten from Supabase at boot
 let PUB_NAME          = "";       // overwritten from Supabase at boot
 const HEARTBEAT_MS      = 20000;
 const CLIENT_TIMEOUT_MS = 60000;
@@ -1108,7 +1107,7 @@ if (supa && slug) {
   try {
     const { data, error } = await supa
       .from('pubs')
-      .select('name, passkey, plan')
+      .select('name, plan')
       .eq('slug', slug)
       .single();
 
@@ -1119,7 +1118,6 @@ if (supa && slug) {
     }
 
     PUB_NAME         = data.name;
-  	SETTINGS_PASSKEY = data.passkey;
 
 // ── Access check ──────────────────────────────────────────
 if (data.plan === 'inactive') {
@@ -1136,12 +1134,16 @@ if (data.plan === 'inactive') {
         font-size:clamp(40px,10vw,72px);
         color:#D4A441; line-height:1; margin-bottom:16px;
       ">Table's Closed</div>
-      <p style="color:#6B7280;max-width:340px;line-height:1.6;">
-        ${PUB_NAME}'s WhosOnNext subscription has ended.
-        Get back in the game at
-        <a href="https://whosonnext.uk" style="color:#D4A441;">whosonnext.uk</a>
-      </p>
+      <p style="color:#6B7280;max-width:340px;line-height:1.6;" id="inactiveMsg"></p>
     </div>`;
+  const link = document.createElement('a');
+  link.href = 'https://whosonnext.uk';
+  link.textContent = 'whosonnext.uk';
+  link.style.color = '#D4A441';
+  document.getElementById('inactiveMsg').append(
+    `${PUB_NAME}'s WhosOnNext subscription has ended. Get back in the game at `,
+    link
+  );
   return; // stop the app initialising
 }
   } catch (e) {
@@ -1853,18 +1855,33 @@ function renderAdminContent() {
   }
 }
 
-function tryPasskey() {
+async function tryPasskey() {
   const val = $('passkeyInput')?.value || '';
-  if (val.toLowerCase() === SETTINGS_PASSKEY) {
-    adminUnlocked = true;
-    $('adminBtn').classList.add('unlocked');
-    hideAdmin();
-    toast('Admin unlocked', 'You can now edit scores and clear sessions', 'info');
-    renderAll();
-  } else {
-    const err = $('passkeyErr');
-    if (err) { err.style.display = 'block'; }
-    if ($('passkeyInput')) { $('passkeyInput').value = ''; $('passkeyInput').focus(); }
+  if (!val.trim() || !pubSlug) return;
+
+  const err = $('passkeyErr');
+  if (err) err.style.display = 'none';
+
+  try {
+    const res = await fetch('/.netlify/functions/verify-passkey', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ slug: pubSlug, passkey: val }),
+    });
+    const data = await res.json();
+
+    if (res.ok && data.ok) {
+      adminUnlocked = true;
+      $('adminBtn').classList.add('unlocked');
+      hideAdmin();
+      toast('Admin unlocked', 'You can now edit scores and clear sessions', 'info');
+      renderAll();
+    } else {
+      if (err) err.style.display = 'block';
+      if ($('passkeyInput')) { $('passkeyInput').value = ''; $('passkeyInput').focus(); }
+    }
+  } catch (e) {
+    if (err) { err.textContent = "Couldn't reach the server — try again."; err.style.display = 'block'; }
   }
 }
 
