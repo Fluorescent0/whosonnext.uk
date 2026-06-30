@@ -458,7 +458,6 @@ const MAX_TABLES        = 20;
 /* ─── STATE ─────────────────────────────────────────────────── */
 let slug       = null;
 let pubName    = null;
-let passkey    = null;
 let tableCount = 1;
 let supa       = null;
 
@@ -479,12 +478,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     $('errorPage').hidden = false; return;
   }
 
-  // Fetch pub config
+  // Fetch pub config - passkey is intentionally excluded; it's
+  // verified server-side via the verify-passkey function instead.
   let pubData = null;
   try {
     const { data, error } = await supa
       .from('pubs')
-      .select('name, passkey, plan')
+      .select('name, plan')
       .eq('slug', slug)
       .single();
     if (error || !data) { $('errorPage').hidden = false; return; }
@@ -494,14 +494,19 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (pubData.plan === 'inactive') {
-    $('inactiveBody').innerHTML = `${pubData.name}'s WhosOnNext subscription has ended.<br>
-      <a href="https://whosonnext.uk" style="color:var(--gold)">Get back in the game.</a>`;
+    $('inactiveBody').textContent = '';
+    const msg = document.createElement('span');
+    msg.textContent = `${pubData.name}'s WhosOnNext subscription has ended. `;
+    const link = document.createElement('a');
+    link.href = 'https://whosonnext.uk';
+    link.style.color = 'var(--gold)';
+    link.textContent = 'Get back in the game.';
+    $('inactiveBody').append(msg, link);
     $('inactivePage').hidden = false;
     return;
   }
 
   pubName = pubData.name;
-  passkey = pubData.passkey;
 
   // Show gate
   $('gatePubName').textContent = pubName;
@@ -516,16 +521,40 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 /* ─── AUTH ──────────────────────────────────────────────────── */
-function tryPasskey() {
+async function tryPasskey() {
   const val = $('passkeyInput').value.trim();
-  if (val.toLowerCase() === passkey.toLowerCase()) {
-    $('gate').hidden = true;
-    $('app').hidden  = false;
-    initApp();
-  } else {
+  if (!val) return;
+
+  const btn = $('unlockBtn');
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = 'Checking…';
+  $('passkeyErr').textContent = 'Incorrect passkey - try again.';
+  $('passkeyErr').style.display = 'none';
+
+  try {
+    const res = await fetch('/.netlify/functions/verify-passkey', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ slug, passkey: val }),
+    });
+    const data = await res.json();
+
+    if (res.ok && data.ok) {
+      $('gate').hidden = true;
+      $('app').hidden  = false;
+      initApp();
+    } else {
+      $('passkeyErr').style.display = 'block';
+      $('passkeyInput').value = '';
+      $('passkeyInput').focus();
+    }
+  } catch (e) {
+    $('passkeyErr').textContent = 'Couldn\'t reach the server - try again.';
     $('passkeyErr').style.display = 'block';
-    $('passkeyInput').value = '';
-    $('passkeyInput').focus();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalLabel;
   }
 }
 
@@ -557,7 +586,7 @@ function buildCard(n) {
   card.innerHTML = `
     <div class="card-meta">
       <div class="card-table-num">Table ${n}</div>
-      <div class="card-url"><a href="${url}">${url}</a></div>
+      <div class="card-url">${url}</div>
       <div class="card-hint">Scan to join the queue</div>
     </div>
     <div class="qr-panel" id="qr-${n}"></div>
