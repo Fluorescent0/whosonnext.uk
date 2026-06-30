@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Leaderboard — WhosOnNext</title>
+  <title>Leaderboard - WhosOnNext</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/Fluorescent0/Weaver-Pool-App-assets/refs/heads/main/WON_favicon.ico">
   <style>
@@ -226,8 +226,15 @@
     .col-rank.rn { color: var(--text-dim); }
 
     .player-cell { display: flex; align-items: center; gap: 8px; }
+    .player-block { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
     .player-name { font-weight: 600; font-size: 14px; }
-    .medal { font-size: 15px; line-height: 1; }
+    .player-pub {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .player-pub.multi { color: var(--gold); font-style: italic; }
+    .medal { font-size: 15px; line-height: 1; flex-shrink: 0; }
 
     .col-wins { font-weight: 700; font-size: 15px; }
     .col-wins.w1 { color: var(--gold-lt); }
@@ -289,7 +296,7 @@
 
   <div class="filter-wrap">
     <select id="pub-filter" class="pub-select">
-      <option value="all">🌍 Global — all pubs</option>
+      <option value="all">🌍 Global - all pubs</option>
     </select>
   </div>
 
@@ -331,6 +338,30 @@
   const RANK_CLASS = ['r1', 'r2', 'r3'];
   const WINS_CLASS = ['w1', 'wn', 'wn'];
 
+  // Escapes player/pub names before they go into innerHTML - both
+  // are free-text fields a punter or pub owner controls, so this
+  // is just basic XSS hygiene, same as the fix applied elsewhere.
+  function esc(str) {
+    return String(str).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  // Session IDs look like:
+  //   pool-<pub-slug>-table-<n>-<YYYY>-<MM>-<DD>   (current format)
+  //   pool-<pub-slug>-<YYYY>-<MM>-<DD>             (legacy, pre multi-table)
+  // Strip the trailing date first, then strip a trailing
+  // "table-<n>" pair if present - whatever's left is the pub slug.
+  function extractPubSlug(sessionId) {
+    const parts = sessionId.split('-');
+    let mid = parts.slice(1, -3); // drop "pool" prefix and YYYY/MM/DD
+    const last = mid.length - 1;
+    if (mid.length >= 2 && mid[last - 1] === 'table' && /^\d+$/.test(mid[last])) {
+      mid = mid.slice(0, -2);
+    }
+    return mid.join('-');
+  }
+
   async function loadLeaderboard() {
     const today = new Date().toISOString().split('T')[0];
     const [sRes, pRes] = await Promise.all([
@@ -347,28 +378,32 @@
     }
 
     const pubMap = new Map(pRes.data?.map(p => [p.slug, p.name]) || []);
+
+    // stats[pubName][player]      = { wins, played }
+    // stats.all[player]           = { wins, played, pubs: Set<pubName> }
     const stats = { all: {} };
 
     sRes.data.forEach(row => {
-      const parts = row.id.split('-');
-      const slug = parts.slice(1, -3).join('-');
+      const slug    = extractPubSlug(row.id);
       const pubName = pubMap.get(slug) || 'Unknown Pub';
       if (!stats[pubName]) stats[pubName] = {};
 
       Object.entries(row.state?.scores || {}).forEach(([player, d]) => {
-        [player, 'all'].forEach(key => {
-          const target = key === 'all' ? stats.all : stats[pubName];
-          if (!target[player]) target[player] = { wins: 0, played: 0 };
-          target[player].wins   += d.wins   || 0;
-          target[player].played += d.played || 0;
-        });
+        if (!stats[pubName][player]) stats[pubName][player] = { wins: 0, played: 0 };
+        stats[pubName][player].wins   += d.wins   || 0;
+        stats[pubName][player].played += d.played || 0;
+
+        if (!stats.all[player]) stats.all[player] = { wins: 0, played: 0, pubs: new Set() };
+        stats.all[player].wins   += d.wins   || 0;
+        stats.all[player].played += d.played || 0;
+        stats.all[player].pubs.add(pubName);
       });
     });
 
     // Populate filter
     const filter = document.getElementById('pub-filter');
     Object.keys(stats).filter(k => k !== 'all').sort().forEach(pub => {
-      filter.innerHTML += `<option value="${pub}">📍 ${pub}</option>`;
+      filter.innerHTML += `<option value="${esc(pub)}">📍 ${esc(pub)}</option>`;
     });
     filter.addEventListener('change', () => renderTable(filter.value));
 
@@ -386,14 +421,38 @@
         return;
       }
 
+      const showPub = true; // show attribution in both global and filtered views
+
       setBody(sorted.map(([name, s], i) => {
         const rankCls  = RANK_CLASS[i]  ?? 'rn';
         const winsCls  = WINS_CLASS[i]  ?? 'wn';
         const rowCls   = ROW_CLASS[i]   ?? '';
         const medal    = i < 3 ? `<span class="medal">${MEDALS[i]}</span>` : '';
+
+        let pubLine = '';
+        if (showPub) {
+          if (pub === 'all') {
+            // Global view: a name might span more than one pub.
+            const pubs = [...s.pubs];
+            pubLine = pubs.length > 1
+              ? `<span class="player-pub multi">Multiple pubs</span>`
+              : `<span class="player-pub">${esc(pubs[0])}</span>`;
+          } else {
+            pubLine = `<span class="player-pub">${esc(pub)}</span>`;
+          }
+        }
+
         return `<tr class="${rowCls}">
           <td class="col-rank ${rankCls}">${i + 1}</td>
-          <td><div class="player-cell"><span class="player-name">${name}</span>${medal}</div></td>
+          <td>
+            <div class="player-cell">
+              <div class="player-block">
+                <span class="player-name">${esc(name)}</span>
+                ${pubLine}
+              </div>
+              ${medal}
+            </div>
+          </td>
           <td class="col-wins ${winsCls}">${s.wins}</td>
           <td class="col-played">${s.played}</td>
         </tr>`;
