@@ -1076,8 +1076,17 @@ window.addEventListener('DOMContentLoaded', async () => {
   //       /pubs/<pub-slug>/table-2   → table-2
   const pathMatch = window.location.pathname.match(/\/pubs\/([^/]+)(?:\/([^/]+))?/);
   const slug      = pathMatch?.[1] || null;
-  tableSlug       = pathMatch?.[2]?.replace(/\/$/, '') || 'table-1';
-  tableName       = tableSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const rawTable  = pathMatch?.[2]?.replace(/\/$/, '') || 'table-1';
+
+  // Only allow table-1 through table-20 — anything else is invalid
+  const MAX_TABLES = 20;
+  const tableMatch = rawTable.match(/^table-([1-9]|1[0-9]|20)$/);
+  if (!tableMatch) {
+    $('errorOverlay').hidden = false;
+    return; // not a recognised table slug — stop here
+  }
+  tableSlug = `table-${tableMatch[1]}`;
+  tableName = `Table ${tableMatch[1]}`;
 
   clientId   = localStorage.getItem('pub_pool_clientId') || cryptoId();
   localStorage.setItem('pub_pool_clientId', clientId);
