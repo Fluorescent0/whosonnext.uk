@@ -40,10 +40,11 @@ exports.handler = async (event) => {
       ?.find(f => f.key === 'pub_name')?.text?.value?.trim() || 'New Pub';
     const passkey = session.custom_fields
       ?.find(f => f.key === 'passkey')?.text?.value?.trim() || 'pool';
-    const email   = session.customer_details?.email || '';
-    const slug    = `${toSlug(pubName)}-${Math.floor(1000 + Math.random() * 9000)}`;
-    const pubUrl  = `https://whosonnext.uk/pubs/${slug}`;
-    const qrUrl   = getQrCodeUrl(pubUrl);
+    const email     = session.customer_details?.email || '';
+    const slug      = `${toSlug(pubName)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const pubUrl    = `https://whosonnext.uk/pubs/${slug}`;
+    const tablesUrl = `https://whosonnext.uk/pubs/${slug}/tables`;
+    const qrUrl     = getQrCodeUrl(pubUrl);
 
     // Raw fetch to Supabase REST API — no JS client needed
     const insertRes = await fetch(
@@ -97,6 +98,14 @@ exports.handler = async (event) => {
             </div>
 
             <p>Stick this QR code on your pool table. Players scan it to join the queue.</p>
+
+            <div style="background:#f9f5ec;border:1px solid #eadfc5;padding:18px 20px;border-radius:12px;margin:24px 0;">
+              <p style="margin-top:0;"><strong>Running more than one table?</strong></p>
+              <p style="margin-bottom:14px;">Generate a QR code for each table from your management console — print one per table and punters join the right queue automatically.</p>
+              <a href="${tablesUrl}" style="display:inline-block;background:#D4A441;color:#1a1a1a;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:bold;">Manage your tables</a>
+              <p style="font-size:12px;color:#888;margin-top:14px;margin-bottom:0;">You'll need your passkey below to access it.</p>
+            </div>
+
             <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
             <p><strong>Admin passkey:</strong>
               <code style="background:#f4f4f4;padding:2px 8px;border-radius:4px;">${passkey}</code>
