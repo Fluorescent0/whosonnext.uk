@@ -453,6 +453,7 @@ main {
 const SUPABASE_URL      = "https://faxosthjdprblsicpqye.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8";
 const BASE_URL          = "https://whosonnext.uk";
+const MAX_TABLES        = 20;
 
 /* ─── STATE ─────────────────────────────────────────────────── */
 let slug       = null;
@@ -531,8 +532,10 @@ function tryPasskey() {
 /* ─── APP INIT ──────────────────────────────────────────────── */
 function initApp() {
   $('appPubName').textContent = pubName;
-  tableCount = parseInt(localStorage.getItem('won_tables_' + slug)) || 1;
+  const stored = parseInt(localStorage.getItem('won_tables_' + slug)) || 1;
+  tableCount = Math.min(stored, MAX_TABLES);
   renderAllTables();
+  updateAddButton();
   $('addTableBtn').addEventListener('click', addTable);
 }
 
@@ -589,6 +592,7 @@ function buildCard(n) {
 
 /* ─── ADD TABLE ─────────────────────────────────────────────── */
 function addTable() {
+  if (tableCount >= MAX_TABLES) return;
   tableCount++;
   localStorage.setItem('won_tables_' + slug, tableCount);
   const grid = $('tableGrid');
@@ -605,6 +609,18 @@ function addTable() {
   setTimeout(() => {
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 80);
+  updateAddButton();
+}
+
+function updateAddButton() {
+  const btn = $('addTableBtn');
+  if (!btn) return;
+  if (tableCount >= MAX_TABLES) {
+    btn.disabled = true;
+    btn.style.opacity = '0.4';
+    btn.style.cursor = 'default';
+    btn.innerHTML = `<span class="add-icon">✓</span> Table limit reached (${MAX_TABLES})`;
+  }
 }
 
 /* ─── DOWNLOAD ──────────────────────────────────────────────── */
