@@ -557,7 +557,7 @@ function buildCard(n) {
   card.innerHTML = `
     <div class="card-meta">
       <div class="card-table-num">Table ${n}</div>
-      <div class="card-url">${url}</div>
+      <div class="card-url"><a href="${url}">${url}</a></div>
       <div class="card-hint">Scan to join the queue</div>
     </div>
     <div class="qr-panel" id="qr-${n}"></div>
