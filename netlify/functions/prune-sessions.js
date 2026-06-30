@@ -1,13 +1,15 @@
 // netlify/functions/prune-sessions.js
 //
-// Scheduled function - runs automatically on the cron defined below.
+// Scheduled function — runs automatically on the cron defined below.
 // Deletes session rows older than RETENTION_DAYS to keep the `sessions`
 // table from growing unbounded. Pub/table config (the `pubs` table) is
-// never touched - only historical session rows.
+// never touched — only historical session rows.
+
+const { schedule } = require('@netlify/functions');
 
 const RETENTION_DAYS = 7;
 
-exports.handler = async () => {
+const handler = async () => {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - RETENTION_DAYS);
   const cutoffDate = cutoff.toISOString().slice(0, 10); // YYYY-MM-DD
@@ -42,5 +44,5 @@ exports.handler = async () => {
   }
 };
 
-// Run once a day at 03:15 UTC - quiet hours for a UK pub app.
-exports.config = { schedule: '15 3 * * *' };
+// Run once a day at 03:15 UTC — quiet hours for a UK pub app.
+exports.handler = schedule('15 3 * * *', handler);
