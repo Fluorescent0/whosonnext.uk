@@ -2202,6 +2202,7 @@ function initSeasonalTheme() {
       if (this.glyph) {
         ctx.globalAlpha = this.o;
         ctx.font = `${this.r * 2}px sans-serif`;
+        ctx.fillStyle = `rgba(${theme.color},${this.o})`; // used by monochrome symbols (✦ ❤ ☘ etc); full-colour emoji ignore this and render as-is
         ctx.fillText(this.glyph, this.x, this.y);
         ctx.globalAlpha = 1;
       } else {
