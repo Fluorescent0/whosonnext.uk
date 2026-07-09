@@ -1198,8 +1198,8 @@ if (data.plan === 'inactive') {
   assignInitialMatch();
   renderAll();
 
-  // December snow
-  if (new Date().getMonth() === 11) initSnow();
+  // Seasonal / event theme (auto-detects date; see SEASONAL THEMES below)
+  initSeasonalTheme();
 });
 
 /* ═══════════════════════════════════════════════════════════
@@ -2090,59 +2090,148 @@ function exportTXT() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   SNOW (December only)
+   SEASONAL & EVENT THEMES
+   Auto-detects today's date and runs a matching drifting-particle
+   effect (reuses the same canvas the old December snow used).
+
+   Preview any theme on demand, regardless of the date, by adding
+   ?theme=<id> to the URL, e.g. ?theme=halloween
+
+   MAINTENANCE: dated entries (tournaments, the snooker worlds)
+   move every year — update the date strings below each season.
+   Recurring calendar entries (Halloween, Valentine's, etc.) need
+   no maintenance since they're computed from the current year.
 ═══════════════════════════════════════════════════════════ */
-function initSnow() {
+
+// One-off dated events — check/update these annually.
+const DATED_EVENTS = [
+  { id: 'snooker',      emoji: '🎱', glyphs: ['🔴','🟡','🟢'], color: '212,164,65', count: 40,  speed: [0.3,0.7], size: [14,18], start: '2027-04-17', end: '2027-05-03' }, // World Snooker Championship, Crucible — ran 18 Apr–4 May 2026; dates confirmed annually by WST
+  { id: 'worldcup2026', emoji: '⚽',  glyphs: ['⚽'],           color: '210,210,220', count: 50, speed: [0.3,0.8], size: [16,22], start: '2026-06-11', end: '2026-07-19' }, // FIFA World Cup, USA/Mexico/Canada
+  // Add future tournaments as they're scheduled, same shape as above, e.g.:
+  // { id: 'euro2028', emoji: '⚽', glyphs: ['⚽'], color: '210,210,220', count: 50, speed: [0.3,0.8], size: [16,22], start: '2028-06-01', end: '2028-07-15' },
+];
+
+function easterSunday(year) {
+  // Anonymous Gregorian algorithm — computes Easter Sunday for any year.
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31); // 3 = March, 4 = April
+  const day   = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
+}
+
+function dateInRange(d, startISO, endISO) {
+  const iso = d.toISOString().slice(0, 10);
+  return iso >= startISO && iso <= endISO;
+}
+
+// Order = priority. Earlier entries win when windows could overlap
+// (e.g. New Year's Eve falls inside December, so it's listed first).
+const SEASONAL_THEMES = [
+  { id: 'newyear', emoji: '🎉', glyphs: ['✦','✧','●'], color: '238,192,96', count: 140, speed: [0.6,1.6], size: [2,5], sway: true,
+    match: d => (d.getMonth() === 11 && d.getDate() === 31) || (d.getMonth() === 0 && d.getDate() === 1) },
+
+  { id: 'valentines', emoji: '💗', glyphs: ['❤'], color: '240,112,112', count: 60, speed: [0.3,0.8], size: [12,20], sway: true,
+    match: d => d.getMonth() === 1 && d.getDate() >= 10 && d.getDate() <= 14 },
+
+  { id: 'stpatricks', emoji: '☘️', glyphs: ['☘'], color: '39,184,106', count: 70, speed: [0.4,1], size: [12,18], sway: true,
+    match: d => d.getMonth() === 2 && d.getDate() >= 15 && d.getDate() <= 17 },
+
+  { id: 'easter', emoji: '🐣', glyphs: ['🥚','🌸'], color: '238,192,96', count: 60, speed: [0.3,0.7], size: [12,18], sway: true,
+    match: d => {
+      const e = easterSunday(d.getFullYear());
+      const start = new Date(e); start.setDate(e.getDate() - 3);       // Good Friday
+      const end   = new Date(e); end.setDate(e.getDate() + 1); end.setHours(23,59,59); // Easter Monday
+      return d >= start && d <= end;
+    } },
+
+  { id: 'halloween', emoji: '🎃', glyphs: ['🦇','🎃'], color: '217,120,50', count: 60, speed: [0.3,0.9], size: [14,20], sway: true,
+    match: d => d.getMonth() === 9 && d.getDate() >= 25 },
+
+  { id: 'bonfire', emoji: '🎆', glyphs: ['✦','✧'], color: '217,80,80', count: 100, speed: [0.5,1.4], size: [2,4], sway: true, rise: true,
+    match: d => d.getMonth() === 10 && d.getDate() >= 4 && d.getDate() <= 5 },
+
+  // One-off dated tournaments/events, defined in DATED_EVENTS above.
+  ...DATED_EVENTS.map(ev => ({ ...ev, match: d => dateInRange(d, ev.start, ev.end) })),
+
+  { id: 'christmas', emoji: '❄️', glyphs: null, color: '200,210,255', count: 180, speed: [0.4,1.4], size: [1,4], sway: true,
+    match: d => d.getMonth() === 11 },
+];
+
+function pickTheme(date) {
+  const forced = new URLSearchParams(location.search).get('theme');
+  if (forced) return SEASONAL_THEMES.find(t => t.id === forced) || null;
+  return SEASONAL_THEMES.find(t => t.match(date)) || null;
+}
+
+function initSeasonalTheme() {
+  const theme = pickTheme(new Date());
+  if (!theme) return;
+
   const canvas = $('snowCanvas');
   const ctx    = canvas.getContext('2d');
   canvas.style.display = 'block';
   let enabled = true;
-  let flakes  = [];
+  let items   = [];
 
   function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
   window.addEventListener('resize', resize); resize();
 
-  class Flake {
+  class Bit {
     constructor() { this.reset(); }
     reset() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * -canvas.height;
-      this.r = Math.random() * 3 + 1;
-      this.vy = Math.random() * 1 + 0.4;
-      this.vx = Math.random() * 0.8 - 0.4;
-      this.o  = Math.random() * 0.7 + 0.2;
+      this.x  = Math.random() * canvas.width;
+      this.y  = theme.rise ? canvas.height + Math.random() * canvas.height : Math.random() * -canvas.height;
+      this.r  = Math.random() * (theme.size[1] - theme.size[0]) + theme.size[0];
+      this.vy = (Math.random() * (theme.speed[1] - theme.speed[0]) + theme.speed[0]) * (theme.rise ? -1 : 1);
+      this.vx = theme.sway ? (Math.random() * 0.8 - 0.4) : 0;
+      this.o  = Math.random() * 0.6 + 0.3;
+      this.glyph = theme.glyphs ? theme.glyphs[Math.floor(Math.random() * theme.glyphs.length)] : null;
     }
     update() {
-      this.y += this.vy; this.x += this.vx + Math.sin(this.y / 50) * 0.4;
-      if (this.y > canvas.height) this.reset();
+      this.y += this.vy;
+      this.x += this.vx + Math.sin(this.y / 50) * 0.4;
+      if (theme.rise ? this.y < -20 : this.y > canvas.height) this.reset();
     }
     draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200,210,255,${this.o})`;
-      ctx.fill();
+      if (this.glyph) {
+        ctx.globalAlpha = this.o;
+        ctx.font = `${this.r * 2}px sans-serif`;
+        ctx.fillText(this.glyph, this.x, this.y);
+        ctx.globalAlpha = 1;
+      } else {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${theme.color},${this.o})`;
+        ctx.fill();
+      }
     }
   }
-  for (let i = 0; i < 180; i++) flakes.push(new Flake());
+  for (let i = 0; i < theme.count; i++) items.push(new Bit());
 
   function animate() {
     if (!enabled) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    flakes.forEach(f => { f.update(); f.draw(); });
+    items.forEach(b => { b.update(); b.draw(); });
     requestAnimationFrame(animate);
   }
   animate();
 
-  /* Optional: add a small toggle button to header */
-  const snowBtn = document.createElement('button');
-  snowBtn.className = 'icon-btn'; snowBtn.textContent = '❄️'; snowBtn.title = 'Toggle snow';
-  snowBtn.addEventListener('click', () => {
+  /* Small toggle button in the header, matching the theme's emoji */
+  const themeBtn = document.createElement('button');
+  themeBtn.className = 'icon-btn'; themeBtn.textContent = theme.emoji; themeBtn.title = 'Toggle theme effect';
+  themeBtn.addEventListener('click', () => {
     enabled = !enabled;
-    snowBtn.textContent = enabled ? '❄️' : '⛅';
+    themeBtn.textContent = enabled ? theme.emoji : '⛅';
     if (enabled) { canvas.style.display = 'block'; animate(); }
     else { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.style.display = 'none'; }
   });
-  $('adminBtn').before(snowBtn);
+  $('adminBtn').before(themeBtn);
 }
 </script>
 </body>
