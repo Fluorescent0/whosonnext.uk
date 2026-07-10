@@ -2093,21 +2093,29 @@ function exportTXT() {
    SEASONAL & EVENT THEMES
    Auto-detects today's date and runs a matching drifting-particle
    effect (reuses the same canvas the old December snow used).
+   Themes can also trigger periodic firework bursts (fireworks: true).
 
    Preview any theme on demand, regardless of the date, by adding
    ?theme=<id> to the URL, e.g. ?theme=halloween
 
-   MAINTENANCE: dated entries (tournaments, the snooker worlds)
-   move every year — update the date strings below each season.
-   Recurring calendar entries (Halloween, Valentine's, etc.) need
-   no maintenance since they're computed from the current year.
+   MAINTENANCE: dated entries (tournaments, the snooker worlds,
+   moveable feasts) shift every year — update the date strings
+   below each season. Recurring calendar entries (Halloween,
+   Valentine's, Pride, etc.) need no maintenance since they're
+   computed from the current year.
 ═══════════════════════════════════════════════════════════ */
 
 // One-off dated events — check/update these annually.
 const DATED_EVENTS = [
-  { id: 'snooker',      emoji: '🎱', glyphs: ['🔴','🟡','🟢'], color: '212,164,65', count: 40,  speed: [0.3,0.7], size: [14,18], start: '2027-04-17', end: '2027-05-03' }, // World Snooker Championship, Crucible — ran 18 Apr–4 May 2026; dates confirmed annually by WST
-  { id: 'worldcup2026', emoji: '⚽',  glyphs: ['⚽'],           color: '210,210,220', count: 50, speed: [0.3,0.8], size: [16,22], start: '2026-06-11', end: '2026-07-19' }, // FIFA World Cup, USA/Mexico/Canada
-  // Add future tournaments as they're scheduled, same shape as above, e.g.:
+  { id: 'snooker',        emoji: '🎱', glyphs: ['🔴','🟡','🟢'], color: '212,164,65',  count: 40, speed: [0.3,0.7], size: [14,18], start: '2027-04-17', end: '2027-05-03' }, // World Snooker Championship, Crucible — ran 18 Apr–4 May 2026; dates confirmed annually by WST
+  { id: 'worldcup2026',   emoji: '⚽', glyphs: ['⚽'],           color: '210,210,220', count: 50, speed: [0.3,0.8], size: [16,22], start: '2026-06-11', end: '2026-07-19' }, // FIFA World Cup, USA/Mexico/Canada
+  { id: 'chinesenewyear', emoji: '🏮', glyphs: ['🏮','✨'],      color: '217,80,80',   count: 50, speed: [0.3,0.7], size: [16,22], start: '2026-02-16', end: '2026-02-19' }, // Lunar New Year — main day 17 Feb 2026 (Year of the Fire Horse)
+  { id: 'diwali',         emoji: '🪔', glyphs: ['🪔','✨'],      color: '238,192,96',  count: 55, speed: [0.2,0.5], size: [14,20], start: '2026-11-06', end: '2026-11-10' }, // Diwali — main day (Lakshmi Puja) 8 Nov 2026
+  { id: 'wimbledon',      emoji: '🎾', glyphs: ['🎾'],           color: '199,234,70',  count: 40, speed: [0.3,0.8], size: [16,20], start: '2026-06-29', end: '2026-07-12' }, // The Championships, Wimbledon
+  { id: 'grandnational',  emoji: '🐎', glyphs: ['🐎','🏇'],      color: '212,164,65',  count: 30, speed: [0.4,1.0], size: [16,22], start: '2027-04-03', end: '2027-04-10' }, // Grand National, Aintree — 2026 running was 9–11 Apr; confirm nearer the time each year
+  { id: 'sixnations',     emoji: '🏉', glyphs: ['🏉'],           color: '150,95,55',   count: 35, speed: [0.3,0.8], size: [16,22], start: '2027-02-05', end: '2027-03-13' }, // Guinness Six Nations — confirmed fixtures, Ireland v England opener to Super Saturday
+  { id: 'ashes',          emoji: '🏏', glyphs: ['🏏'],           color: '178,34,34',   count: 35, speed: [0.3,0.8], size: [16,22], start: '2027-06-10', end: '2027-08-15' }, // The Ashes, England v Australia — exact fixture dates TBC (ECB expected to confirm in summer 2026); this is a placeholder window, narrow it once dates land
+  // Add future tournaments/holidays here, same shape as above, e.g.:
   // { id: 'euro2028', emoji: '⚽', glyphs: ['⚽'], color: '210,210,220', count: 50, speed: [0.3,0.8], size: [16,22], start: '2028-06-01', end: '2028-07-15' },
 ];
 
@@ -2131,9 +2139,11 @@ function dateInRange(d, startISO, endISO) {
 }
 
 // Order = priority. Earlier entries win when windows could overlap
-// (e.g. New Year's Eve falls inside December, so it's listed first).
+// (e.g. New Year's Eve falls inside December, so it's listed first;
+// dated tournaments are checked before the whole-month Pride/Christmas
+// entries so a specific event wins over a broad recurring one).
 const SEASONAL_THEMES = [
-  { id: 'newyear', emoji: '🎉', glyphs: ['✦','✧','●'], color: '238,192,96', count: 140, speed: [0.6,1.6], size: [2,5], sway: true,
+  { id: 'newyear', emoji: '🎉', glyphs: ['✦','✧','●'], color: '238,192,96', count: 140, speed: [0.6,1.6], size: [2,5], sway: true, fireworks: true,
     match: d => (d.getMonth() === 11 && d.getDate() === 31) || (d.getMonth() === 0 && d.getDate() === 1) },
 
   { id: 'valentines', emoji: '💗', glyphs: ['❤'], color: '240,112,112', count: 60, speed: [0.3,0.8], size: [12,20], sway: true,
@@ -2153,11 +2163,16 @@ const SEASONAL_THEMES = [
   { id: 'halloween', emoji: '🎃', glyphs: ['🦇','🎃'], color: '217,120,50', count: 60, speed: [0.3,0.9], size: [14,20], sway: true,
     match: d => d.getMonth() === 9 && d.getDate() >= 25 },
 
-  { id: 'bonfire', emoji: '🎆', glyphs: ['✦','✧'], color: '217,80,80', count: 100, speed: [0.5,1.4], size: [2,4], sway: true, rise: true,
+  { id: 'bonfire', emoji: '🎆', glyphs: ['✦','✧'], color: '217,80,80', count: 70, speed: [0.5,1.4], size: [2,4], sway: true, rise: true, fireworks: true,
     match: d => d.getMonth() === 10 && d.getDate() >= 4 && d.getDate() <= 5 },
 
-  // One-off dated tournaments/events, defined in DATED_EVENTS above.
+  // One-off dated tournaments/holidays, defined in DATED_EVENTS above.
   ...DATED_EVENTS.map(ev => ({ ...ev, match: d => dateInRange(d, ev.start, ev.end) })),
+
+  { id: 'pride', emoji: '🏳️‍🌈', glyphs: null,
+    colors: ['232,74,95', '235,140,52', '232,201,60', '68,181,96', '68,132,209', '146,90,201'], // rainbow, one per particle
+    count: 90, speed: [0.3,0.8], size: [3,6], sway: true,
+    match: d => d.getMonth() === 5 }, // Pride Month (June)
 
   { id: 'christmas', emoji: '❄️', glyphs: null, color: '200,210,255', count: 180, speed: [0.4,1.4], size: [1,4], sway: true,
     match: d => d.getMonth() === 11 },
@@ -2169,6 +2184,11 @@ function pickTheme(date) {
   return SEASONAL_THEMES.find(t => t.match(date)) || null;
 }
 
+function pickColor(theme) {
+  if (theme.colors) return theme.colors[Math.floor(Math.random() * theme.colors.length)];
+  return theme.color;
+}
+
 function initSeasonalTheme() {
   const theme = pickTheme(new Date());
   if (!theme) return;
@@ -2177,7 +2197,9 @@ function initSeasonalTheme() {
   const ctx    = canvas.getContext('2d');
   canvas.style.display = 'block';
   let enabled = true;
-  let items   = [];
+  let items     = [];
+  let fireworks = [];
+  let fireworkTimer = null;
 
   function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
   window.addEventListener('resize', resize); resize();
@@ -2185,12 +2207,13 @@ function initSeasonalTheme() {
   class Bit {
     constructor() { this.reset(); }
     reset() {
-      this.x  = Math.random() * canvas.width;
-      this.y  = theme.rise ? canvas.height + Math.random() * canvas.height : Math.random() * -canvas.height;
-      this.r  = Math.random() * (theme.size[1] - theme.size[0]) + theme.size[0];
-      this.vy = (Math.random() * (theme.speed[1] - theme.speed[0]) + theme.speed[0]) * (theme.rise ? -1 : 1);
-      this.vx = theme.sway ? (Math.random() * 0.8 - 0.4) : 0;
-      this.o  = Math.random() * 0.6 + 0.3;
+      this.x     = Math.random() * canvas.width;
+      this.y     = theme.rise ? canvas.height + Math.random() * canvas.height : Math.random() * -canvas.height;
+      this.r     = Math.random() * (theme.size[1] - theme.size[0]) + theme.size[0];
+      this.vy    = (Math.random() * (theme.speed[1] - theme.speed[0]) + theme.speed[0]) * (theme.rise ? -1 : 1);
+      this.vx    = theme.sway ? (Math.random() * 0.8 - 0.4) : 0;
+      this.o     = Math.random() * 0.6 + 0.3;
+      this.color = pickColor(theme);
       this.glyph = theme.glyphs ? theme.glyphs[Math.floor(Math.random() * theme.glyphs.length)] : null;
     }
     update() {
@@ -2202,23 +2225,76 @@ function initSeasonalTheme() {
       if (this.glyph) {
         ctx.globalAlpha = this.o;
         ctx.font = `${this.r * 2}px sans-serif`;
-        ctx.fillStyle = `rgba(${theme.color},${this.o})`; // used by monochrome symbols (✦ ❤ ☘ etc); full-colour emoji ignore this and render as-is
+        ctx.fillStyle = `rgba(${this.color},${this.o})`; // used by monochrome symbols (✦ ❤ ☘ etc); full-colour emoji ignore this and render as-is
         ctx.fillText(this.glyph, this.x, this.y);
         ctx.globalAlpha = 1;
       } else {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${theme.color},${this.o})`;
+        ctx.fillStyle = `rgba(${this.color},${this.o})`;
         ctx.fill();
       }
     }
   }
   for (let i = 0; i < theme.count; i++) items.push(new Bit());
 
+  /* Firework burst: a shell of particles that explodes outward, falls, and fades */
+  class Firework {
+    constructor() {
+      this.x = canvas.width * (0.15 + Math.random() * 0.7);
+      this.y = canvas.height * (0.15 + Math.random() * 0.35);
+      const n     = 26 + Math.floor(Math.random() * 18);
+      const color = pickColor(theme);
+      this.bits = [];
+      for (let i = 0; i < n; i++) {
+        const angle = (Math.PI * 2 * i) / n + Math.random() * 0.15;
+        const speed = 1 + Math.random() * 2.6;
+        this.bits.push({
+          x: this.x, y: this.y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          color,
+        });
+      }
+    }
+    update() {
+      this.bits.forEach(b => {
+        b.x += b.vx; b.y += b.vy;
+        b.vy += 0.035;         // gravity
+        b.vx *= 0.99;          // air drag
+        b.life -= 0.014;
+      });
+      this.bits = this.bits.filter(b => b.life > 0);
+    }
+    draw() {
+      this.bits.forEach(b => {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${b.color},${Math.max(b.life, 0)})`;
+        ctx.fill();
+      });
+    }
+    get dead() { return this.bits.length === 0; }
+  }
+
+  function scheduleFireworks() {
+    fireworkTimer = setInterval(() => {
+      if (!enabled) return;
+      fireworks.push(new Firework());
+      if (Math.random() < 0.3) fireworks.push(new Firework()); // occasional double burst
+    }, 1400);
+  }
+  if (theme.fireworks) scheduleFireworks();
+
   function animate() {
     if (!enabled) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     items.forEach(b => { b.update(); b.draw(); });
+    if (fireworks.length) {
+      fireworks.forEach(f => { f.update(); f.draw(); });
+      fireworks = fireworks.filter(f => !f.dead);
+    }
     requestAnimationFrame(animate);
   }
   animate();
