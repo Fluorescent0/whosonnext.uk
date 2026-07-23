@@ -217,6 +217,71 @@ nav {
 .hero-heading em {
   font-style: normal;
   color: var(--gold-lt);
+  position: relative;
+  display: inline-block;
+}
+.hero-heading em svg.chalk-underline {
+  position: absolute;
+  left: -2%; right: -2%; bottom: -0.08em;
+  width: 104%; height: 0.22em;
+  overflow: visible;
+}
+.hero-heading em svg.chalk-underline path {
+  fill: none;
+  stroke: var(--gold-lt);
+  stroke-width: 5;
+  stroke-linecap: round;
+  opacity: 0.75;
+  stroke-dasharray: 340;
+  stroke-dashoffset: 340;
+  animation: chalkDraw 0.7s 0.85s cubic-bezier(.34,1.4,.64,1) forwards;
+}
+@keyframes chalkDraw {
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-heading em svg.chalk-underline path { animation: none; stroke-dashoffset: 0; }
+}
+
+/* Hanging bar lamp - casts a cursor-tracked spotlight over the hero.
+   The one physical detail the hero is built around: a pub pool table
+   has exactly this light, always slightly warm, always slightly
+   off-center from someone leaning on the rail. */
+.hero-lamp {
+  position: absolute; z-index: 2;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+  pointer-events: none;
+}
+.hero-lamp .cord {
+  width: 2px; height: 46px;
+  background: linear-gradient(var(--border-hi), transparent);
+}
+.hero-lamp .shade {
+  width: 64px; height: 22px;
+  border-radius: 0 0 32px 32px;
+  background: linear-gradient(180deg, var(--surface-3), var(--surface));
+  border: 1px solid var(--border-hi);
+  border-top: none;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+  position: relative;
+}
+.hero-lamp .shade::after {
+  content: '';
+  position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold-lt);
+  box-shadow: 0 0 12px 4px var(--gold-glow);
+}
+.hero-spotlight {
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle 380px at var(--sx, 50%) var(--sy, 140px),
+    rgba(238,192,96,0.10) 0%, rgba(238,192,96,0.035) 42%, transparent 72%);
+}
+@media (max-width: 700px) {
+  .hero-lamp { display: none; }
 }
 
 .hero-sub {
@@ -268,6 +333,7 @@ nav {
   margin-top: 64px;
   width: 100%; max-width: 340px;
   animation: fadeUp .7s .4s ease-out both;
+  perspective: 900px;
 }
 .phone-frame {
   background: var(--surface);
@@ -278,6 +344,12 @@ nav {
     0 0 0 1px rgba(255,255,255,0.04),
     0 40px 80px rgba(0,0,0,0.6),
     0 0 60px rgba(212,164,65,0.06);
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .4s cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone-frame { transition: none; }
 }
 .phone-bar {
   height: 44px;
@@ -423,9 +495,26 @@ section {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r);
-  padding: 24px;
-  transition: border-color .2s, transform .2s;
+  padding: 28px 24px 24px;
+  transition: border-color .2s, transform .25s;
   position: relative; overflow: hidden;
+  transform: rotate(var(--tilt, 0deg));
+}
+/* Pinned-to-corkboard feel - cards sit slightly askew until you
+   engage with them, like index cards tacked above the pool table. */
+.feat-card:nth-child(6n+1) { --tilt: -0.6deg; }
+.feat-card:nth-child(6n+2) { --tilt: 0.5deg; }
+.feat-card:nth-child(6n+3) { --tilt: -0.4deg; }
+.feat-card:nth-child(6n+4) { --tilt: 0.6deg; }
+.feat-card:nth-child(6n+5) { --tilt: -0.5deg; }
+.feat-card:nth-child(6n+6) { --tilt: 0.4deg; }
+.feat-card::after {
+  content: '';
+  position: absolute; top: 9px; left: 50%;
+  transform: translateX(-50%);
+  width: 8px; height: 8px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--gold-lt), var(--gold) 60%, #8a641f 100%);
+  box-shadow: 0 2px 3px rgba(0,0,0,0.5);
 }
 .feat-card::before {
   content: '';
@@ -436,7 +525,7 @@ section {
 }
 .feat-card:hover {
   border-color: var(--border-hi);
-  transform: translateY(-2px);
+  transform: rotate(0deg) translateY(-3px);
 }
 .feat-card:hover::before { opacity: 1; }
 
@@ -485,19 +574,40 @@ section {
   align-items: center; text-align: center;
   padding: 0 20px 0;
 }
+/* Real pool-ball numbering instead of generic 01/02/03 - the
+   steps literally are the first three balls off the break. */
 .step-num {
   width: 52px; height: 52px;
   border-radius: 50%;
-  background: var(--surface-2);
-  border: 1px solid rgba(212,164,65,0.2);
   display: flex; align-items: center; justify-content: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px; color: var(--gold);
+  font-size: 20px;
   margin-bottom: 18px;
   flex-shrink: 0;
   position: relative; z-index: 1;
-  box-shadow: 0 0 20px var(--gold-dim);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -3px 5px rgba(0,0,0,0.35);
 }
+.step-num::before {
+  content: '';
+  position: absolute; top: 14%; left: 20%;
+  width: 34%; height: 22%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.55);
+  filter: blur(2px);
+  transform: rotate(-25deg);
+}
+.step-num span {
+  background: #fff;
+  color: #17181c;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.step-num.ball-1 { background: #E8B31E; }
+.step-num.ball-2 { background: #2E5FE0; }
+.step-num.ball-3 { background: #C93C3C; }
 .step-title {
   font-weight: 700; font-size: 15px;
   color: var(--text); margin-bottom: 8px;
@@ -520,6 +630,17 @@ section {
   border-radius: var(--r);
   padding: 28px 24px;
   position: relative; overflow: hidden;
+}
+/* Torn-corner ticket detail - these read as bar tab stubs, not
+   generic pricing tiles. */
+.price-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0; z-index: 2;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 24px 24px 0;
+  border-color: transparent var(--bg) transparent transparent;
+  filter: drop-shadow(-1px 1px 1px rgba(0,0,0,0.35));
 }
 .price-card.featured {
   background: linear-gradient(145deg, var(--surface-2), var(--surface));
@@ -669,8 +790,9 @@ section {
   background: linear-gradient(145deg, var(--surface-2), var(--surface));
   border: 1px solid rgba(39,184,106,0.2);
   border-radius: var(--r);
-  padding: 28px 24px;
+  padding: 0 0 28px;
   position: relative; overflow: hidden;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.03);
 }
 
 /* Green top stripe instead of gold - the one clear visual diff from pricing */
@@ -678,29 +800,217 @@ section {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: linear-gradient(90deg, transparent, var(--green), #6ee7a8, transparent);
+  z-index: 2;
+}
+/* Faint felt glow inside the card top, echoing the table itself */
+.signup-card::after {
+  content: '';
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 340px; height: 160px;
+  background: radial-gradient(ellipse, rgba(39,184,106,0.12) 0%, transparent 72%);
+  pointer-events: none;
+}
+
+/* ── The "bar tab" - an itemized receipt that gets voided by
+   the FREE stamp. Lets the offer show its working instead of
+   just asserting "free", and gives the section something to
+   look at beyond a button. ── */
+.tab-ticket {
+  position: relative; z-index: 1;
+  padding: 26px 28px 22px;
+  text-align: left;
+}
+.tab-ticket-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed rgba(255,255,255,0.14);
+}
+.tab-ticket-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 1px;
+  color: var(--text);
+}
+.tab-ticket-sub {
+  font-size: 11px; color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+.tab-items {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 9px;
+  margin-bottom: 18px;
+}
+.tab-items li {
+  position: relative;
+  padding-left: 23px;
+  font-size: 13.5px; color: var(--text-muted);
+}
+.tab-items li::before {
+  content: '';
+  position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #fff, #dcdcdc 55%, #b9b9b9 100%);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+.tab-items li::after {
+  content: '✓';
+  position: absolute; left: 3.2px; top: 50%;
+  transform: translateY(-58%);
+  font-size: 9px; font-weight: 700; color: var(--green);
+  line-height: 1;
+}
+
+.tab-total-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(255,255,255,0.14);
+}
+.tab-total-label {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  letter-spacing: 0.2px;
+}
+.tab-total-value {
+  display: flex; align-items: center; gap: 10px;
+}
+.tab-was {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; color: var(--text-dim);
+  position: relative;
+}
+.tab-was::after {
+  content: '';
+  position: absolute; left: -3px; right: -3px; top: 50%;
+  height: 2px; background: rgba(240,112,112,0.7);
+  transform: rotate(-6deg);
+}
+.tab-stamp {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px;
+  color: var(--green);
+  border: 2.5px solid var(--green);
+  border-radius: 6px;
+  padding: 2px 10px 0;
+  transform: rotate(-7deg);
+  opacity: 0.95;
+  box-shadow: 0 0 0 1px rgba(39,184,106,0.15) inset;
+}
+.reveal.visible .tab-stamp {
+  animation: stampIn .5s .35s cubic-bezier(.2,1.6,.4,1) both;
+}
+@keyframes stampIn {
+  0%   { transform: rotate(-7deg) scale(2.6); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: rotate(-7deg) scale(1); opacity: 0.95; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal.visible .tab-stamp { animation: none; }
+}
+
+/* ── The CTA stage - the hero's hanging lamp finds its resting
+   point here. Everything above has been leading down to one
+   lit spot; this is the only element on the page that breathes
+   on its own, which is what should make it read as the endpoint
+   rather than just another button. ── */
+.signup-cta-stage {
+  position: relative;
+  padding-top: 22px;
+  margin: 4px 28px 0;
+}
+.cta-glow {
+  position: absolute;
+  top: -10px; left: 50%; transform: translateX(-50%);
+  width: 260px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(238,192,96,0.30) 0%, rgba(238,192,96,0.10) 45%, transparent 75%);
+  filter: blur(2px);
+  animation: glowBreathe 4.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes glowBreathe {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(0.94); }
+  50%      { opacity: 1;   transform: translateX(-50%) scale(1.04); }
+}
+.dust-mote {
+  position: absolute; bottom: 14px;
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--gold-lt);
+  opacity: 0;
+  pointer-events: none;
+  animation: moteRise 3.6s ease-in infinite;
+}
+.dust-mote:nth-child(2) { left: 32%; animation-delay: 0.2s; }
+.dust-mote:nth-child(3) { left: 50%; animation-delay: 1.4s; }
+.dust-mote:nth-child(4) { left: 66%; animation-delay: 2.5s; }
+@keyframes moteRise {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  15%  { opacity: 0.8; }
+  85%  { opacity: 0.3; }
+  100% { opacity: 0; transform: translateY(-58px) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-glow { animation: none; opacity: 0.85; }
+  .dust-mote { display: none; }
 }
 
 .signup-btn {
   width: 100%;
-  padding: 16px;
+  margin: 0;
+  padding: 18px;
   border-radius: var(--r-sm); border: none;
   background: linear-gradient(135deg, #B8892B, #D4A441, #EEC060);
   color: #0D0800;
   font-family: 'Outfit', sans-serif;
-  font-weight: 700; font-size: 16px;
+  font-weight: 700; font-size: 16.5px; letter-spacing: 0.2px;
   cursor: pointer;
-  transition: filter .15s, transform .12s;
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 0 10px 30px rgba(238,192,96,0.16), 0 2px 6px rgba(0,0,0,0.3);
+  transition: filter .15s, transform .12s, box-shadow .3s;
 }
-.signup-btn:hover { filter: brightness(1.1); }
+.signup-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 14px 40px rgba(238,192,96,0.26), 0 2px 6px rgba(0,0,0,0.3);
+}
+.signup-btn:hover .cue-ball { animation: cueRoll .5s linear; }
+@keyframes cueRoll { to { transform: rotate(360deg); } }
+.signup-btn .cue-ball {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #fff, #e8e8e8 60%, #c7c7c7 100%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
 .signup-btn:active { transform: scale(0.97); }
 .signup-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* Break-shot flash on click - the one moment of impact on the
+   whole page, gone in a third of a second. */
+.signup-btn::after {
+  content: '';
+  position: absolute; inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(circle, #fff 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+.signup-btn.breaking::after {
+  animation: breakFlash .35s ease-out;
+}
+@keyframes breakFlash {
+  0%   { opacity: 0.55; transform: scale(0.7); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signup-btn.breaking::after { animation: none; }
+}
 
 .signup-price-note {
   font-size: 12px;
   color: var(--text-muted);
-  margin-top: 14px;
-  margin-bottom: 20px;
+  margin: 14px 28px 20px;
   opacity: 0.6;
+  text-align: center;
 }
 
 .trust-chips {
@@ -708,6 +1018,7 @@ section {
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px 24px;
+  padding: 0 28px;
 }
 .trust-chip {
   display: flex; align-items: center; gap: 5px;
@@ -936,14 +1247,24 @@ footer {
   <a class="mob-cta" href="#signup">Get Started</a>
 </div>
 
-<div class="hero">
+<div class="hero" id="hero">
+  <div class="hero-lamp" aria-hidden="true">
+    <div class="cord"></div>
+    <div class="shade"></div>
+  </div>
+  <div class="hero-spotlight" id="hero-spotlight" aria-hidden="true"></div>
+
   <div class="hero-eyebrow">
     <span class="eyebrow-dot"></span>
     Live at pubs near you
   </div>
 
   <h1 class="hero-heading">
-    Winner<br><em>Stays On.</em><br>Sorted.
+    Winner<br><em>Stays On.
+      <svg class="chalk-underline" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M4,12 C60,4 120,17 160,9 C210,-1 260,14 296,7" />
+      </svg>
+    </em><br>Sorted.
   </h1>
 
   <p class="hero-sub">
@@ -963,7 +1284,7 @@ footer {
   </div>
 
   <div class="hero-preview">
-    <div class="phone-frame">
+    <div class="phone-frame" id="phone-frame">
       <div class="phone-bar">
         <span class="phone-brand">🎱 The Crown</span>
         <span class="phone-dot"></span>
@@ -1067,17 +1388,17 @@ footer {
     <p class="section-sub reveal">No technical setup. No IT. Just a link your punters can open on their phone.</p>
     <div class="steps">
       <div class="step reveal">
-        <div class="step-num">1</div>
+        <div class="step-num ball-1"><span>1</span></div>
         <div class="step-title">Register your pub</div>
         <p class="step-desc">Fill in the form below - we'll set up your custom page and send you a link and QR code the same day.</p>
       </div>
       <div class="step reveal">
-        <div class="step-num">2</div>
+        <div class="step-num ball-2"><span>2</span></div>
         <div class="step-title">Stick up the QR code</div>
         <p class="step-desc">Print it out and put it on the table. Players scan it to join the queue on their own phones.</p>
       </div>
       <div class="step reveal">
-        <div class="step-num">3</div>
+        <div class="step-num ball-3"><span>3</span></div>
         <div class="step-title">Let it run</div>
         <p class="step-desc">The app handles everything - queue rotation, scores, streaks. You just pour the pints.</p>
       </div>
@@ -1209,7 +1530,36 @@ footer {
     <h2 class="signup-hook reveal">Your regulars<br>are waiting.</h2>
     <p class="signup-hook-sub reveal">One link. One QR code. Pool night sorted - same day you sign up.</p>
     <div class="signup-card reveal">
-      <button id="signup-btn" class="signup-btn">Subscribe - first month free</button>
+      <div class="tab-ticket">
+        <div class="tab-ticket-head">
+          <span class="tab-ticket-label">Your tab</span>
+          <span class="tab-ticket-sub">Everything included</span>
+        </div>
+        <ul class="tab-items">
+          <li>Queue management &amp; auto-rotation</li>
+          <li>Live leaderboards &amp; streaks</li>
+          <li>TV mode for the bar screen</li>
+          <li>Unlimited tables, one account</li>
+          <li>Staff admin controls</li>
+        </ul>
+        <div class="tab-total-row">
+          <span class="tab-total-label">First month</span>
+          <span class="tab-total-value">
+            <span class="tab-was">£25</span>
+            <span class="tab-stamp">FREE</span>
+          </span>
+        </div>
+      </div>
+      <div class="signup-cta-stage">
+        <div class="cta-glow" aria-hidden="true"></div>
+        <div class="dust-mote" aria-hidden="true"></div>
+        <div class="dust-mote" aria-hidden="true"></div>
+        <div class="dust-mote" aria-hidden="true"></div>
+        <button id="signup-btn" class="signup-btn">
+          <span class="cue-ball" aria-hidden="true"></span>
+          Subscribe - first month free
+        </button>
+      </div>
       <p class="signup-price-note">Then £25/month. No contracts, cancel any time.</p>
       <div class="trust-chips">
         <span class="trust-chip">Ready same day</span>
@@ -1265,12 +1615,45 @@ function closeMenu() {
   burger.setAttribute('aria-expanded', false);
 }
 
+// Lamp spotlight + phone tilt - both read the same cursor position
+// so the light and the "held phone" react to the same hand.
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const hero = document.getElementById('hero');
+const spotlight = document.getElementById('hero-spotlight');
+const phoneFrame = document.getElementById('phone-frame');
+
+if (hero && spotlight && !prefersReduced && window.matchMedia('(hover: hover)').matches) {
+  hero.addEventListener('mousemove', (e) => {
+    const rect = hero.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    spotlight.style.setProperty('--sx', `${x}px`);
+    spotlight.style.setProperty('--sy', `${y}px`);
+
+    if (phoneFrame) {
+      const pRect = phoneFrame.getBoundingClientRect();
+      const pcx = pRect.left + pRect.width / 2 - rect.left;
+      const pcy = pRect.top + pRect.height / 2 - rect.top;
+      const dx = (x - pcx) / rect.width;
+      const dy = (y - pcy) / rect.height;
+      phoneFrame.style.setProperty('--ry', `${dx * 10}deg`);
+      phoneFrame.style.setProperty('--rx', `${-dy * 10}deg`);
+    }
+  });
+  hero.addEventListener('mouseleave', () => {
+    if (phoneFrame) {
+      phoneFrame.style.setProperty('--ry', `0deg`);
+      phoneFrame.style.setProperty('--rx', `0deg`);
+    }
+  });
+}
+
 const signupBtn = document.getElementById('signup-btn');
 if (signupBtn) {
-  signupBtn.addEventListener('click', async (e) => {
-    const btn = e.target;
-    btn.textContent = 'Redirecting to secure payment…';
-    btn.disabled = true;
+  signupBtn.addEventListener('click', async () => {
+    signupBtn.classList.add('breaking');
+    signupBtn.textContent = 'Redirecting to secure payment…';
+    signupBtn.disabled = true;
 
     try {
       const response = await fetch('/.netlify/functions/create-checkout-session', {
@@ -1286,8 +1669,9 @@ if (signupBtn) {
       }
     } catch (err) {
       console.error(err);
-      btn.textContent = 'Error - try again later';
-      btn.disabled = false;
+      signupBtn.textContent = 'Error - try again later';
+      signupBtn.disabled = false;
+      signupBtn.classList.remove('breaking');
     }
   });
 }
