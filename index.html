@@ -68,14 +68,15 @@ nav {
   display: flex; align-items: center; gap: 9px;
   text-decoration: none;
 }
-.nav-icon { font-size: 20px; }
+.nav-icon { width: 20px; height: 20px; display: inline-flex; color: var(--gold); }
+.nav-icon svg { width: 100%; height: 100%; }
 .nav-name {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 22px; letter-spacing: 2px;
   color: var(--text);
 }
 .nav-cta {
-  background: var(--gold);
+  background: linear-gradient(135deg, #B8892B, #D4A441, #EEC060);
   color: #0D0800;
   font-weight: 700; font-size: 13px;
   padding: 8px 18px;
@@ -362,7 +363,9 @@ nav {
 .phone-brand {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 18px; letter-spacing: 1.5px;
+  display: inline-flex; align-items: center; gap: 7px;
 }
+.phone-brand svg { width: 14px; height: 14px; color: var(--gold-lt); flex-shrink: 0; }
 .phone-dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--green);
@@ -530,9 +533,12 @@ section {
 .feat-card:hover::before { opacity: 1; }
 
 .feat-icon {
-  font-size: 26px; margin-bottom: 14px;
+  width: 26px; height: 26px; margin-bottom: 16px;
   display: block;
+  color: var(--gold-lt);
+  stroke-width: 1.6;
 }
+.feat-icon svg { width: 100%; height: 100%; display: block; }
 .feat-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 22px; letter-spacing: 0.5px;
@@ -817,23 +823,25 @@ section {
    look at beyond a button. ── */
 .tab-ticket {
   position: relative; z-index: 1;
-  padding: 26px 28px 22px;
+  padding: 26px 28px 20px;
   text-align: left;
 }
 .tab-ticket-head {
-  display: flex; align-items: baseline; justify-content: space-between;
   margin-bottom: 18px;
   padding-bottom: 12px;
   border-bottom: 1px dashed rgba(255,255,255,0.14);
 }
 .tab-ticket-label {
+  display: block;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 20px; letter-spacing: 1px;
   color: var(--text);
 }
 .tab-ticket-sub {
+  display: block;
   font-size: 11px; color: var(--text-muted);
   letter-spacing: 0.3px;
+  margin-top: 3px;
 }
 .tab-items {
   list-style: none;
@@ -874,38 +882,59 @@ section {
 .tab-total-value {
   display: flex; align-items: center; gap: 10px;
 }
+.tab-recur-note {
+  font-size: 11.5px; color: var(--text-muted);
+  text-align: right;
+  margin-top: 6px;
+  opacity: 0.8;
+}
 .tab-was {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px; color: var(--text-dim);
+  font-size: 18px; color: var(--text-dim);
   position: relative;
 }
 .tab-was::after {
   content: '';
   position: absolute; left: -3px; right: -3px; top: 50%;
-  height: 2px; background: rgba(240,112,112,0.7);
-  transform: rotate(-6deg);
+  height: 1px; background: var(--text-dim);
+  opacity: 0.7;
 }
 .tab-stamp {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px; letter-spacing: 2px;
-  color: var(--green);
-  border: 2.5px solid var(--green);
-  border-radius: 6px;
-  padding: 2px 10px 0;
-  transform: rotate(-7deg);
-  opacity: 0.95;
-  box-shadow: 0 0 0 1px rgba(39,184,106,0.15) inset;
+  font-size: 24px; letter-spacing: 2.5px;
+  color: var(--gold-lt);
+  position: relative;
+  text-shadow: 0 0 18px var(--gold-glow);
+}
+.tab-stamp svg.chalk-underline {
+  position: absolute;
+  left: -4%; right: -4%; bottom: -0.22em;
+  width: 108%; height: 0.28em;
+  overflow: visible;
+}
+.tab-stamp svg.chalk-underline path {
+  fill: none;
+  stroke: var(--gold-lt);
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.7;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
 }
 .reveal.visible .tab-stamp {
-  animation: stampIn .5s .35s cubic-bezier(.2,1.6,.4,1) both;
+  animation: stampIn .5s .3s ease-out both;
+}
+.reveal.visible .tab-stamp svg.chalk-underline path {
+  animation: chalkDraw .5s .55s cubic-bezier(.34,1.4,.64,1) forwards;
 }
 @keyframes stampIn {
-  0%   { transform: rotate(-7deg) scale(2.6); opacity: 0; }
-  60%  { opacity: 1; }
-  100% { transform: rotate(-7deg) scale(1); opacity: 0.95; }
+  from { opacity: 0; transform: translateY(3px); text-shadow: 0 0 0 transparent; }
+  to   { opacity: 1; transform: translateY(0); text-shadow: 0 0 18px var(--gold-glow); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .reveal.visible .tab-stamp { animation: none; }
+  .reveal.visible .tab-stamp,
+  .reveal.visible .tab-stamp svg.chalk-underline path { animation: none; }
+  .tab-stamp svg.chalk-underline path { stroke-dashoffset: 0; }
 }
 
 /* ── The CTA stage - the hero's hanging lamp finds its resting
@@ -915,8 +944,8 @@ section {
    rather than just another button. ── */
 .signup-cta-stage {
   position: relative;
-  padding-top: 22px;
-  margin: 4px 28px 0;
+  padding-top: 20px;
+  margin: 0 28px 0;
 }
 .cta-glow {
   position: absolute;
@@ -1005,20 +1034,13 @@ section {
   .signup-btn.breaking::after { animation: none; }
 }
 
-.signup-price-note {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin: 14px 28px 20px;
-  opacity: 0.6;
-  text-align: center;
-}
-
 .trust-chips {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px 24px;
   padding: 0 28px;
+  margin-top: 22px;
 }
 .trust-chip {
   display: flex; align-items: center; gap: 5px;
@@ -1035,7 +1057,8 @@ section {
   background: var(--green-dim);
   border-top: 1px solid rgba(39,184,106,0.15);
 }
-.form-success .success-icon { font-size: 40px; margin-bottom: 14px; }
+.form-success .success-icon { width: 40px; height: 40px; margin: 0 auto 14px; color: var(--green); }
+.form-success .success-icon svg { width: 100%; height: 100%; }
 .form-success h3 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 32px; letter-spacing: 1px;
@@ -1059,6 +1082,7 @@ footer {
   font-size: 18px; letter-spacing: 1.5px;
   color: var(--text-muted);
 }
+.footer-brand svg { width: 15px; height: 15px; color: var(--gold-lt); flex-shrink: 0; }
 .footer-copy {
   font-size: 12px; color: var(--text-dim);
 }
@@ -1121,11 +1145,13 @@ footer {
   padding: 0 10px;
 }
 .mt-card-brand {
+  display: inline-flex; align-items: center; gap: 7px;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 12px; letter-spacing: 0.5px;
   color: var(--text); white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
+.mt-card-brand svg { width: 13px; height: 13px; color: var(--gold-lt); flex-shrink: 0; }
 .mt-table-chip {
   font-size: 9px; font-weight: 700;
   letter-spacing: 1px; text-transform: uppercase;
@@ -1156,7 +1182,9 @@ footer {
   background: linear-gradient(90deg, transparent, rgba(212,164,65,0.08), transparent);
   border-bottom: 1px solid rgba(212,164,65,0.1);
   margin: -10px -10px 9px; padding: 5px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
 }
+.mt-streak svg { flex-shrink: 0; }
 .mt-player { text-align: center; padding: 6px 4px; border-radius: 6px; margin-bottom: 4px; }
 .mt-player.champ { background: rgba(212,164,65,0.08); border: 1px solid rgba(212,164,65,0.15); }
 .mt-player.chal  { background: rgba(255,255,255,0.02); border: 1px solid var(--border); }
@@ -1226,13 +1254,13 @@ footer {
 
 <nav>
   <a class="nav-brand" href="#">
-    <span class="nav-icon">🎱</span>
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
     <span class="nav-name">Whosonnext&nbsp;</span>
   </a>
 
   <div class="nav-links">
     <a class="btn-secondary" style="padding:8px 16px; font-size:13px;" href="contact.html">Contact</a>
-    <a class="btn-secondary" style="padding:8px 16px; font-size:13px;" href="/leaderboards">🏆 Leaderboard</a>
+    <a class="btn-secondary" style="padding:8px 16px; font-size:13px; display:inline-flex; align-items:center; gap:6px;" href="/leaderboards"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 5H4.5A2.5 2.5 0 0 0 7 8.5"/><path d="M17 5h2.5A2.5 2.5 0 0 1 17 8.5"/><path d="M12 12v4"/><path d="M9 20h6"/><path d="M9.5 16h5l.5 4h-6z"/></svg> Leaderboard</a>
     <a class="nav-cta" href="#signup">Get Started</a>
   </div>
 
@@ -1243,7 +1271,7 @@ footer {
 
 <div class="nav-mobile-menu" id="nav-mobile-menu">
   <a href="contact.html">Contact</a>
-  <a href="/leaderboards">🏆 Leaderboard</a>
+  <a href="/leaderboards" style="display:inline-flex; align-items:center; gap:7px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 5H4.5A2.5 2.5 0 0 0 7 8.5"/><path d="M17 5h2.5A2.5 2.5 0 0 1 17 8.5"/><path d="M12 12v4"/><path d="M9 20h6"/><path d="M9.5 16h5l.5 4h-6z"/></svg> Leaderboard</a>
   <a class="mob-cta" href="#signup">Get Started</a>
 </div>
 
@@ -1286,12 +1314,12 @@ footer {
   <div class="hero-preview">
     <div class="phone-frame" id="phone-frame">
       <div class="phone-bar">
-        <span class="phone-brand">🎱 The Crown</span>
+        <span class="phone-brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg> The Crown</span>
         <span class="phone-dot"></span>
       </div>
       <div class="phone-body">
         <div class="mock-match">
-          <div class="mock-streak">🔥 Jamie is on a 4-game streak</div>
+          <div class="mock-streak"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 2.5c1.2 3.6-2.6 4.8-2.6 8.5a2.9 2.9 0 0 0 5.8 0c0-1-.5-1.7-1-2.4.2 1.4-.9 1.9-.9 1.9.4-2.8-1.9-4.3-1.3-8z"/></svg> Jamie is on a 4-game streak</div>
           <div class="mock-player champ">
             <div class="mock-role">Champion</div>
             <div class="mock-name">JAMIE</div>
@@ -1336,43 +1364,43 @@ footer {
 
   <div class="features-grid">
     <div class="feat-card reveal">
-      <span class="feat-icon">🏆</span>
+      <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 5H4.5A2.5 2.5 0 0 0 7 8.5"/><path d="M17 5h2.5A2.5 2.5 0 0 1 17 8.5"/><path d="M12 12v4"/><path d="M9 20h6"/><path d="M9.5 16h5l.5 4h-6z"/></svg></span>
       <div class="feat-title">Winner Stays On</div>
       <p class="feat-desc">Champion vs challenger format with automatic queue rotation and streak tracking. The table runs itself.</p>
     </div>
     <div class="feat-card reveal">
-      <span class="feat-icon">📺</span>
+      <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="1.5"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></span>
       <div class="feat-title">TV Mode</div>
       <p class="feat-desc">Cast the current match to any screen behind the bar. Big names, live updates, no faff.</p>
     </div>
     <a class="feat-card reveal" href="/leaderboards" style="text-decoration:none; display:block;">
-      <span class="feat-icon">📊</span>
+      <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11"/><path d="M12 20V4"/><path d="M20 20v-6"/></svg></span>
       <div class="feat-title">Live Leaderboard</div>
       <p class="feat-desc">Wins, games played, and win ratios tracked across the whole night. Regulars love watching their rank climb.</p>
       <div style="margin-top:14px; font-size:12px; font-weight:600; color:var(--gold); letter-spacing:0.3px;">View today's board →</div>
     </a>
     <div class="feat-card reveal">
-      <span class="feat-icon">📱</span>
+      <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span>
       <div class="feat-title">Works on any device</div>
       <p class="feat-desc">A web app - nothing to download. Runs on the bar tablet, a phone on the table edge, anything with a browser.</p>
     </div>
     <div class="feat-card reveal">
-      <span class="feat-icon">🔄</span>
+      <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 0-14.9-4"/><path d="M4 4v4h4"/><path d="M4 12a8 8 0 0 0 14.9 4"/><path d="M20 20v-4h-4"/></svg></span>
       <div class="feat-title">Real-time sync</div>
       <p class="feat-desc">Multiple people can view the queue at once. Results update live across every device in the pub.</p>
     </div>
     <div class="feat-card reveal">
-      <span class="feat-icon">🔒</span>
+      <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
       <div class="feat-title">Staff controls</div>
       <p class="feat-desc">Admin mode lets bar staff adjust scores, manage the queue, and clear the session at the end of the night.</p>
     </div>
     <div class="feat-card reveal">
-      <span class="feat-icon">🎱</span>
+      <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
       <div class="feat-title">Multiple tables, one account</div>
       <p class="feat-desc">Running two pool tables? Six? Every table gets its own queue, its own QR code, and runs completely independently - at no extra cost.</p>
     </div>
     <div class="feat-card reveal">
-      <span class="feat-icon">🔀</span>
+      <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="18" r="1" fill="currentColor" stroke="none"/><path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/></svg></span>
       <div class="feat-title">Full queue control</div>
       <p class="feat-desc">Drag to reorder, skip a turn, or remove a no-show with a confirmation step - staff can fix the queue in seconds without breaking the flow.</p>
     </div>
@@ -1411,12 +1439,12 @@ footer {
       <div class="mt-row">
         <div class="mt-card">
           <div class="mt-card-bar">
-            <span class="mt-card-brand">🎱 The Anchor</span>
+            <span class="mt-card-brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg> The Anchor</span>
             <span class="mt-table-chip">Table 1</span>
           </div>
           <div class="mt-card-body">
             <div class="mt-match">
-              <div class="mt-streak">🔥 Liam is on a 3-game streak</div>
+              <div class="mt-streak"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c1.2 3.6-2.6 4.8-2.6 8.5a2.9 2.9 0 0 0 5.8 0c0-1-.5-1.7-1-2.4.2 1.4-.9 1.9-.9 1.9.4-2.8-1.9-4.3-1.3-8z"/></svg> Liam is on a 3-game streak</div>
               <div class="mt-player champ">
                 <div class="mt-role">Champion</div>
                 <div class="mt-name">LIAM</div>
@@ -1439,12 +1467,12 @@ footer {
 
         <div class="mt-card">
           <div class="mt-card-bar">
-            <span class="mt-card-brand">🎱 The Anchor</span>
+            <span class="mt-card-brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg> The Anchor</span>
             <span class="mt-table-chip">Table 2</span>
           </div>
           <div class="mt-card-body">
             <div class="mt-match">
-              <div class="mt-streak">🔥 Bex is on a 2-game streak</div>
+              <div class="mt-streak"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c1.2 3.6-2.6 4.8-2.6 8.5a2.9 2.9 0 0 0 5.8 0c0-1-.5-1.7-1-2.4.2 1.4-.9 1.9-.9 1.9.4-2.8-1.9-4.3-1.3-8z"/></svg> Bex is on a 2-game streak</div>
               <div class="mt-player champ">
                 <div class="mt-role">Champion</div>
                 <div class="mt-name">BEX</div>
@@ -1526,7 +1554,7 @@ footer {
 
 <div class="signup-section" id="signup">
   <div class="signup-inner">
-    <div class="signup-offer reveal">✦ First month free</div>
+    <div class="signup-offer reveal"><span class="eyebrow-dot"></span> First month free</div>
     <h2 class="signup-hook reveal">Your regulars<br>are waiting.</h2>
     <p class="signup-hook-sub reveal">One link. One QR code. Pool night sorted - same day you sign up.</p>
     <div class="signup-card reveal">
@@ -1543,12 +1571,17 @@ footer {
           <li>Staff admin controls</li>
         </ul>
         <div class="tab-total-row">
-          <span class="tab-total-label">First month</span>
+          <span class="tab-total-label">Due today</span>
           <span class="tab-total-value">
             <span class="tab-was">£25</span>
-            <span class="tab-stamp">FREE</span>
+            <span class="tab-stamp">FREE
+              <svg class="chalk-underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M2,8 C25,3 45,11 65,6 C78,3 88,9 98,5" />
+              </svg>
+            </span>
           </span>
         </div>
+        <div class="tab-recur-note">Then £25/month. No contracts, cancel any time.</div>
       </div>
       <div class="signup-cta-stage">
         <div class="cta-glow" aria-hidden="true"></div>
@@ -1560,7 +1593,6 @@ footer {
           Subscribe - first month free
         </button>
       </div>
-      <p class="signup-price-note">Then £25/month. No contracts, cancel any time.</p>
       <div class="trust-chips">
         <span class="trust-chip">Ready same day</span>
         <span class="trust-chip">2-minute setup</span>
@@ -1571,14 +1603,14 @@ footer {
   </div>
 
   <div class="form-success" id="formSuccess">
-    <div class="success-icon">🎱</div>
+    <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></div>
     <h3>You're on the list</h3>
     <p>We'll be in touch with your pub's link and QR code within 24 hours. Get the pool table warmed up.</p>
   </div>
 </div>
 
 <footer>
-  <div class="footer-brand">🎱 whosonnext</div>
+  <div class="footer-brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg> whosonnext</div>
   <div class="footer-copy">Built for pubs. Made in England.</div>
 </footer>
 
