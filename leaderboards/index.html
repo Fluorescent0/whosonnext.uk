@@ -62,7 +62,8 @@
       display: flex; align-items: center; gap: 9px;
       text-decoration: none;
     }
-    .nav-icon { font-size: 20px; }
+    .nav-icon { width: 20px; height: 20px; display: inline-flex; color: var(--gold); }
+    .nav-icon svg { width: 100%; height: 100%; }
     .nav-name {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 22px; letter-spacing: 2px;
@@ -234,7 +235,6 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .player-pub.multi { color: var(--gold); font-style: italic; }
-    .medal { font-size: 15px; line-height: 1; flex-shrink: 0; }
 
     .col-wins { font-weight: 700; font-size: 15px; }
     .col-wins.w1 { color: var(--gold-lt); }
@@ -244,7 +244,10 @@
 
     /* ─── STATES ───────────────────────────────── */
     .state-cell { text-align: center; padding: 52px 24px; color: var(--text-muted); }
-    .state-icon { font-size: 28px; margin-bottom: 10px; }
+    .state-icon { width: 28px; height: 28px; margin: 0 auto 10px; color: var(--text-muted); }
+    .state-icon svg { width: 100%; height: 100%; }
+    .state-icon.spin svg { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .state-label { font-size: 14px; }
 
     /* ─── FOOTER LINK ──────────────────────────── */
@@ -278,7 +281,7 @@
 
 <nav>
   <a href="/" class="nav-brand">
-    <span class="nav-icon">🎱</span>
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
     <span class="nav-name">WHOSONNEXT</span>
   </a>
   <a href="/" class="nav-back">← Back to home</a>
@@ -296,7 +299,7 @@
 
   <div class="filter-wrap">
     <select id="pub-filter" class="pub-select">
-      <option value="all">🌍 Global - all pubs</option>
+      <option value="all">Global - all pubs</option>
     </select>
   </div>
 
@@ -314,7 +317,7 @@
         <tr>
           <td colspan="4">
             <div class="state-cell">
-              <div class="state-icon">⏳</div>
+              <div class="state-icon spin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 1 0 10 10" opacity="0.15"/><path d="M12 2a10 10 0 0 1 10 10" opacity="0.9"/></svg></div>
               <div class="state-label">Loading scores…</div>
             </div>
           </td>
@@ -333,7 +336,6 @@
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZheG9zdGhqZHByYmxzaWNwcXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjUwMTMsImV4cCI6MjA3ODcwMTAxM30.n87ztgEHte2XW3PQ67x-On_izxTJbhlX7vNeiKMtLc8'
   );
 
-  const MEDALS = ['🥇', '🥈', '🥉'];
   const ROW_CLASS = ['row-gold', 'row-silver', 'row-bronze'];
   const RANK_CLASS = ['r1', 'r2', 'r3'];
   const WINS_CLASS = ['w1', 'wn', 'wn'];
@@ -371,7 +373,7 @@
 
     if (sRes.error) {
       setBody(`<tr><td colspan="4"><div class="state-cell">
-        <div class="state-icon">⚠️</div>
+        <div class="state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 21.5 20h-19z"/><path d="M12 9.5v4.5"/><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/></svg></div>
         <div class="state-label">Couldn't load scores.</div>
       </div></td></tr>`);
       return console.error(sRes.error);
@@ -403,7 +405,7 @@
     // Populate filter
     const filter = document.getElementById('pub-filter');
     Object.keys(stats).filter(k => k !== 'all').sort().forEach(pub => {
-      filter.innerHTML += `<option value="${esc(pub)}">📍 ${esc(pub)}</option>`;
+      filter.innerHTML += `<option value="${esc(pub)}">${esc(pub)}</option>`;
     });
     filter.addEventListener('change', () => renderTable(filter.value));
 
@@ -415,7 +417,7 @@
 
       if (sorted.length === 0) {
         setBody(`<tr><td colspan="4"><div class="state-cell">
-          <div class="state-icon">🎯</div>
+          <div class="state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l2-7h12l2 7"/><path d="M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6"/><path d="M4 13h5a1 1 0 0 1 1 1v0a2 2 0 0 0 4 0v0a1 1 0 0 1 1-1h5"/></svg></div>
           <div class="state-label">No games played here yet today.</div>
         </div></td></tr>`);
         return;
@@ -427,7 +429,6 @@
         const rankCls  = RANK_CLASS[i]  ?? 'rn';
         const winsCls  = WINS_CLASS[i]  ?? 'wn';
         const rowCls   = ROW_CLASS[i]   ?? '';
-        const medal    = i < 3 ? `<span class="medal">${MEDALS[i]}</span>` : '';
 
         let pubLine = '';
         if (showPub) {
@@ -450,7 +451,6 @@
                 <span class="player-name">${esc(name)}</span>
                 ${pubLine}
               </div>
-              ${medal}
             </div>
           </td>
           <td class="col-wins ${winsCls}">${s.wins}</td>
