@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help - WhosOnNext</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/Fluorescent0/Weaver-Pool-App-assets/refs/heads/main/WON_favicon.ico">
+<style>
+/* ─── RESET & ROOT ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:          #09090C;
+  --surface:     #111318;
+  --surface-2:   #181C26;
+  --border:      rgba(255,255,255,0.06);
+  --border-hi:   rgba(255,255,255,0.11);
+  --gold:        #D4A441;
+  --gold-lt:     #EEC060;
+  --gold-dim:    rgba(212,164,65,0.10);
+  --green:       #27B86A;
+  --green-dim:   rgba(39,184,106,0.08);
+  --red:         #D95050;
+  --red-dim:     rgba(217,80,80,0.08);
+  --text:        #EDE9E0;
+  --text-muted:  #6B7280;
+  --text-dim:    #353A48;
+  --r:    14px;
+  --r-sm: 9px;
+  font-family: 'Outfit', system-ui, sans-serif;
+  color-scheme: dark;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100svh;
+}
+
+/* ─── NOISE OVERLAY ────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ─── NAV ──────────────────────────────────────────────────── */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px;
+  background: rgba(9,9,12,0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 9px;
+  text-decoration: none;
+}
+.nav-icon {
+  width: 20px; height: 20px; display: inline-flex; color: var(--gold);
+}
+.nav-icon svg { width: 100%; height: 100%; }
+.nav-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px;
+  color: var(--text);
+}
+.nav-back {
+  color: var(--text-muted);
+  font-size: 13px; font-weight: 500;
+  text-decoration: none;
+  transition: color .15s;
+}
+.nav-back:hover { color: var(--text); }
+
+/* ─── PAGE ─────────────────────────────────────────────────── */
+.page {
+  position: relative; z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 56px 20px 90px;
+}
+
+/* ─── HEADER ───────────────────────────────────────────────── */
+.page-header {
+  text-align: center;
+  padding: 52px 0 40px;
+  position: relative;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  width: 520px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,71,49,0.28) 0%, transparent 70%);
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.2);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 11vw, 72px);
+  letter-spacing: 2px;
+  line-height: 0.95;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.page-title em {
+  font-style: normal;
+  color: var(--gold-lt);
+}
+.page-sub {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.65;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ─── TOC ──────────────────────────────────────────────────── */
+.toc {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center;
+  margin: 32px 0 44px;
+}
+.toc a {
+  font-size: 12.5px; font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: 999px;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.toc a:hover { color: var(--gold-lt); border-color: rgba(212,164,65,0.35); background: var(--gold-dim); }
+
+/* ─── SECTION ──────────────────────────────────────────────── */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 30px 28px;
+  margin-bottom: 20px;
+  scroll-margin-top: 76px;
+  position: relative;
+}
+.section::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  border-radius: var(--r) var(--r) 0 0;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 40%, var(--gold-lt) 60%, transparent 100%);
+  opacity: 0.4;
+}
+.section.danger::after {
+  background: linear-gradient(90deg, transparent 0%, var(--red) 40%, #E88 60%, transparent 100%);
+  opacity: 0.5;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 1px;
+  color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.section-icon { width: 20px; height: 20px; display: inline-flex; flex-shrink: 0; color: var(--gold); }
+.section-icon svg { width: 100%; height: 100%; }
+.section.danger .section-icon { color: var(--red); }
+.section p {
+  font-size: 14.5px; color: var(--text-muted);
+  line-height: 1.7; margin-bottom: 12px;
+}
+.section p:last-child { margin-bottom: 0; }
+.section strong { color: var(--text); }
+.section a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(212,164,65,0.3); }
+.section a:hover { color: var(--gold-lt); border-color: var(--gold-lt); }
+
+.steps {
+  counter-reset: step;
+  list-style: none;
+  margin: 16px 0;
+}
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 18px 40px;
+  font-size: 14.5px; color: var(--text-muted);
+  line-height: 1.65;
+}
+.steps li:last-child { padding-bottom: 0; }
+.steps li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 0;
+  width: 26px; height: 26px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.3);
+  border-radius: 50%;
+  color: var(--gold-lt);
+  font-weight: 700; font-size: 12.5px;
+  display: flex; align-items: center; justify-content: center;
+}
+.steps li strong { color: var(--text); }
+
+.callout {
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.18);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  font-size: 13.5px; color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 16px;
+}
+.callout strong { color: var(--gold); }
+.callout.red {
+  background: var(--red-dim);
+  border-color: rgba(217,80,80,0.2);
+}
+.callout.red strong { color: var(--red); }
+
+.faq-item { margin-bottom: 16px; }
+.faq-item:last-child { margin-bottom: 0; }
+.faq-q { font-size: 14.5px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.faq-a { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+
+.contact-cta {
+  text-align: center;
+  padding: 6px 0 0;
+}
+.contact-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #B8892B, #D4A441, #EEC060);
+  color: black;
+  padding: 13px 28px;
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  font-weight: 700; font-size: 14px;
+  transition: filter .15s;
+  margin-top: 12px;
+}
+.contact-btn:hover { filter: brightness(1.08); }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="nav-brand" href="/">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
+    <span class="nav-name">Whosonnext</span>
+  </a>
+  <a class="nav-back" href="/">← Back</a>
+</nav>
+
+<div class="page">
+  <header class="page-header">
+    <div class="eyebrow">Help Centre</div>
+    <h1 class="page-title">HOW CAN WE<br><em>HELP?</em></h1>
+    <p class="page-sub">Everything pub owners and staff need to know about running WhosOnNext - from your first QR code to managing your subscription.</p>
+  </header>
+
+  <nav class="toc" aria-label="Sections on this page">
+    <a href="#getting-started">Getting Started</a>
+    <a href="#tables-queues">Tables &amp; Queues</a>
+    <a href="#billing">Billing</a>
+    <a href="#how-to-cancel">How to Cancel</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section class="section" id="getting-started">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span> Getting Started</h2>
+    <p>WhosOnNext gives your pub a digital queue for the pool table - players scan a QR code, pop themselves on the list, and get notified when it's their turn. No more chalk marks on the wall or shouted arguments about whose go it is.</p>
+    <p>After you sign up, you'll get a welcome email with your venue's QR code and a link to your <strong>table manager</strong> - that's where you print QR codes, add extra tables, and manage your subscription. Keep the admin passkey from that email safe; staff need it to get in.</p>
+  </section>
+
+  <section class="section" id="tables-queues">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></span> Tables &amp; Queues</h2>
+    <p>Your table manager lives at a link like <code>whosonnext.uk/pubs/your-pub/tables</code> - it's in your welcome email. Enter your passkey to unlock it.</p>
+    <p>From there you can print a QR code for each table you run. Table 1 shares its link with your original sign-up QR, so anything you've already stuck up still works. Add more tables any time from the same screen, and print new codes to match.</p>
+    <p>Players scan the code, join the queue, and see their position update live - no app download needed on their end.</p>
+  </section>
+
+  <section class="section" id="billing">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span> Billing</h2>
+    <p>New venues start on a free trial. Once the trial ends, billing switches to your ongoing plan automatically and renews each month unless you cancel first.</p>
+    <p>If your subscription lapses or is cancelled, your venue's queue pages and table manager stop working for staff and players until you resubscribe.</p>
+  </section>
+
+  <section class="section danger" id="how-to-cancel">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L22 20 L2 20 Z"/><line x1="12" y1="9" x2="12" y2="14"/><line x1="12" y1="17" x2="12" y2="17"/></svg></span> How to Cancel</h2>
+    <p>You're always free to cancel - no calls, no forms. It's done from your table manager:</p>
+    <ol class="steps">
+      <li>Open your <strong>table manager</strong> link (from your welcome email) and unlock it with your passkey.</li>
+      <li>Tap the <strong>Settings</strong> button in the top-right of the header.</li>
+      <li>Tap <strong>Cancel subscription</strong>, then confirm by re-entering your passkey.</li>
+      <li>You'll see a confirmation on screen, and we'll email you the details too.</li>
+    </ol>
+    <div class="callout red">
+      <strong>What happens after you cancel:</strong> no further charges are taken, and your venue keeps full access until the end of the current billing period. After that date, the queue and table manager stop working for staff and players.
+    </div>
+    <p style="margin-top:16px;">Changed your mind before that date? Just reply to the cancellation confirmation email and we'll switch you back on - no need to sign up again.</p>
+    <p>Lost your table manager link or passkey? <a href="/contact/">Contact us</a> and we'll help you find them.</p>
+  </section>
+
+  <section class="section" id="faq">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12" y2="17"/></svg></span> FAQ</h2>
+    <div class="faq-item">
+      <div class="faq-q">I lost my admin passkey - what now?</div>
+      <div class="faq-a">Get in touch via the contact page with your pub name and we'll help you recover access.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I run more than one pool table?</div>
+      <div class="faq-a">Yes - add tables from your table manager and print a QR code for each one. Every table gets its own queue.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do players need to download an app?</div>
+      <div class="faq-a">No. Scanning the QR code opens a page in their phone's browser - that's the whole experience.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">If I cancel, do I get a refund for the current period?</div>
+      <div class="faq-a">Cancelling stops future billing, and your venue keeps access through the period you've already paid for. If you think you've been charged in error, contact us and we'll take a look.</div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2 6 12 13 22 6"/></svg></span> Still Stuck?</h2>
+    <p>If this page didn't answer your question, just drop us a line - we read every message.</p>
+    <div class="contact-cta">
+      <a class="contact-btn" href="/contact/" style="color: black">Contact Us</a>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>
