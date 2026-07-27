@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>WhosOnNext — Pool</title>
+<title>WhosOnNext - Pool</title>
 <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/Fluorescent0/Weaver-Pool-App-assets/refs/heads/main/WON_favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,7 +85,8 @@ html, body {
 .brand {
   display: flex; align-items: center; gap: 9px;
 }
-.brand-icon { font-size: 20px; line-height: 1; }
+.brand-icon { width: 20px; height: 20px; display: inline-flex; color: var(--gold); }
+.brand-icon svg { width: 100%; height: 100%; }
 .brand-name {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 21px; letter-spacing: 1.8px;
@@ -175,7 +176,8 @@ main {
   color: var(--gold); letter-spacing: 0.3px;
 }
 .streak-bar.on { display: flex; }
-.streak-fire { font-size: 15px; }
+.streak-fire { width: 13px; height: 13px; display: inline-flex; flex-shrink: 0; }
+.streak-fire svg { width: 100%; height: 100%; }
 
 /* Player slots */
 .match-body { padding: 20px 20px 16px; }
@@ -541,7 +543,11 @@ input[type="text"]:focus { border-color: var(--green); }
 }
 .toast.out { animation: tOut .18s ease-in forwards; }
 @keyframes tOut { to { opacity: 0; transform: translateY(-5px) scale(0.95); } }
-.toast-ico { font-size: 17px; flex-shrink: 0; }
+.toast-ico { width: 17px; height: 17px; flex-shrink: 0; color: var(--text-muted); }
+.toast-ico svg { width: 100%; height: 100%; }
+.toast.win   .toast-ico { color: var(--gold-lt); }
+.toast.added .toast-ico { color: var(--green); }
+.toast.error .toast-ico { color: var(--red-lt); }
 .toast-body { flex: 1; }
 .toast-t { font-weight: 700; font-size: 13px; }
 .toast-m { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
@@ -725,7 +731,7 @@ footer {
 
   <header class="header">
     <div class="brand">
-      <span class="brand-icon">🎱</span>
+      <span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
       <span class="brand-name" id="brandName">Loading…</span>
       <span class="table-chip" id="tableChip" hidden></span>
     </div>
@@ -751,14 +757,14 @@ footer {
     <div class="col-left">
       <div class="match-card">
         <div class="streak-bar" id="streakBar">
-          <span class="streak-fire">🔥</span>
+          <span class="streak-fire"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17a2.5 2.5 0 0 0 2.5-2.5c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7.5 7.5 0 1 1-15 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
           <span id="streakText"></span>
         </div>
         <div class="match-body">
           <div class="player-slots">
             <div class="p-slot champ" id="champSlot">
               <div class="p-label">Champion</div>
-              <div class="p-name" id="champName">—</div>
+              <div class="p-name" id="champName">-</div>
               <div class="p-stat" id="champStat"></div>
             </div>
             <div class="vs-row">
@@ -768,7 +774,7 @@ footer {
             </div>
             <div class="p-slot chal" id="chalSlot">
               <div class="p-label">Challenger</div>
-              <div class="p-name" id="chalName">—</div>
+              <div class="p-name" id="chalName">-</div>
               <div class="p-stat" id="chalStat"></div>
             </div>
           </div>
@@ -793,7 +799,7 @@ footer {
       <div class="add-section">
         <div class="add-form">
           <div class="input-wrap">
-            <input type="text" id="nameInput" placeholder="Your name — tap to join" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" maxlength="30">
+            <input type="text" id="nameInput" placeholder="Your name - tap to join" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" maxlength="30">
             <div class="autocomplete" id="autoList"></div>
           </div>
           <button class="btn btn-add" id="addBtn">Join Queue</button>
@@ -826,14 +832,14 @@ footer {
     
   </footer>
 </div><div class="tv" id="tvMode" hidden>
-  <div class="tv-brand" id="tvBrand">—</div>
+  <div class="tv-brand" id="tvBrand">-</div>
   <div class="tv-clock" id="tvClock"></div>
   <button class="icon-btn tv-close" id="tvClose" title="Close">✕</button>
   <div class="tv-streak" id="tvStreak"></div>
   <div class="tv-match">
     <div class="tv-player champ">
       <div class="tv-role">Champion</div>
-      <div class="tv-name" id="tvChampName">—</div>
+      <div class="tv-name" id="tvChampName">-</div>
       <div class="tv-stat" id="tvChampStat"></div>
     </div>
     <div class="tv-vs">
@@ -841,7 +847,7 @@ footer {
     </div>
     <div class="tv-player chal">
       <div class="tv-role">Challenger</div>
-      <div class="tv-name" id="tvChalName">—</div>
+      <div class="tv-name" id="tvChalName">-</div>
       <div class="tv-stat" id="tvChalStat"></div>
     </div>
   </div>
@@ -952,7 +958,13 @@ function haptic(ms = 8) {
 /* ═══════════════════════════════════════════════════════════
    TOAST SYSTEM
 ═══════════════════════════════════════════════════════════ */
-const ICONS = { win:'🏆', added:'✅', error:'⚠️', info:'ℹ️', skip:'⏭' };
+const ICONS = {
+  win:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 5H4.5A2.5 2.5 0 0 0 7 8.5"/><path d="M17 5h2.5A2.5 2.5 0 0 1 17 8.5"/><path d="M12 12v4"/><path d="M9 20h6"/><path d="M9.5 16h5l.5 4h-6z"/></svg>',
+  added: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>',
+  error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 21.5 20h-19z"/><path d="M12 9.5v4.5"/><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/></svg>',
+  info:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"/></svg>',
+  skip:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5v14l10-7z"/><path d="M18 5v14"/></svg>',
+};
 
 function toast(title, msg = '', type = 'info', showUndo = false) {
   const wrap = $('toastWrap');
@@ -1079,12 +1091,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   pubSlug         = slug;
   const rawTable  = pathMatch?.[2]?.replace(/\/$/, '') || 'table-1';
 
-  // Only allow table-1 through table-20 — anything else is invalid
+  // Only allow table-1 through table-20 - anything else is invalid
   const MAX_TABLES = 20;
   const tableMatch = rawTable.match(/^table-([1-9]|1[0-9]|20)$/);
   if (!tableMatch) {
     $('errorOverlay').hidden = false;
-    return; // not a recognised table slug — stop here
+    return; // not a recognised table slug - stop here
   }
   tableSlug = `table-${tableMatch[1]}`;
   tableName = `Table ${tableMatch[1]}`;
@@ -1128,7 +1140,9 @@ if (data.plan === 'inactive') {
       padding:24px; background:#09090C; color:#EDE9E0;
       font-family:'Outfit',sans-serif;
     ">
-      <div style="font-size:48px;margin-bottom:16px;">🎱</div>
+      <div style="width:48px;height:48px;margin:0 auto 16px;color:#D4A441;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg>
+      </div>
       <div style="
         font-family:'Bebas Neue',sans-serif;
         font-size:clamp(40px,10vw,72px);
@@ -1161,7 +1175,7 @@ if (data.plan === 'inactive') {
   PUB_NAME = 'WhosOnNext'; 
 }
   // ── 4. Apply pub name + table to page ────────────────────────
-  document.title = PUB_NAME + ' — ' + tableName;
+  document.title = PUB_NAME + ' - ' + tableName;
   const brandEl = document.getElementById('brandName');
   if (brandEl) brandEl.textContent = PUB_NAME;
   const chipEl = document.getElementById('tableChip');
@@ -1347,13 +1361,13 @@ function skipChamp() {
     state.winner     = state.challenger;
     state.challenger = state.queue.shift() || null;
   } else {
-    // No challenger — pull from queue if anyone's waiting
+    // No challenger - pull from queue if anyone's waiting
     state.winner     = state.queue.shift() || null;
     state.challenger = state.queue.shift() || null;
   }
   state.streak = 0;
   writeState(); renderAll();
-  toast('Skipped', `${skipped} stepped aside — back of the queue`, 'skip', true);
+  toast('Skipped', `${skipped} stepped aside - back of the queue`, 'skip', true);
 }
 
 function addPlayer() {
@@ -1410,7 +1424,7 @@ function bumpToTop(name) {
 let dragSrcName    = null;
 let currentDragOver = null; // tracks the highlighted element to avoid redundant class churn
 
-/* HTML5 drag listeners — attached ONCE per element lifetime via _dragWired guard.
+/* HTML5 drag listeners - attached ONCE per element lifetime via _dragWired guard.
    Must not accumulate: renderQueue reuses existing <div>s and calls into this
    section every render, so without the guard each pass stacks another set of
    dragover handlers on the same element, causing the flickering. */
@@ -1458,7 +1472,7 @@ function enableDragHtml5(el, name) {
   });
 }
 
-/* Touch listeners — re-wired every render because el.innerHTML recreates the
+/* Touch listeners - re-wired every render because el.innerHTML recreates the
    .q-drag-handle child, making old handle references stale. These are on the
    child node so they don't accumulate on el itself. */
 function enableDragTouch(el, name) {
@@ -1502,7 +1516,7 @@ function enableDragTouch(el, name) {
     const target = hovered?.closest?.('.q-item[data-name]');
     const targetName = (target && target.dataset.name !== name) ? target.dataset.name : null;
 
-    // Only update classes when the target actually changes — prevents flicker at boundaries
+    // Only update classes when the target actually changes - prevents flicker at boundaries
     if (targetName !== lastTarget) {
       document.querySelectorAll('.q-item.drag-over').forEach(x => x.classList.remove('drag-over'));
       if (target && targetName) target.classList.add('drag-over');
@@ -1582,8 +1596,8 @@ function renderMatch() {
   const hasMatch = state.winner && state.challenger;
 
   /* Names */
-  $('champName').textContent = state.winner     || '—';
-  $('chalName').textContent  = state.challenger || '—';
+  $('champName').textContent = state.winner     || '-';
+  $('chalName').textContent  = state.challenger || '-';
 
   /* Empty slot style */
   $('champSlot').classList.toggle('empty', !state.winner);
@@ -1641,7 +1655,7 @@ function renderQueue() {
     if (!queue.includes(name)) existing[name].remove();
   });
 
-  // Add, update, and reorder — never wipe the whole list
+  // Add, update, and reorder - never wipe the whole list
   queue.forEach((name, i) => {
     const safe     = escapeHtml(name);
     const jsN      = name.replace(/'/g, "\\'");
@@ -1652,12 +1666,12 @@ function renderQueue() {
     const isNew = !el;
 
     if (isNew) {
-      // Brand new joiner — create with animation
+      // Brand new joiner - create with animation
       el = document.createElement('div');
       el.dataset.name = name;
       el.className = 'q-item';
     } else {
-      // Already on screen — update in place, no animation
+      // Already on screen - update in place, no animation
       el.className = 'q-item no-anim';
     }
 
@@ -1692,7 +1706,7 @@ function renderLeaderboard() {
   } else {
     const rankClass = ['r1', 'r2', 'r3'];
     items.forEach((it, i) => {
-      const ratio = it.played ? Math.round((it.wins / it.played) * 100) + '%' : '—';
+      const ratio = it.played ? Math.round((it.wins / it.played) * 100) + '%' : '-';
       const safe  = escapeHtml(it.name);
       const jsN   = it.name.replace(/'/g, "\\'");
       const div   = document.createElement('div');
@@ -1784,8 +1798,8 @@ function updateTVClock() {
   $('tvClock').textContent = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 function renderTV() {
-  $('tvChampName').textContent = state.winner     || '—';
-  $('tvChalName').textContent  = state.challenger || '—';
+  $('tvChampName').textContent = state.winner     || '-';
+  $('tvChalName').textContent  = state.challenger || '-';
 
   if (state.winner && state.scores[state.winner]) {
     const s = state.scores[state.winner];
@@ -1838,13 +1852,13 @@ function renderAdminContent() {
   } else {
     sub.textContent = `Admin unlocked · ${tableName}`;
     const manageTablesBtn = pubSlug
-      ? `<a class="btn" href="/pubs/${pubSlug}/tables" style="display:block;text-align:center;padding:13px;font-size:13px;text-decoration:none;margin-bottom:8px;background:var(--surface-2);border:1px solid var(--border-hi);color:var(--text)">🗳 Manage Tables &amp; QR Codes</a>`
+      ? `<a class="btn" href="/pubs/${pubSlug}/tables" style="display:flex;align-items:center;justify-content:center;gap:7px;text-align:center;padding:13px;font-size:13px;text-decoration:none;margin-bottom:8px;background:var(--surface-2);border:1px solid var(--border-hi);color:var(--text)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Manage Tables &amp; QR Codes</a>`
       : '';
     content.innerHTML = `
       ${manageTablesBtn}
       <div class="sheet-grid">
-        <button class="btn btn-gold"   style="padding:13px;font-size:13px" onclick="exportTXT(); hideAdmin()">📤 Export</button>
-        <button class="btn btn-danger" style="padding:13px;font-size:13px" onclick="hideAdmin(); $('confirmOverlay').hidden=false">🗑 Clear All</button>
+        <button class="btn btn-gold"   style="display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;font-size:13px" onclick="exportTXT(); hideAdmin()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg> Export</button>
+        <button class="btn btn-danger" style="display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;font-size:13px" onclick="hideAdmin(); $('confirmOverlay').hidden=false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> Clear All</button>
       </div>
       <div class="sep" style="margin:14px 0"></div>
       <div style="font-size:12px;color:var(--text-muted);line-height:1.8">
@@ -1881,7 +1895,7 @@ async function tryPasskey() {
       if ($('passkeyInput')) { $('passkeyInput').value = ''; $('passkeyInput').focus(); }
     }
   } catch (e) {
-    if (err) { err.textContent = "Couldn't reach the server — try again."; err.style.display = 'block'; }
+    if (err) { err.textContent = "Couldn't reach the server - try again."; err.style.display = 'block'; }
   }
 }
 
@@ -1976,7 +1990,7 @@ function startPollingRemote() {
   // v2: remove channel instead of removeSubscription
   if (sessionSub) { supa.removeChannel(sessionSub); sessionSub = null; }
 
-  // 1. v2 channel API — server-side filter means only this pub's session
+  // 1. v2 channel API - server-side filter means only this pub's session
   //    fires the callback, reducing unnecessary traffic
   sessionSub = supa
     .channel('session:' + sessionId)
@@ -1985,7 +1999,7 @@ function startPollingRemote() {
       { event: '*', schema: 'public', table: 'sessions', filter: 'id=eq.' + sessionId },
       payload => {
         if (payload.new) {
-          // Only re-render if game state actually changed — heartbeat
+          // Only re-render if game state actually changed - heartbeat
           // writes update `clients` not `state`, so skip those silently
           const incoming = payload.new.state;
           if (incoming && JSON.stringify(incoming) !== JSON.stringify(state)) {
@@ -2008,7 +2022,7 @@ function startPollingRemote() {
       }
     });
 
-  // 2. Fallback polling — only used if websocket drops
+  // 2. Fallback polling - only used if websocket drops
   clearInterval(pollingInterval);
   pollingInterval = setInterval(async () => {
     try {
@@ -2019,7 +2033,7 @@ function startPollingRemote() {
         .single();
       if (error) throw error;
       if (data) {
-        // Same guard — don't flicker the UI if nothing changed
+        // Same guard - don't flicker the UI if nothing changed
         const incoming = data.state;
         if (incoming && JSON.stringify(incoming) !== JSON.stringify(state)) {
           state = incoming;
@@ -2071,10 +2085,10 @@ function exportTXT() {
   const lines = [
     `Pub: ${PUB_NAME}`, `Table: ${tableName}`, `Date: ${date}`, '',
     '=== LEADERBOARD ===',
-    ...items.map((it, i) => `${i + 1}. ${it.name} — ${it.wins} wins / ${it.played} games`),
+    ...items.map((it, i) => `${i + 1}. ${it.name} - ${it.wins} wins / ${it.played} games`),
     '', '=== CURRENT MATCH ===',
-    `Champion:   ${state.winner     || '—'}`,
-    `Challenger: ${state.challenger || '—'}`,
+    `Champion:   ${state.winner     || '-'}`,
+    `Challenger: ${state.challenger || '-'}`,
     `Streak:     ${state.streak || 0}`,
     '', '=== QUEUE ===',
     ...(state.queue.length ? state.queue.map((n, i) => `${i + 1}. ${n}`) : ['(empty)'])
@@ -2099,28 +2113,28 @@ function exportTXT() {
    ?theme=<id> to the URL, e.g. ?theme=halloween
 
    MAINTENANCE: dated entries (tournaments, the snooker worlds,
-   moveable feasts) shift every year — update the date strings
+   moveable feasts) shift every year - update the date strings
    below each season. Recurring calendar entries (Halloween,
    Valentine's, Pride, etc.) need no maintenance since they're
    computed from the current year.
 ═══════════════════════════════════════════════════════════ */
 
-// One-off dated events — check/update these annually.
+// One-off dated events - check/update these annually.
 const DATED_EVENTS = [
-  { id: 'snooker',        emoji: '🎱', glyphs: ['🔴','🟡','🟢'], color: '212,164,65',  count: 40, speed: [0.3,0.7], size: [14,18], start: '2027-04-17', end: '2027-05-03' }, // World Snooker Championship, Crucible — ran 18 Apr–4 May 2026; dates confirmed annually by WST
+  { id: 'snooker',        emoji: '🎱', glyphs: ['🔴','🟡','🟢'], color: '212,164,65',  count: 40, speed: [0.3,0.7], size: [14,18], start: '2027-04-17', end: '2027-05-03' }, // World Snooker Championship, Crucible - ran 18 Apr–4 May 2026; dates confirmed annually by WST
   { id: 'worldcup2026',   emoji: '⚽', glyphs: ['⚽'],           color: '210,210,220', count: 50, speed: [0.3,0.8], size: [16,22], start: '2026-06-11', end: '2026-07-19' }, // FIFA World Cup, USA/Mexico/Canada
-  { id: 'chinesenewyear', emoji: '🏮', glyphs: ['🏮','✨'],      color: '217,80,80',   count: 50, speed: [0.3,0.7], size: [16,22], start: '2026-02-16', end: '2026-02-19' }, // Lunar New Year — main day 17 Feb 2026 (Year of the Fire Horse)
-  { id: 'diwali',         emoji: '🪔', glyphs: ['🪔','✨'],      color: '238,192,96',  count: 55, speed: [0.2,0.5], size: [14,20], start: '2026-11-06', end: '2026-11-10' }, // Diwali — main day (Lakshmi Puja) 8 Nov 2026
+  { id: 'chinesenewyear', emoji: '🏮', glyphs: ['🏮','✨'],      color: '217,80,80',   count: 50, speed: [0.3,0.7], size: [16,22], start: '2026-02-16', end: '2026-02-19' }, // Lunar New Year - main day 17 Feb 2026 (Year of the Fire Horse)
+  { id: 'diwali',         emoji: '🪔', glyphs: ['🪔','✨'],      color: '238,192,96',  count: 55, speed: [0.2,0.5], size: [14,20], start: '2026-11-06', end: '2026-11-10' }, // Diwali - main day (Lakshmi Puja) 8 Nov 2026
   { id: 'wimbledon',      emoji: '🎾', glyphs: ['🎾'],           color: '199,234,70',  count: 40, speed: [0.3,0.8], size: [16,20], start: '2026-06-29', end: '2026-07-12' }, // The Championships, Wimbledon
-  { id: 'grandnational',  emoji: '🐎', glyphs: ['🐎','🏇'],      color: '212,164,65',  count: 30, speed: [0.4,1.0], size: [16,22], start: '2027-04-03', end: '2027-04-10' }, // Grand National, Aintree — 2026 running was 9–11 Apr; confirm nearer the time each year
-  { id: 'sixnations',     emoji: '🏉', glyphs: ['🏉'],           color: '150,95,55',   count: 35, speed: [0.3,0.8], size: [16,22], start: '2027-02-05', end: '2027-03-13' }, // Guinness Six Nations — confirmed fixtures, Ireland v England opener to Super Saturday
-  { id: 'ashes',          emoji: '🏏', glyphs: ['🏏'],           color: '178,34,34',   count: 35, speed: [0.3,0.8], size: [16,22], start: '2027-06-10', end: '2027-08-15' }, // The Ashes, England v Australia — exact fixture dates TBC (ECB expected to confirm in summer 2026); this is a placeholder window, narrow it once dates land
+  { id: 'grandnational',  emoji: '🐎', glyphs: ['🐎','🏇'],      color: '212,164,65',  count: 30, speed: [0.4,1.0], size: [16,22], start: '2027-04-03', end: '2027-04-10' }, // Grand National, Aintree - 2026 running was 9–11 Apr; confirm nearer the time each year
+  { id: 'sixnations',     emoji: '🏉', glyphs: ['🏉'],           color: '150,95,55',   count: 35, speed: [0.3,0.8], size: [16,22], start: '2027-02-05', end: '2027-03-13' }, // Guinness Six Nations - confirmed fixtures, Ireland v England opener to Super Saturday
+  { id: 'ashes',          emoji: '🏏', glyphs: ['🏏'],           color: '178,34,34',   count: 35, speed: [0.3,0.8], size: [16,22], start: '2027-06-10', end: '2027-08-15' }, // The Ashes, England v Australia - exact fixture dates TBC (ECB expected to confirm in summer 2026); this is a placeholder window, narrow it once dates land
   // Add future tournaments/holidays here, same shape as above, e.g.:
   // { id: 'euro2028', emoji: '⚽', glyphs: ['⚽'], color: '210,210,220', count: 50, speed: [0.3,0.8], size: [16,22], start: '2028-06-01', end: '2028-07-15' },
 ];
 
 function easterSunday(year) {
-  // Anonymous Gregorian algorithm — computes Easter Sunday for any year.
+  // Anonymous Gregorian algorithm - computes Easter Sunday for any year.
   const a = year % 19, b = Math.floor(year / 100), c = year % 100;
   const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
   const g = Math.floor((b - f + 1) / 3);
@@ -2168,7 +2182,7 @@ const SEASONAL_THEMES = [
 
   // One-off dated tournaments/holidays, defined in DATED_EVENTS above.
   // Dates can be overridden at runtime from Supabase (see applySeasonalOverrides below)
-  // without touching this code — match() reads ev.start/ev.end live, not a frozen copy.
+  // without touching this code - match() reads ev.start/ev.end live, not a frozen copy.
   ...DATED_EVENTS.map(ev => ({ ...ev, match: d => ev.enabled !== false && dateInRange(d, ev.start, ev.end) })),
 
   { id: 'pride', emoji: '🏳️‍🌈', glyphs: null,
@@ -2193,7 +2207,7 @@ function pickColor(theme) {
 
 /* ─── DATE OVERRIDES (optional, no-maintenance-in-code path) ───
    If a `seasonal_overrides` table exists in Supabase, its rows override
-   the start/end dates baked into DATED_EVENTS above — so a moved fixture
+   the start/end dates baked into DATED_EVENTS above - so a moved fixture
    (Ashes dates confirmed, Wimbledon shifts a week, etc.) is a one-row
    edit in Supabase Studio, not a code change or redeploy.
 
@@ -2232,7 +2246,7 @@ function warnStaleEvents() {
   const todayISO = new Date().toISOString().slice(0, 10);
   DATED_EVENTS.forEach(ev => {
     if (ev.enabled !== false && ev.end < todayISO) {
-      console.warn(`[seasonal] "${ev.id}" ran ${ev.start} to ${ev.end} — that's in the past. Update it via the seasonal_overrides Supabase table, or edit DATED_EVENTS in code, before it's next needed.`);
+      console.warn(`[seasonal] "${ev.id}" ran ${ev.start} to ${ev.end} - that's in the past. Update it via the seasonal_overrides Supabase table, or edit DATED_EVENTS in code, before it's next needed.`);
     }
   });
 }
