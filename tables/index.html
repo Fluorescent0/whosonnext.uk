@@ -342,7 +342,7 @@ main {
 /* ─── PRINT ─────────────────────────────────────────────────── */
 @media print {
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .header, .info-banner, .add-wrap, .btn-dl, .card-actions { display: none !important; }
+  .header, .info-banner, .add-wrap, .btn-dl, .card-actions, .help-footer, .modal-overlay { display: none !important; }
   body { background: #fff; color: #000; }
   .app-inner { max-width: 100%; padding: 0; }
   main { padding: 12px; gap: 12px; }
@@ -366,6 +366,106 @@ main {
 @media (max-width: 360px) {
   .table-grid { grid-template-columns: 1fr; }
 }
+
+/* ─── SUBSCRIPTION MODAL ────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(4,4,6,0.72);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-overlay[hidden] { display: none; }
+.modal-card {
+  width: 100%; max-width: 380px;
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
+  padding: 28px 26px;
+  position: relative;
+}
+.modal-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 40%, var(--gold-lt) 60%, transparent 100%);
+  opacity: 0.55;
+}
+.modal-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 28px; height: 28px;
+  background: transparent; border: none;
+  color: var(--text-muted); font-size: 20px; line-height: 1;
+  cursor: pointer;
+}
+.modal-close:hover { color: var(--text); }
+.modal-icon { font-size: 26px; margin-bottom: 10px; text-align: center; }
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 1px;
+  color: var(--text); text-align: center;
+  margin-bottom: 10px;
+}
+.modal-body {
+  font-size: 13.5px; color: var(--text-muted);
+  line-height: 1.65; text-align: center;
+  margin-bottom: 20px;
+}
+.modal-body strong { color: var(--text); }
+.modal-fine {
+  font-size: 12px; color: var(--text-dim);
+  text-align: center; margin-top: 16px; line-height: 1.5;
+}
+.modal-fine a { color: var(--gold); text-decoration: none; }
+.modal-fine a:hover { color: var(--gold-lt); }
+.modal-err {
+  font-size: 12px; color: var(--red);
+  margin: 8px 0 4px; display: none; text-align: center;
+}
+.modal-actions {
+  display: flex; gap: 8px; margin-top: 16px;
+}
+.btn-danger-outline {
+  width: 100%; height: 46px;
+  background: var(--red-dim);
+  border: 1px solid rgba(217,80,80,0.25);
+  border-radius: var(--r-sm);
+  color: var(--red);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700; font-size: 13.5px;
+  cursor: pointer; letter-spacing: 0.2px;
+  transition: background .12s;
+}
+.btn-danger-outline:hover { background: rgba(217,80,80,0.16); }
+.btn-danger {
+  flex: 1; height: 46px;
+  background: var(--red);
+  border: none; border-radius: var(--r-sm);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700; font-size: 13px;
+  cursor: pointer; letter-spacing: 0.1px;
+  transition: filter .12s;
+}
+.btn-danger:hover { filter: brightness(1.1); }
+.btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-secondary-modal {
+  flex: 1; height: 46px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600; font-size: 13px;
+  cursor: pointer;
+  transition: color .15s;
+}
+.btn-secondary-modal:hover { color: var(--text); }
+.help-footer {
+  text-align: center; padding: 8px 0 4px;
+  font-size: 12px; color: var(--text-dim);
+}
+.help-footer a { color: var(--gold); text-decoration: none; }
+.help-footer a:hover { color: var(--gold-lt); }
 </style>
 </head>
 <body>
@@ -420,6 +520,13 @@ main {
         </svg>
         Print all
       </button>
+      <button class="btn-print" id="settingsBtn" title="Subscription settings">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Settings
+      </button>
     </div>
   </header>
 
@@ -441,7 +548,52 @@ main {
           Add another table
         </button>
       </div>
+
+      <div class="help-footer">
+        Need a hand? Visit the <a href="/help" target="_blank" rel="noopener">help centre</a>.
+      </div>
     </main>
+  </div>
+</div>
+
+<!-- ─── SUBSCRIPTION MODAL ─────────────────────────────────── -->
+<div class="modal-overlay" id="subModal" hidden>
+  <div class="modal-card">
+    <button class="modal-close" id="subModalClose" aria-label="Close">&times;</button>
+
+    <div id="subStepInfo">
+      <div class="modal-icon">⚙️</div>
+      <h3 class="modal-title">Subscription</h3>
+      <p class="modal-body">Manage the WhosOnNext plan for <strong id="subPubName">-</strong>.</p>
+      <button class="btn-danger-outline" id="openCancelBtn">Cancel subscription</button>
+      <p class="modal-fine">
+        Not sure what happens if you cancel? See our <a href="/help#how-to-cancel" target="_blank" rel="noopener">cancellation guide</a>.
+      </p>
+    </div>
+
+    <div id="subStepConfirm" hidden>
+      <div class="modal-icon">⚠️</div>
+      <h3 class="modal-title">Cancel subscription?</h3>
+      <p class="modal-body">
+        This stops future billing for <strong id="subPubName2">-</strong>. You'll keep full access
+        until the end of the current billing period - after that, the queue and table manager stop
+        working for staff and players. We'll also email a confirmation.
+      </p>
+      <label class="gate-label" for="cancelPasskeyInput">Confirm your passkey</label>
+      <input type="password" id="cancelPasskeyInput" placeholder="Passkey" autocomplete="current-password">
+      <div class="modal-err" id="cancelErr"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary-modal" id="backToInfoBtn">Go back</button>
+        <button class="btn-danger" id="confirmCancelBtn">Yes, cancel</button>
+      </div>
+    </div>
+
+    <div id="subStepDone" hidden>
+      <div class="modal-icon">✅</div>
+      <h3 class="modal-title">Cancellation scheduled</h3>
+      <p class="modal-body" id="subDoneBody"></p>
+      <button class="btn-print" id="closeDoneBtn" style="width:100%; justify-content:center;">Close</button>
+    </div>
   </div>
 </div>
 
@@ -566,6 +718,78 @@ function initApp() {
   renderAllTables();
   updateAddButton();
   $('addTableBtn').addEventListener('click', addTable);
+
+  $('settingsBtn').addEventListener('click', openSubModal);
+  $('subModalClose').addEventListener('click', closeSubModal);
+  $('openCancelBtn').addEventListener('click', () => showSubStep('confirm'));
+  $('backToInfoBtn').addEventListener('click', () => showSubStep('info'));
+  $('confirmCancelBtn').addEventListener('click', submitCancellation);
+  $('closeDoneBtn').addEventListener('click', () => { closeSubModal(); location.reload(); });
+  $('cancelPasskeyInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitCancellation();
+  });
+}
+
+/* ─── SUBSCRIPTION MODAL ────────────────────────────────────── */
+function openSubModal() {
+  $('subPubName').textContent = pubName;
+  $('subPubName2').textContent = pubName;
+  showSubStep('info');
+  $('subModal').hidden = false;
+}
+
+function closeSubModal() {
+  $('subModal').hidden = true;
+  $('cancelPasskeyInput').value = '';
+  $('cancelErr').style.display = 'none';
+}
+
+function showSubStep(step) {
+  $('subStepInfo').hidden    = step !== 'info';
+  $('subStepConfirm').hidden = step !== 'confirm';
+  $('subStepDone').hidden    = step !== 'done';
+  if (step === 'confirm') setTimeout(() => $('cancelPasskeyInput')?.focus(), 50);
+}
+
+async function submitCancellation() {
+  const val = $('cancelPasskeyInput').value.trim();
+  if (!val) return;
+
+  const btn = $('confirmCancelBtn');
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.textContent = 'Cancelling…';
+  $('cancelErr').style.display = 'none';
+
+  try {
+    const res = await fetch('/.netlify/functions/cancel-subscription', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ slug, passkey: val }),
+    });
+    const data = await res.json();
+
+    if (res.ok && data.ok) {
+      const dateStr = new Date(data.accessUntil).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'long', year: 'numeric',
+      });
+      $('subDoneBody').textContent = data.alreadyScheduled
+        ? `Your subscription was already set to cancel. You'll keep access until ${dateStr}.`
+        : `You'll keep full access until ${dateStr}. We've emailed a confirmation with the details.`;
+      showSubStep('done');
+    } else {
+      $('cancelErr').textContent = data.error || 'Something went wrong - try again.';
+      $('cancelErr').style.display = 'block';
+      $('cancelPasskeyInput').value = '';
+      $('cancelPasskeyInput').focus();
+    }
+  } catch (e) {
+    $('cancelErr').textContent = "Couldn't reach the server - try again.";
+    $('cancelErr').style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 }
 
 /* ─── RENDER ────────────────────────────────────────────────── */
