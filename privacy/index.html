@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy - WhosOnNext</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/Fluorescent0/Weaver-Pool-App-assets/refs/heads/main/WON_favicon.ico">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:          #09090C;
+  --surface:     #111318;
+  --surface-2:   #181C26;
+  --border:      rgba(255,255,255,0.06);
+  --border-hi:   rgba(255,255,255,0.11);
+  --gold:        #D4A441;
+  --gold-lt:     #EEC060;
+  --gold-dim:    rgba(212,164,65,0.10);
+  --green:       #27B86A;
+  --green-dim:   rgba(39,184,106,0.08);
+  --red:         #D95050;
+  --red-dim:     rgba(217,80,80,0.08);
+  --text:        #EDE9E0;
+  --text-muted:  #6B7280;
+  --text-dim:    #353A48;
+  --r:    14px;
+  --r-sm: 9px;
+  font-family: 'Outfit', system-ui, sans-serif;
+  color-scheme: dark;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100svh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px;
+  background: rgba(9,9,12,0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+.nav-brand { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+.nav-icon { width: 20px; height: 20px; display: inline-flex; color: var(--gold); }
+.nav-icon svg { width: 100%; height: 100%; }
+.nav-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--text); }
+.nav-back { color: var(--text-muted); font-size: 13px; font-weight: 500; text-decoration: none; transition: color .15s; }
+.nav-back:hover { color: var(--text); }
+
+.page { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 56px 20px 90px; }
+
+.page-header { text-align: center; padding: 52px 0 40px; position: relative; }
+.page-header::before {
+  content: '';
+  position: absolute;
+  width: 520px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,71,49,0.28) 0%, transparent 70%);
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.2);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 9vw, 60px);
+  letter-spacing: 2px;
+  line-height: 0.95;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.page-title em { font-style: normal; color: var(--gold-lt); }
+.page-sub { color: var(--text-muted); font-size: 14px; line-height: 1.65; max-width: 480px; margin: 0 auto; }
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 32px 0 44px; }
+.toc a {
+  font-size: 12.5px; font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: 999px;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.toc a:hover { color: var(--gold-lt); border-color: rgba(212,164,65,0.35); background: var(--gold-dim); }
+
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 30px 28px;
+  margin-bottom: 20px;
+  scroll-margin-top: 76px;
+  position: relative;
+}
+.section::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  border-radius: var(--r) var(--r) 0 0;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 40%, var(--gold-lt) 60%, transparent 100%);
+  opacity: 0.4;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px; letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.section p { font-size: 14.5px; color: var(--text-muted); line-height: 1.7; margin-bottom: 12px; }
+.section p:last-child { margin-bottom: 0; }
+.section ul { margin: 4px 0 12px 20px; }
+.section li { font-size: 14.5px; color: var(--text-muted); line-height: 1.7; margin-bottom: 6px; }
+.section strong { color: var(--text); }
+.section a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(212,164,65,0.3); }
+.section a:hover { color: var(--gold-lt); border-color: var(--gold-lt); }
+
+.callout {
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.18);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  font-size: 13.5px; color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 16px;
+}
+.callout strong { color: var(--gold); }
+
+.meta-bar {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin-bottom: 28px;
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="nav-brand" href="/">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
+    <span class="nav-name">Whosonnext</span>
+  </a>
+  <a class="nav-back" href="/help/">← Back to Help</a>
+</nav>
+
+<div class="page">
+  <header class="page-header">
+    <div class="eyebrow">Legal</div>
+    <h1 class="page-title">PRIVACY <em>POLICY</em></h1>
+    <p class="page-sub">How WhosOnNext collects, uses, and protects data for venues and their players.</p>
+  </header>
+
+  <p class="meta-bar">Last updated: [DATE] &middot; Applies to whosonnext.uk</p>
+
+  <nav class="toc" aria-label="Sections on this page">
+    <a href="#who-we-are">Who We Are</a>
+    <a href="#what-we-collect">What We Collect</a>
+    <a href="#how-we-use-it">How We Use It</a>
+    <a href="#sharing">Sharing &amp; Sub-processors</a>
+    <a href="#retention">Retention</a>
+    <a href="#rights">Your Rights</a>
+    <a href="#cookies">Cookies</a>
+    <a href="#changes">Changes</a>
+  </nav>
+
+  <section class="section" id="who-we-are">
+    <h2 class="section-title">Who We Are</h2>
+    <p>WhosOnNext is operated by <strong>WHOSONNEXT SERVICES</strong>, based in Manchester, United Kingdom. For any privacy question or request, contact <a href="mailto:contact@whosonnext.uk">contact@whosonnext.uk</a>.</p>
+    <p>WhosOnNext acts as the <strong>data processor</strong> for player queue data on behalf of each venue, who is the <strong>data controller</strong> for their own customers. For venue account data (pub name, admin contact, billing), WhosOnNext is the data controller.</p>
+  </section>
+
+  <section class="section" id="what-we-collect">
+    <h2 class="section-title">What We Collect</h2>
+    <p><strong>From venues:</strong> pub name, contact email, an admin passkey, and table/venue setup details.</p>
+    <p><strong>From players:</strong> whatever name or alias they choose to enter when joining a queue. We don't require or ask for real names, phone numbers, or any other identifying detail from players.</p>
+    <p><strong>Automatically:</strong> basic technical data needed to keep the queue working in real time (e.g. a session identifier), and standard server logs for security and abuse prevention.</p>
+  </section>
+
+  <section class="section" id="how-we-use-it">
+    <h2 class="section-title">How We Use It</h2>
+    <p>We process this data to provide the queue service itself, to manage venue subscriptions and billing, to respond to support requests, and to keep the service secure and working as intended.</p>
+    <p>Our legal basis is <strong>performance of a contract</strong> (running the service you or your venue signed up for) and, for security/abuse prevention, <strong>legitimate interest</strong>.</p>
+  </section>
+
+  <section class="section" id="sharing">
+    <h2 class="section-title">Sharing &amp; Sub-processors</h2>
+    <p>We don't sell data, and we don't share it for advertising or marketing purposes. We use a small number of trusted providers to run the service:</p>
+    <ul>
+      <li><strong>Stripe</strong> - payment processing. We receive only confirmation of payment success/failure, never card details.</li>
+      <li><strong>Hosting &amp; database infrastructure</strong> - to store venue and queue data and run the app.</li>
+    </ul>
+    <p>Some of these providers may process data on servers outside the UK/EEA. Where that happens, it's covered by their own standard contractual safeguards for international transfers.</p>
+  </section>
+
+  <section class="section" id="retention">
+    <h2 class="section-title">Retention</h2>
+    <p>Player queue entries are temporary and are automatically cleared once a session ends or after a short inactivity period - they aren't kept long-term.</p>
+    <p>Venue account data (pub name, contact email, billing history) is kept for as long as the account is active, and for a reasonable period afterwards to meet accounting and legal obligations, after which it's deleted on request or on a routine schedule.</p>
+  </section>
+
+  <section class="section" id="rights">
+    <h2 class="section-title">Your Rights</h2>
+    <p>Under UK GDPR, you have the right to access, correct, delete, or restrict the personal data we hold about you, and to ask for a copy of it in a portable format. To exercise any of these, contact <a href="mailto:contact@whosonnext.uk">contact@whosonnext.uk</a> and we'll respond promptly.</p>
+    <p>If you're unhappy with how we've handled your data, you also have the right to complain to the <strong>Information Commissioner's Office (ICO)</strong>, the UK's data protection regulator, at <a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a>.</p>
+  </section>
+
+  <section class="section" id="cookies">
+    <h2 class="section-title">Cookies &amp; Similar Technology</h2>
+    <p>We use only the strictly necessary technical storage needed to keep a queue session working (e.g. remembering your place in the queue or an admin login state). We don't use advertising or third-party tracking cookies.</p>
+  </section>
+
+  <section class="section" id="changes">
+    <h2 class="section-title">Changes to This Policy</h2>
+    <p>We may update this policy as the service evolves. If we make a material change, we'll update the date at the top of this page, and notify venue admins by email where the change meaningfully affects how their data is handled.</p>
+    <div class="callout">
+      <strong>Note:</strong> This is a plain-English privacy policy intended to reflect how the service actually works. If you need a specific clarification for your own venue's records, <a href="/contact/">get in touch</a>.
+    </div>
+  </section>
+</div>
+
+</body>
+</html>
