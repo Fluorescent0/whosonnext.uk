@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Use - WhosOnNext</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/Fluorescent0/Weaver-Pool-App-assets/refs/heads/main/WON_favicon.ico">
+<style>
+/* ─── RESET & ROOT ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:          #09090C;
+  --surface:     #111318;
+  --surface-2:   #181C26;
+  --border:      rgba(255,255,255,0.06);
+  --border-hi:   rgba(255,255,255,0.11);
+  --gold:        #D4A441;
+  --gold-lt:     #EEC060;
+  --gold-dim:    rgba(212,164,65,0.10);
+  --green:       #27B86A;
+  --green-dim:   rgba(39,184,106,0.08);
+  --red:         #D95050;
+  --red-dim:     rgba(217,80,80,0.08);
+  --text:        #EDE9E0;
+  --text-muted:  #6B7280;
+  --text-dim:    #353A48;
+  --r:    14px;
+  --r-sm: 9px;
+  font-family: 'Outfit', system-ui, sans-serif;
+  color-scheme: dark;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100svh;
+}
+
+/* ─── NOISE OVERLAY ────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ─── NAV ──────────────────────────────────────────────────── */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px;
+  background: rgba(9,9,12,0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+.nav-brand { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+.nav-icon { width: 20px; height: 20px; display: inline-flex; color: var(--gold); }
+.nav-icon svg { width: 100%; height: 100%; }
+.nav-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--text); }
+.nav-back { color: var(--text-muted); font-size: 13px; font-weight: 500; text-decoration: none; transition: color .15s; }
+.nav-back:hover { color: var(--text); }
+
+/* ─── PAGE ─────────────────────────────────────────────────── */
+.page { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 56px 20px 90px; }
+
+/* ─── HEADER ───────────────────────────────────────────────── */
+.page-header { text-align: center; padding: 52px 0 40px; position: relative; }
+.page-header::before {
+  content: '';
+  position: absolute;
+  width: 520px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,71,49,0.28) 0%, transparent 70%);
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.2);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 11vw, 72px);
+  letter-spacing: 2px;
+  line-height: 0.95;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.page-title em { font-style: normal; color: var(--gold-lt); }
+.page-sub { color: var(--text-muted); font-size: 15px; line-height: 1.65; max-width: 480px; margin: 0 auto; }
+
+/* ─── AUDIENCE PICKER ──────────────────────────────────────── */
+.audience {
+  display: flex; gap: 12px;
+  max-width: 560px; margin: 0 auto 44px;
+}
+.audience a {
+  flex: 1;
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
+  padding: 18px 16px;
+  text-decoration: none;
+  text-align: center;
+  transition: border-color .15s, background .15s;
+}
+.audience a:hover { border-color: rgba(212,164,65,0.35); background: var(--gold-dim); }
+.audience-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+.audience-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.5px; color: var(--text); }
+
+/* ─── TOC ──────────────────────────────────────────────────── */
+.toc { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 0 0 44px; }
+.toc a {
+  font-size: 12.5px; font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: 999px;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.toc a:hover { color: var(--gold-lt); border-color: rgba(212,164,65,0.35); background: var(--gold-dim); }
+
+/* ─── SECTION ──────────────────────────────────────────────── */
+.section-group-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold);
+  margin: 44px 0 14px;
+  padding-left: 2px;
+}
+.section-group-label:first-of-type { margin-top: 0; }
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 30px 28px;
+  margin-bottom: 20px;
+  scroll-margin-top: 76px;
+  position: relative;
+}
+.section::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  border-radius: var(--r) var(--r) 0 0;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 40%, var(--gold-lt) 60%, transparent 100%);
+  opacity: 0.4;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 1px;
+  color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.section-icon { width: 20px; height: 20px; display: inline-flex; flex-shrink: 0; color: var(--gold); }
+.section-icon svg { width: 100%; height: 100%; }
+.section p { font-size: 14.5px; color: var(--text-muted); line-height: 1.7; margin-bottom: 12px; }
+.section p:last-child { margin-bottom: 0; }
+.section strong { color: var(--text); }
+.section code {
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-size: 13px;
+  color: var(--gold-lt);
+}
+.section a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(212,164,65,0.3); }
+.section a:hover { color: var(--gold-lt); border-color: var(--gold-lt); }
+
+.steps { counter-reset: step; list-style: none; margin: 16px 0; }
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 18px 40px;
+  font-size: 14.5px; color: var(--text-muted);
+  line-height: 1.65;
+}
+.steps li:last-child { padding-bottom: 0; }
+.steps li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 0;
+  width: 26px; height: 26px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.3);
+  border-radius: 50%;
+  color: var(--gold-lt);
+  font-weight: 700; font-size: 12.5px;
+  display: flex; align-items: center; justify-content: center;
+}
+.steps li strong { color: var(--text); }
+
+/* ─── DEFINITION CARDS (Champion / Challenger) ────────────── */
+.duo { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+.duo-card {
+  flex: 1; min-width: 200px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  padding: 16px 18px;
+}
+.duo-card .duo-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.duo-card .duo-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.5px; color: var(--text); margin-bottom: 6px; }
+.duo-card p { font-size: 13.5px; margin-bottom: 0; }
+.duo-arrow { display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 18px; padding: 0 2px; }
+@media (max-width: 560px) { .duo-arrow { display: none; } }
+
+/* ─── CONTROL GRID (admin panel controls) ─────────────────── */
+.control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+@media (max-width: 480px) { .control-grid { grid-template-columns: 1fr; } }
+.control-item {
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+}
+.control-item .c-name { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.control-item .c-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+
+.callout {
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,164,65,0.18);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  font-size: 13.5px; color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 16px;
+}
+.callout strong { color: var(--gold); }
+
+.contact-cta { text-align: center; padding: 6px 0 0; }
+.contact-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #B8892B, #D4A441, #EEC060);
+  color: black;
+  padding: 13px 28px;
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  font-weight: 700; font-size: 14px;
+  transition: filter .15s;
+  margin-top: 12px;
+}
+.contact-btn:hover { filter: brightness(1.08); }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="nav-brand" href="/">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
+    <span class="nav-name">Whosonnext</span>
+  </a>
+  <a class="nav-back" href="/">← Back</a>
+</nav>
+
+<div class="page">
+  <header class="page-header">
+    <div class="eyebrow">Getting Started</div>
+    <h1 class="page-title">HOW TO<br><em>USE WHOSONNEXT</em></h1>
+    <p class="page-sub">A complete walkthrough for players and venue owners - no prior knowledge needed. Pick your side below, or scroll through the whole thing.</p>
+  </header>
+
+  <div class="audience">
+    <a href="#player-joining">
+      <div class="audience-label">I'm a Player</div>
+      <div class="audience-title">Join a Queue</div>
+    </a>
+    <a href="#venue-setup">
+      <div class="audience-label">I Run a Pub</div>
+      <div class="audience-title">Set Up My Venue</div>
+    </a>
+  </div>
+
+  <nav class="toc" aria-label="Sections on this page">
+    <a href="#what-is-it">What Is It?</a>
+    <a href="#player-joining">Joining a Queue</a>
+    <a href="#winner-stays-on">How the Game Works</a>
+    <a href="#venue-setup">Setting Up Your Pub</a>
+    <a href="#table-manager">Table Manager</a>
+    <a href="#admin-panel">Running the Queue</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#tv-mode">TV Mode</a>
+    <a href="#more-help">More Help</a>
+  </nav>
+
+  <section class="section" id="what-is-it">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12" y2="17"/></svg></span> What Is WhosOnNext?</h2>
+    <p>WhosOnNext replaces the chalk marks and shouted "who's next?" arguments at the pool table with a digital queue. Players scan a QR code stuck near the table, add their name, and the app handles the rest - queue order, whose turn it is, scores, and win streaks.</p>
+    <p>There's nothing to download. Whether you're a player joining a queue for the first time or a pub owner setting the whole thing up, everything runs in a normal web browser.</p>
+  </section>
+
+  <div class="section-group-label">For Players</div>
+
+  <section class="section" id="player-joining">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg></span> Joining a Queue</h2>
+    <p>Every table has its own QR code stuck up nearby. Here's the whole process:</p>
+    <ol class="steps">
+      <li>Open your phone's camera and point it at the <strong>QR code</strong> on or near the table. Tap the link that pops up - it opens straight in your browser, no app or account needed.</li>
+      <li>You'll land on that table's queue page. Type your name into the box that says <strong>"Your name - tap to join"</strong> and tap it.</li>
+      <li>You're now in the queue - you'll see something like <strong>"You're #3 in queue"</strong> confirming your spot.</li>
+      <li>Keep an eye on the screen (or the TV nearby, if the pub has one showing the queue) to see when you move up.</li>
+      <li>When it's your turn, you'll be shown as the <strong>Challenger</strong> - head to the table, it's your go.</li>
+    </ol>
+    <div class="callout">
+      <strong>Changed your mind?</strong> You don't need staff for this - you can remove yourself from the queue, or skip your own go if you're not ready when you're called, right from the queue page.
+    </div>
+  </section>
+
+  <section class="section" id="winner-stays-on">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 5H4.5A2.5 2.5 0 0 0 7 8.5"/><path d="M17 5h2.5A2.5 2.5 0 0 1 17 8.5"/></svg></span> How the Game Works: Winner Stays On</h2>
+    <p>WhosOnNext runs on the classic pub pool format - <strong>Winner Stays On</strong>. At any moment there are two key players:</p>
+    <div class="duo">
+      <div class="duo-card">
+        <div class="duo-label">On The Table</div>
+        <div class="duo-name">Champion</div>
+        <p>Whoever just won (or the first player, at the start of the night). They stay on the table until they lose.</p>
+      </div>
+      <div class="duo-arrow">vs</div>
+      <div class="duo-card">
+        <div class="duo-label">Next Up</div>
+        <div class="duo-name">Challenger</div>
+        <p>The player at the front of the queue. They play the Champion for a shot at taking the table.</p>
+      </div>
+    </div>
+    <p>After each game, staff mark the result on the queue screen. If the <strong>Champion wins</strong>, they stay on and their win streak climbs - you'll see something like "on a 3-game streak". If the <strong>Challenger wins</strong>, they become the new Champion and take the table, while the previous Champion drops back into the queue for another go.</p>
+    <p>Everyone's wins and games played are tracked automatically and feed into the pub's <a href="#leaderboard">Leaderboard</a>.</p>
+    <div class="callout">
+      <strong>Not ready when you're called?</strong> Staff can skip a Champion or Challenger who isn't at the table - being skipped just sends you to the back of the queue rather than losing your spot entirely.
+    </div>
+  </section>
+
+  <div class="section-group-label">For Venue Owners</div>
+
+  <section class="section" id="venue-setup">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="10 8 16 12 10 16 10 8"/><circle cx="12" cy="12" r="9"/></svg></span> Setting Up Your Pub</h2>
+    <p>Getting your venue live takes a few minutes:</p>
+    <ol class="steps">
+      <li>Sign up and complete payment through Stripe. New venues start on a free trial.</li>
+      <li>Within a few minutes, a <strong>welcome email</strong> arrives with your pub's unique link, a QR code for your first table, and your <strong>admin passkey</strong>. Keep the passkey somewhere staff can find it - it's needed to unlock any controls.</li>
+      <li>Print the QR code and stick it up at (or near) the table it belongs to.</li>
+      <li>That's it - players can start scanning and joining the queue straight away. Everything else (adding tables, running the queue, checking the leaderboard) happens from the pages covered below.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="table-manager">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></span> The Table Manager</h2>
+    <p>Your <strong>table manager</strong> is the venue-wide control screen - the link is in your welcome email, and it's separate from any single table's queue page. Enter your passkey to unlock it.</p>
+    <p>From here you can:</p>
+    <ul style="margin: 4px 0 4px 20px;">
+      <li style="font-size:14.5px; color:var(--text-muted); line-height:1.7; margin-bottom:6px;"><strong style="color:var(--text)">Add tables</strong> - each new table gets its own unique QR code and its own independent queue. Table 1 always shares the link from your original sign-up code, so anything you've already printed keeps working.</li>
+      <li style="font-size:14.5px; color:var(--text-muted); line-height:1.7; margin-bottom:6px;"><strong style="color:var(--text)">Print QR codes</strong> for any table, any time.</li>
+      <li style="font-size:14.5px; color:var(--text-muted); line-height:1.7;"><strong style="color:var(--text)">Manage your subscription</strong>, including cancelling if you ever need to.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="admin-panel">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Running the Queue</h2>
+    <p>Some queue actions don't need any unlocking at all - anyone at the table can do these directly from the queue page:</p>
+    <div class="control-grid">
+      <div class="control-item"><div class="c-name">Skip Champion / Challenger</div><div class="c-desc">Anyone can skip themselves (or be skipped) if not ready when called - it sends them to the back of the queue rather than removing them.</div></div>
+      <div class="control-item"><div class="c-name">Remove a player</div><div class="c-desc">Anyone can pull themselves (or step in to remove someone) from the queue entirely - there's a brief undo if it was a mistake.</div></div>
+    </div>
+    <p>Everything else stays behind the <strong>Admin Panel</strong> on that table's queue page - separate from the table manager. Tap the admin icon and enter your passkey to unlock it:</p>
+    <div class="control-grid">
+      <div class="control-item"><div class="c-name">Reorder the queue</div><div class="c-desc">Drag and drop names into a different order using the handle next to each entry.</div></div>
+      <div class="control-item"><div class="c-name">Clear the session</div><div class="c-desc">Wipes the whole queue - handy at the start of a new night.</div></div>
+      <div class="control-item"><div class="c-name">Edit the leaderboard</div><div class="c-desc">Correct a player's win count using the pencil icon if a result was marked wrong.</div></div>
+      <div class="control-item"><div class="c-name">Export the session</div><div class="c-desc">Downloads a text file record of the queue and results for that table.</div></div>
+    </div>
+    <div class="callout">
+      Staying unlocked only affects that browser tab on that device - other staff (or the TV display) won't see admin controls unless they unlock it themselves too.
+    </div>
+  </section>
+
+  <section class="section" id="leaderboard">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 5H4.5A2.5 2.5 0 0 0 7 8.5"/><path d="M17 5h2.5A2.5 2.5 0 0 1 17 8.5"/><path d="M12 12v4"/><path d="M9 20h6"/><path d="M9.5 16h5l.5 4h-6z"/></svg></span> The Leaderboard</h2>
+    <p>Every win and game played is tallied automatically as people play, and shown on your pub's public <a href="/leaderboards">leaderboard</a> page - no extra setup needed. It's a nice thing to put on a spare screen or share with regulars chasing bragging rights.</p>
+  </section>
+
+  <section class="section" id="tv-mode">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/></svg></span> TV Mode</h2>
+    <p>Any table's queue page can be switched into <strong>TV Mode</strong> - a bigger, simplified view built for a screen mounted near the table, so the whole queue and current game are visible at a glance without anyone needing to huddle round a phone.</p>
+  </section>
+
+  <section class="section" id="more-help">
+    <h2 class="section-title"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2 6 12 13 22 6"/></svg></span> More Help</h2>
+    <p>This guide covers how to actually use the app day-to-day. For billing, cancellations, and account questions, head to the <a href="/help/">Help Centre</a> - or just <a href="/contact/">get in touch</a> if you're stuck on something this page didn't cover.</p>
+    <div class="contact-cta">
+      <a class="contact-btn" href="/contact/" style="color: black">Contact Us</a>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>
