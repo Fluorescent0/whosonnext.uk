@@ -261,6 +261,130 @@ body::before {
   margin-top: 12px;
 }
 .contact-btn:hover { filter: brightness(1.08); }
+
+/* ─── MOCKUPS ──────────────────────────────────────────────── */
+.mockup {
+  max-width: 260px;
+  margin: 22px auto 8px;
+}
+.mockup-shell {
+  background: #000;
+  border-radius: 28px;
+  padding: 9px;
+  border: 1px solid var(--border-hi);
+  box-shadow: 0 24px 50px rgba(0,0,0,0.45);
+}
+.mockup-notch {
+  width: 52px; height: 5px;
+  background: #1a1a1a;
+  border-radius: 3px;
+  margin: 2px auto 12px;
+}
+.mockup-screen {
+  background: var(--bg);
+  border-radius: 20px;
+  padding: 18px 14px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.mockup-pub {
+  text-align: center;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+.mockup-caption {
+  text-align: center;
+  font-size: 12px; color: var(--text-muted);
+  margin: 10px auto 0;
+  max-width: 240px;
+  line-height: 1.5;
+}
+.mockup-caption strong { color: var(--gold-lt); }
+
+/* queue list scene */
+.mq-row {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: 8px;
+  padding: 9px 11px;
+  margin-bottom: 7px;
+  font-size: 12.5px;
+}
+.mq-num {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--gold-dim);
+  color: var(--gold-lt);
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mq-row.me { border-color: rgba(212,164,65,0.4); background: var(--gold-dim); }
+.mq-row.me .mq-name { color: var(--gold-lt); font-weight: 700; }
+.mq-name { color: var(--text); flex: 1; }
+.mq-tag { font-size: 9.5px; color: var(--text-dim); }
+.mq-input {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border-hi);
+  border-radius: 8px;
+  padding: 10px 11px;
+  margin-top: 10px;
+  font-size: 12px; color: var(--text-dim);
+}
+.mq-input .mq-plus {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--gold);
+  color: #000; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* match scene */
+.mm-streak {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  font-size: 10.5px; color: var(--gold-lt); font-weight: 700;
+  margin-bottom: 12px;
+}
+.mm-slots { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.mm-slot { flex: 1; background: var(--surface-2); border: 1px solid var(--border-hi); border-radius: 9px; padding: 10px 6px; text-align: center; }
+.mm-slot.champ { border-color: rgba(212,164,65,0.35); }
+.mm-label { font-size: 8.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+.mm-name { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--text); letter-spacing: 0.5px; }
+.mm-vs { font-size: 10px; color: var(--text-dim); font-weight: 700; }
+.mm-btn { display: block; width: 100%; text-align: center; border-radius: 8px; padding: 9px; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+.mm-btn.champ { background: rgba(212,164,65,0.16); color: var(--gold-lt); border: 1px solid rgba(212,164,65,0.3); }
+.mm-btn.chal { background: rgba(39,184,106,0.14); color: #6bd99a; border: 1px solid rgba(39,184,106,0.28); }
+.mm-skips { display: flex; justify-content: center; gap: 16px; margin-top: 6px; }
+.mm-skips span { font-size: 10.5px; color: var(--text-dim); text-decoration: underline; text-underline-offset: 2px; }
+
+/* admin scene */
+.ma-lock {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 11px; font-weight: 700; color: var(--green);
+  background: var(--green-dim);
+  border: 1px solid rgba(39,184,106,0.25);
+  border-radius: 7px;
+  padding: 7px;
+  margin-bottom: 12px;
+}
+.ma-row {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--text);
+}
+.ma-row .ma-drag { color: var(--text-dim); font-size: 13px; }
+.ma-row .ma-edit { margin-left: auto; color: var(--gold); font-size: 12px; }
+.ma-actions { display: flex; gap: 8px; margin-top: 10px; }
+.ma-actions .ma-btn { flex: 1; text-align: center; font-size: 11px; font-weight: 700; padding: 8px; border-radius: 7px; }
+.ma-actions .ma-btn.export { background: var(--gold-dim); color: var(--gold-lt); border: 1px solid rgba(212,164,65,0.3); }
+.ma-actions .ma-btn.clear { background: var(--red-dim); color: #e08585; border: 1px solid rgba(217,80,80,0.3); }
 </style>
 </head>
 <body>
@@ -321,8 +445,23 @@ body::before {
       <li>Keep an eye on the screen (or the TV nearby, if the pub has one showing the queue) to see when you move up.</li>
       <li>When it's your turn, you'll be shown as the <strong>Challenger</strong> - head to the table, it's your go.</li>
     </ol>
+
+    <div class="mockup">
+      <div class="mockup-shell">
+        <div class="mockup-notch"></div>
+        <div class="mockup-screen">
+          <div class="mockup-pub">The Anchor - Table 2</div>
+          <div class="mq-row"><div class="mq-num">1</div><div class="mq-name">Jess</div><span class="mq-tag">Challenger</span></div>
+          <div class="mq-row me"><div class="mq-num">2</div><div class="mq-name">You</div></div>
+          <div class="mq-row"><div class="mq-num">3</div><div class="mq-name">Sam</div></div>
+          <div class="mq-input"><span class="mq-plus">+</span> Your name - tap to join</div>
+        </div>
+      </div>
+      <p class="mockup-caption">Scan → enter your name → you're <strong>#2 in queue</strong>, right in your browser.</p>
+    </div>
+
     <div class="callout">
-      <strong>Changed your mind?</strong> You don't need staff for this - you can remove yourself from the queue, or skip your own go if you're not ready when you're called, right from the queue page.
+      <strong>Changed your mind?</strong> You can remove yourself from the queue, or skip your own go if you're not ready when you're called, right from the queue page.
     </div>
   </section>
 
@@ -342,10 +481,29 @@ body::before {
         <p>The player at the front of the queue. They play the Champion for a shot at taking the table.</p>
       </div>
     </div>
-    <p>After each game, staff mark the result on the queue screen. If the <strong>Champion wins</strong>, they stay on and their win streak climbs - you'll see something like "on a 3-game streak". If the <strong>Challenger wins</strong>, they become the new Champion and take the table, while the previous Champion drops back into the queue for another go.</p>
+    <p>After each game, either player marks the result right there on the queue screen. If the <strong>Champion wins</strong>, they stay on and their win streak climbs - you'll see something like "on a 3-game streak". If the <strong>Challenger wins</strong>, they become the new Champion and take the table, while the previous Champion drops back into the queue for another go.</p>
     <p>Everyone's wins and games played are tracked automatically and feed into the pub's <a href="#leaderboard">Leaderboard</a>.</p>
+
+    <div class="mockup">
+      <div class="mockup-shell">
+        <div class="mockup-notch"></div>
+        <div class="mockup-screen">
+          <div class="mm-streak">🔥 on a 3-game streak</div>
+          <div class="mm-slots">
+            <div class="mm-slot champ"><div class="mm-label">Champion</div><div class="mm-name">Jess</div></div>
+            <div class="mm-vs">VS</div>
+            <div class="mm-slot"><div class="mm-label">Challenger</div><div class="mm-name">You</div></div>
+          </div>
+          <div class="mm-btn champ">Champion Wins</div>
+          <div class="mm-btn chal">Challenger Wins</div>
+          <div class="mm-skips"><span>Skip champion</span><span>Skip challenger</span></div>
+        </div>
+      </div>
+      <p class="mockup-caption">Either player taps the result - <strong>the queue updates for everyone</strong>.</p>
+    </div>
+
     <div class="callout">
-      <strong>Not ready when you're called?</strong> Staff can skip a Champion or Challenger who isn't at the table - being skipped just sends you to the back of the queue rather than losing your spot entirely.
+      <strong>Not ready when you're called?</strong> Anyone can skip a Champion or Challenger who isn't at the table, right from the same screen - being skipped just sends them to the back of the queue rather than losing their spot entirely.
     </div>
   </section>
 
@@ -387,6 +545,24 @@ body::before {
       <div class="control-item"><div class="c-name">Edit the leaderboard</div><div class="c-desc">Correct a player's win count using the pencil icon if a result was marked wrong.</div></div>
       <div class="control-item"><div class="c-name">Export the session</div><div class="c-desc">Downloads a text file record of the queue and results for that table.</div></div>
     </div>
+
+    <div class="mockup">
+      <div class="mockup-shell">
+        <div class="mockup-notch"></div>
+        <div class="mockup-screen">
+          <div class="ma-lock">🔓 Admin unlocked</div>
+          <div class="ma-row"><span class="ma-drag">⠿</span> Jess</div>
+          <div class="ma-row"><span class="ma-drag">⠿</span> Sam <span class="ma-edit">✎ 12 wins</span></div>
+          <div class="ma-row"><span class="ma-drag">⠿</span> Priya</div>
+          <div class="ma-actions">
+            <div class="ma-btn export">Export</div>
+            <div class="ma-btn clear">Clear All</div>
+          </div>
+        </div>
+      </div>
+      <p class="mockup-caption">Unlocked with the venue passkey - drag handles and edit icons only show up here.</p>
+    </div>
+
     <div class="callout">
       Staying unlocked only affects that browser tab on that device - other staff (or the TV display) won't see admin controls unless they unlock it themselves too.
     </div>
