@@ -74,10 +74,8 @@ html, body {
   background: linear-gradient(90deg, transparent 0%, var(--gold) 40%, var(--gold-lt) 60%, transparent 100%);
   opacity: 0.55;
 }
-.gate-icon {
-  font-size: 32px; margin-bottom: 12px; display: block;
-  text-align: center;
-}
+.gate-icon { width: 36px; height: 36px; margin: 0 auto 12px; color: var(--gold-lt); display: block; }
+.gate-icon svg { width: 100%; height: 100%; }
 .gate-pub {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 30px; letter-spacing: 1.5px;
@@ -150,7 +148,8 @@ input[type="password"]:focus { border-color: var(--gold); }
 .brand {
   display: flex; align-items: center; gap: 9px;
 }
-.brand-icon { font-size: 20px; line-height: 1; }
+.brand-icon { width: 20px; height: 20px; display: inline-flex; color: var(--gold); }
+.brand-icon svg { width: 100%; height: 100%; }
 .brand-name {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 21px; letter-spacing: 1.8px;
@@ -201,7 +200,8 @@ main {
   padding: 13px 16px;
   display: flex; align-items: flex-start; gap: 11px;
 }
-.info-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.info-icon { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; color: var(--gold); }
+.info-icon svg { width: 100%; height: 100%; }
 .info-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
 .info-text strong { color: var(--gold); font-weight: 600; }
 
@@ -274,12 +274,9 @@ main {
   display: flex; gap: 8px;
   margin-top: auto;
 }
-.btn-dl {
+.btn-dl, .btn-copy {
   flex: 1; height: 38px;
-  background: var(--green-dim);
-  border: 1px solid rgba(39,184,106,0.2);
   border-radius: var(--r-sm);
-  color: var(--green);
   font-family: 'Outfit', sans-serif;
   font-weight: 700; font-size: 12px;
   cursor: pointer; letter-spacing: 0.3px;
@@ -287,14 +284,52 @@ main {
   transition: background .12s;
   -webkit-tap-highlight-color: transparent;
 }
+.btn-dl {
+  background: var(--green-dim);
+  border: 1px solid rgba(39,184,106,0.2);
+  color: var(--green);
+}
 .btn-dl:hover { background: rgba(39,184,106,0.18); }
 .btn-dl:active { transform: scale(0.96); }
+.btn-copy {
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  color: var(--text-muted);
+}
+.btn-copy:hover { color: var(--text); }
+.btn-copy:active { transform: scale(0.96); }
+.btn-copy.copied { color: var(--gold-lt); border-color: rgba(212,164,65,0.3); }
 
 /* ─── ADD TABLE BUTTON ──────────────────────────────────────── */
 .add-wrap {
-  display: flex; justify-content: center;
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px;
   padding-top: 4px;
+  flex-wrap: wrap;
 }
+.table-count {
+  font-size: 12px; color: var(--text-dim);
+  letter-spacing: 0.2px;
+  order: 3; width: 100%; text-align: center;
+  margin-top: 2px;
+}
+.btn-remove-table {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px;
+  background: transparent;
+  border: 1px dashed rgba(255,255,255,0.14);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+.btn-remove-table:hover:not(:disabled) {
+  color: var(--red);
+  border-color: rgba(217,80,80,0.3);
+}
+.btn-remove-table:disabled { opacity: 0.3; cursor: not-allowed; }
 .btn-add-table {
   display: inline-flex; align-items: center; gap: 9px;
   height: 46px; padding: 0 28px;
@@ -398,7 +433,10 @@ main {
   cursor: pointer;
 }
 .modal-close:hover { color: var(--text); }
-.modal-icon { font-size: 26px; margin-bottom: 10px; text-align: center; }
+.modal-icon { width: 30px; height: 30px; margin: 0 auto 10px; color: var(--text-muted); }
+.modal-icon svg { width: 100%; height: 100%; }
+#subStepConfirm .modal-icon { color: var(--red); }
+#subStepDone .modal-icon { color: var(--green); }
 .modal-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 26px; letter-spacing: 1px;
@@ -473,7 +511,7 @@ main {
 <!-- ─── GATE ──────────────────────────────────────────────── -->
 <div class="gate" id="gate" hidden>
   <div class="gate-card">
-    <span class="gate-icon">🎱</span>
+    <span class="gate-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></span>
     <div class="gate-pub" id="gatePubName"></div>
     <div class="gate-sub">Table Manager · WhosOnNext</div>
     <label class="gate-label" for="passkeyInput">Passkey</label>
@@ -485,7 +523,7 @@ main {
 
 <!-- ─── ERROR / INACTIVE ───────────────────────────────────── -->
 <div class="state-page" id="errorPage" hidden>
-  <div style="font-size:40px;margin-bottom:12px">🎱</div>
+  <div style="width:40px;height:40px;margin:0 auto 12px;color:var(--text-muted)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6"/><path d="M15 9l-6 6"/></svg></div>
   <div class="state-headline">Pub not found</div>
   <div class="state-body">
     This link doesn't match a registered venue.<br><br>
@@ -494,7 +532,7 @@ main {
 </div>
 
 <div class="state-page" id="inactivePage" hidden>
-  <div style="font-size:40px;margin-bottom:12px">🎱</div>
+  <div style="width:40px;height:40px;margin:0 auto 12px;color:var(--text-muted)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></div>
   <div class="state-headline">Table's Closed</div>
   <div class="state-body" id="inactiveBody">
     This venue's subscription has ended.<br>
@@ -506,7 +544,7 @@ main {
 <div class="app" id="app" hidden>
   <header class="header">
     <div class="brand">
-      <span class="brand-icon">🎱</span>
+      <span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg></span>
       <span class="brand-name" id="appPubName">-</span>
       <span class="breadcrumb-sep">·</span>
       <span class="brand-section">Tables</span>
@@ -533,7 +571,7 @@ main {
   <div class="app-inner">
     <main>
       <div class="info-banner">
-        <span class="info-icon">💡</span>
+        <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9v.2h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3z"/></svg></span>
         <span class="info-text">
           Print each QR code and mount it at its table - punters scan to join that table's queue instantly.
           <strong>Table 1 is shared with your original link</strong>, so any QR codes you've already printed still work.
@@ -543,10 +581,14 @@ main {
       <div class="table-grid" id="tableGrid"></div>
 
       <div class="add-wrap">
+        <button class="btn-remove-table" id="removeTableBtn" title="Remove last table" aria-label="Remove last table">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>
+        </button>
         <button class="btn-add-table" id="addTableBtn">
           <span class="add-icon">+</span>
           Add another table
         </button>
+        <div class="table-count" id="tableCountLabel"></div>
       </div>
 
       <div class="help-footer">
@@ -562,7 +604,7 @@ main {
     <button class="modal-close" id="subModalClose" aria-label="Close">&times;</button>
 
     <div id="subStepInfo">
-      <div class="modal-icon">⚙️</div>
+      <div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
       <h3 class="modal-title">Subscription</h3>
       <p class="modal-body">Manage the WhosOnNext plan for <strong id="subPubName">-</strong>.</p>
       <button class="btn-danger-outline" id="openCancelBtn">Cancel subscription</button>
@@ -572,7 +614,7 @@ main {
     </div>
 
     <div id="subStepConfirm" hidden>
-      <div class="modal-icon">⚠️</div>
+      <div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 21.5 20h-19z"/><path d="M12 9.5v4.5"/><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/></svg></div>
       <h3 class="modal-title">Cancel subscription?</h3>
       <p class="modal-body">
         This stops future billing for <strong id="subPubName2">-</strong>. You'll keep full access
@@ -589,7 +631,7 @@ main {
     </div>
 
     <div id="subStepDone" hidden>
-      <div class="modal-icon">✅</div>
+      <div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg></div>
       <h3 class="modal-title">Cancellation scheduled</h3>
       <p class="modal-body" id="subDoneBody"></p>
       <button class="btn-print" id="closeDoneBtn" style="width:100%; justify-content:center;">Close</button>
@@ -718,6 +760,7 @@ function initApp() {
   renderAllTables();
   updateAddButton();
   $('addTableBtn').addEventListener('click', addTable);
+  $('removeTableBtn').addEventListener('click', removeTable);
 
   $('settingsBtn').addEventListener('click', openSubModal);
   $('subModalClose').addEventListener('click', closeSubModal);
@@ -821,7 +864,14 @@ function buildCard(n) {
           <polyline points="7 10 12 15 17 10"/>
           <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
-        Download PNG
+        Download
+      </button>
+      <button class="btn-copy" id="copy-${n}" onclick="copyLink(${n})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="12" height="12" rx="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        Copy link
       </button>
     </div>
   `;
@@ -841,6 +891,22 @@ function buildCard(n) {
   });
 
   return card;
+}
+
+/* ─── REMOVE TABLE ──────────────────────────────────────────── */
+function removeTable() {
+  if (tableCount <= 1) return;
+  const card = $('card-' + tableCount);
+  tableCount--;
+  localStorage.setItem('won_tables_' + slug, tableCount);
+
+  if (card) {
+    card.style.transition = 'opacity .2s ease, transform .2s ease';
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(6px)';
+    setTimeout(() => card.remove(), 200);
+  }
+  updateAddButton();
 }
 
 /* ─── ADD TABLE ─────────────────────────────────────────────── */
@@ -867,13 +933,51 @@ function addTable() {
 
 function updateAddButton() {
   const btn = $('addTableBtn');
+  const removeBtn = $('removeTableBtn');
+  const countLabel = $('tableCountLabel');
+
+  if (countLabel) countLabel.textContent = `${tableCount} of ${MAX_TABLES} tables`;
+  if (removeBtn) removeBtn.disabled = tableCount <= 1;
+
   if (!btn) return;
   if (tableCount >= MAX_TABLES) {
     btn.disabled = true;
     btn.style.opacity = '0.4';
     btn.style.cursor = 'default';
     btn.innerHTML = `<span class="add-icon">✓</span> Table limit reached (${MAX_TABLES})`;
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '';
+    btn.style.cursor = '';
+    btn.innerHTML = `<span class="add-icon">+</span> Add another table`;
   }
+}
+
+/* ─── COPY LINK ─────────────────────────────────────────────── */
+async function copyLink(n) {
+  const url = `${BASE_URL}/pubs/${slug}/table-${n}`;
+  const btn = $('copy-' + n);
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch (e) {
+    // Fallback for older/unsupported browsers
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e2) { /* ignore */ }
+    document.body.removeChild(ta);
+  }
+  if (!btn) return;
+  const original = btn.innerHTML;
+  btn.classList.add('copied');
+  btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l4.5 4.5L20 6"/></svg> Copied`;
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = original;
+  }, 1600);
 }
 
 /* ─── DOWNLOAD ──────────────────────────────────────────────── */
