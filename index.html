@@ -1705,18 +1705,21 @@ function closeMenu() {
   burger.setAttribute('aria-expanded', false);
 }
 
-// Lamp spotlight + phone tilt - both read the same cursor position
-// so the light and the "held phone" react to the same hand.
+
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const hero = document.getElementById('hero');
 const spotlight = document.getElementById('hero-spotlight');
 const phoneFrame = document.getElementById('phone-frame');
 
 if (hero && spotlight && !prefersReduced && window.matchMedia('(hover: hover)').matches) {
-  hero.addEventListener('mousemove', (e) => {
+  let lastClientX = null;
+  let lastClientY = null;
+
+  function updateSpotlight() {
+    if (lastClientX === null) return;
     const rect = hero.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = lastClientX - rect.left;
+    const y = lastClientY - rect.top;
     spotlight.style.setProperty('--sx', `${x}px`);
     spotlight.style.setProperty('--sy', `${y}px`);
 
@@ -1729,8 +1732,20 @@ if (hero && spotlight && !prefersReduced && window.matchMedia('(hover: hover)').
       phoneFrame.style.setProperty('--ry', `${dx * 10}deg`);
       phoneFrame.style.setProperty('--rx', `${-dy * 10}deg`);
     }
+  }
+
+
+  document.addEventListener('mousemove', (e) => {
+    lastClientX = e.clientX;
+    lastClientY = e.clientY;
+    updateSpotlight();
   });
-  hero.addEventListener('mouseleave', () => {
+
+  window.addEventListener('scroll', updateSpotlight, { passive: true });
+
+  document.addEventListener('mouseleave', () => {
+    lastClientX = null;
+    lastClientY = null;
     if (phoneFrame) {
       phoneFrame.style.setProperty('--ry', `0deg`);
       phoneFrame.style.setProperty('--rx', `0deg`);
